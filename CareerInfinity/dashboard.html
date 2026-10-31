@@ -1,0 +1,3170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareerInfinity | Dashboard</title>
+<meta name="description" content="Your personalized career intelligence dashboard.">
+<link rel="icon" href="data:,">
+
+<style>
+:root {
+  color-scheme:light;
+  --bg:#f4f7fb; --panel:#fff; --panel2:#eef3ff;
+  --line:#dce5ef; --text:#17263d; --muted:#60718a;
+  --blue:#355bd6; --green:#137c65; --nav:#101e36;
+  --shadow:0 12px 32px rgba(27,48,82,.07);
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  line-height:1.55;
+}
+button,input,textarea { font:inherit; }
+button { cursor:pointer; }
+.app { display:grid; grid-template-columns:248px minmax(0,1fr); min-height:100vh; }
+.sidebar {
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+  padding:22px 14px; background:var(--nav); color:#f4f7ff;
+}
+.brand { font-size:21px; font-weight:750; padding:12px; margin-bottom:18px; letter-spacing:-.03em; }
+.brand span { color:#91b3ff; }
+.nav button {
+  display:block; width:100%; text-align:left; padding:11px 12px;
+  margin:4px 0; border:0; border-radius:9px;
+  background:transparent; color:#bdc9dc; transition:background .16s ease,color .16s ease;
+}
+.nav button:hover,.nav button.active { background:#263c60; color:white; }
+main { padding:32px clamp(18px,4vw,48px); min-width:0; max-width:1600px; width:100%; margin:0 auto; }
+header { display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:28px; }
+h1 { font-size:clamp(25px,3vw,34px); line-height:1.2; letter-spacing:-.035em; margin:5px 0 8px; }
+h2 { font-size:19px; letter-spacing:-.015em; margin-top:0; }
+h3 { font-size:15px; }
+.muted,.small { color:var(--muted); }
+.small { font-size:12px; }
+.user-tools { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.grid { display:grid; gap:18px; }
+.stats { grid-template-columns:repeat(4,minmax(0,1fr)); margin:24px 0; }
+.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.card {
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:16px; padding:22px; min-width:0; box-shadow:var(--shadow);
+}
+.number { font-size:32px; font-weight:750; letter-spacing:-.04em; margin:9px 0; }
+.progress { background:#e9eef6; height:8px; border-radius:20px; overflow:hidden; }
+.progress span { display:block; height:100%; background:var(--blue); border-radius:inherit; transition:width .25s ease; }
+.btn {
+  padding:11px 16px; border:1px solid transparent; border-radius:9px;
+  background:var(--blue); color:white; font-weight:650;
+  transition:background .16s ease,transform .16s ease;
+}
+.btn:hover:not(:disabled) { background:#294bb8; transform:translateY(-1px); }
+.btn.secondary { background:white; color:#263a58; border-color:var(--line); }
+.btn.secondary:hover:not(:disabled) { background:#f6f8fc; }
+.btn:disabled { opacity:.58; cursor:not-allowed; }
+.view { display:none; }
+.view.active { display:block; }
+.dropzone {
+  display:block; position:relative; border:1.5px dashed #9aadd0; border-radius:12px;
+  padding:24px 12px; text-align:center; cursor:pointer;
+  background:#f7f9ff; color:var(--text); transition:border-color .15s,background .15s;
+}
+.dropzone:hover,.dropzone:focus-within { border-color:var(--blue); background:#f0f4ff; }
+.dropzone input {
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+.field {
+  display:block; width:100%; padding:11px; margin:8px 0 15px;
+  color:var(--text); background:white; border:1px solid #cbd6e4;
+  border-radius:9px;
+}
+.field:focus { border-color:var(--blue); outline:3px solid rgba(53,91,214,.14); }
+.rowitem { padding:14px 0; border-bottom:1px solid var(--line); }
+.rowitem:last-child { border-bottom:0; }
+.tag {
+  display:inline-block; margin:3px; padding:5px 8px;
+  border-radius:6px; background:#edf2ff; color:#2948a1;
+  font-size:12px;
+}
+.status { margin-top:12px; white-space:pre-wrap; font-size:13px; }
+.status:empty { display:none; }
+.error { color:#a32d35; }
+.success { color:var(--green); }
+a { color:#294bb8; text-underline-offset:3px; }
+a:hover { color:#17358f; }
+.featuregrid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.feature {
+  text-align:left; color:var(--text); padding:18px; background:var(--panel);
+  border:1px solid var(--line); border-radius:13px; line-height:1.55;
+  box-shadow:var(--shadow); transition:border-color .16s,transform .16s;
+}
+.feature:hover { border-color:#9aadd0; transform:translateY(-2px); }
+.feature strong,.feature>span:last-child { display:block; }
+.feature strong { margin:8px 0 4px; }
+.feature>span:last-child { color:var(--muted); font-size:13px; }
+.feature-icon { color:var(--blue); font-size:20px; }
+.notice {
+  padding:14px 16px; background:#edf3ff; border:1px solid #d5e0fa;
+  border-radius:10px; color:#294067; font-size:13px; line-height:1.6;
+}
+:focus-visible { outline:3px solid #82a2ff; outline-offset:3px; }
+button:focus:not(:focus-visible) { outline:none; }
+.job-fit-card { margin-top:18px; }
+.job-fit-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.job-fit-heading h2 { margin-bottom:5px; }
+.job-fit-heading p { margin-top:0; }
+.job-fit-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.job-fit-item { padding:17px; border:1px solid var(--line); border-radius:12px; background:#fbfcff; min-width:0; }
+.job-fit-item h3 { margin:0; font-size:16px; }
+.job-fit-item .job-fit-summary { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; }
+.job-fit-item .progress { margin:10px 0 14px; }
+.job-fit-item p { margin:8px 0; font-size:13px; }
+.job-fit-item .tag { margin:3px 4px 3px 0; }
+.job-fit-empty { padding:15px; border:1px dashed #cbd6e4; border-radius:10px; color:var(--muted); }
+.dashboard-role-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:18px; }
+.dashboard-role-card {
+  background:#fbfcff; border:1px solid var(--line); border-radius:14px; padding:18px;
+  box-shadow:var(--shadow);
+}
+.dashboard-role-header {
+  display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:10px;
+}
+.dashboard-role-header h3 { margin:0; }
+.role-roadmap {
+  display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--line);
+}
+.role-roadmap.active { display:block; }
+.role-roadmap-step {
+  background:#f4f7ff; border:1px solid #dfe9ff; border-radius:10px; padding:12px 14px; margin-bottom:10px;
+}
+.role-roadmap-step strong { display:block; margin:6px 0; }
+.role-roadmap-step ul { margin:0; padding-left:18px; }
+.role-roadmap-step li + li { margin-top:4px; }
+.role-phase { display:inline-block; padding:4px 8px; border-radius:999px; background:#e8eeff; color:#2749a9; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+.theme-toggle { display:grid; place-items:center; width:44px; min-width:44px; height:44px; padding:9px; }
+.theme-toggle svg { display:block; width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.theme-icon-sun { display:none !important; }
+html[data-theme="dark"] .theme-icon-sun { display:block !important; }
+html[data-theme="dark"] .theme-icon-moon { display:none !important; }
+.roadmap-intro {
+  position:relative; overflow:hidden; padding:clamp(24px,4vw,42px);
+  color:#fff; border:0; background:linear-gradient(125deg,#142443 0%,#263d77 55%,#5a4ec4 100%);
+}
+.roadmap-intro::after {
+  content:""; position:absolute; width:270px; height:270px; right:-70px; top:-145px;
+  border-radius:50%; background:rgba(143,130,255,.2); filter:blur(4px);
+}
+.roadmap-intro > * { position:relative; z-index:1; }
+.roadmap-eyebrow { color:#c8d3ff; font-size:11px; font-weight:750; letter-spacing:.13em; text-transform:uppercase; }
+.roadmap-intro h2 { max-width:700px; margin:9px 0; font-size:clamp(25px,4vw,38px); line-height:1.15; letter-spacing:-.04em; }
+.roadmap-intro p { max-width:650px; margin:0; color:#d5ddf6; }
+.roadmap-toolbar { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin:24px 0 16px; }
+.roadmap-search { position:relative; flex:1 1 270px; max-width:480px; }
+.roadmap-search .field { margin:0; padding-left:40px; }
+.roadmap-search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+.roadmap-categories { display:flex; gap:8px; overflow-x:auto; padding:3px 2px 8px; scrollbar-width:thin; }
+.category-chip {
+  flex:0 0 auto; padding:8px 13px; border:1px solid var(--line); border-radius:999px;
+  background:var(--panel); color:var(--muted); font-size:12px; font-weight:650;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.category-chip:hover { transform:translateY(-1px); border-color:#9c9ae8; }
+.category-chip.active { color:#fff; border-color:transparent; background:linear-gradient(110deg,#4967df,#7956d9); }
+.roadmap-career-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; }
+.roadmap-career-card {
+  display:flex; flex-direction:column; min-width:0; padding:19px;
+  border:1px solid var(--line); border-radius:15px; background:var(--panel);
+  box-shadow:var(--shadow); animation:roadmap-enter .35s ease both;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.roadmap-career-card:hover { transform:translateY(-4px); border-color:#aaa3f0; box-shadow:0 18px 36px rgba(48,55,120,.12); }
+.roadmap-career-card h3 { margin:12px 0 6px; font-size:16px; }
+.roadmap-career-card p { margin:0; color:var(--muted); font-size:13px; }
+.roadmap-career-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.roadmap-role-icon { display:grid; place-items:center; width:38px; height:38px; border-radius:11px; background:linear-gradient(135deg,#edf0ff,#f4eaff); color:#554bc0; font-size:17px; }
+.roadmap-category { color:#5349bb; background:#f0efff; border-radius:999px; padding:4px 9px; font-size:10px; font-weight:700; }
+.roadmap-skill-list { display:flex; flex-wrap:wrap; gap:5px; margin:12px 0 16px; }
+.roadmap-skill-list .tag { margin:0; }
+.roadmap-card-footer { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:auto; padding-top:13px; border-top:1px solid var(--line); }
+.roadmap-card-footer .small { font-size:11px; }
+.roadmap-card-footer .btn { padding:8px 11px; font-size:12px; }
+.roadmap-empty { grid-column:1/-1; padding:32px 18px; text-align:center; border:1px dashed var(--line); border-radius:14px; color:var(--muted); }
+.roadmap-detail { animation:roadmap-enter .32s ease both; }
+.roadmap-detail[hidden],.roadmap-picker[hidden] { display:none !important; }
+.roadmap-back { margin-bottom:16px; }
+.roadmap-hero { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:20px; }
+.roadmap-hero h2 { margin:8px 0 5px; font-size:clamp(23px,3vw,32px); }
+.roadmap-hero p { margin:0; color:var(--muted); }
+.roadmap-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:13px; }
+.roadmap-meta span { padding:6px 10px; border-radius:999px; background:var(--panel2); color:var(--muted); font-size:11px; }
+.roadmap-ring {
+  --progress:0deg; display:grid; place-items:center; width:114px; height:114px; flex:0 0 auto;
+  border-radius:50%; background:conic-gradient(#7657de var(--progress),var(--line) var(--progress));
+  transition:background .5s ease;
+}
+.roadmap-ring-inner { display:grid; place-content:center; width:91px; height:91px; text-align:center; border-radius:50%; background:var(--panel); }
+.roadmap-ring-inner strong { font-size:21px; line-height:1.2; }
+.roadmap-ring-inner span { color:var(--muted); font-size:10px; }
+.roadmap-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:16px 0 22px; }
+.roadmap-stat { padding:14px 16px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+.roadmap-stat strong { display:block; font-size:20px; }
+.roadmap-stat span { color:var(--muted); font-size:11px; }
+.roadmap-next { display:flex; justify-content:space-between; align-items:center; gap:14px; margin-bottom:20px; padding:15px 17px; border:1px solid #dcd7ff; border-radius:13px; background:linear-gradient(110deg,#f3f1ff,#f0f5ff); }
+.roadmap-next p { margin:3px 0 0; color:var(--muted); font-size:12px; }
+.roadmap-controls { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:13px; }
+.roadmap-controls .field { width:auto; min-width:185px; margin:0; padding:9px 11px; }
+.roadmap-controls .btn { padding:9px 12px; font-size:12px; }
+.roadmap-timeline { display:grid; grid-template-columns:minmax(0,1fr) 300px; align-items:start; gap:18px; }
+.roadmap-stage-list { position:relative; display:grid; gap:12px; }
+.roadmap-stage-list::before { content:""; position:absolute; z-index:0; left:22px; top:30px; bottom:35px; width:2px; background:linear-gradient(#8b78ed,#d8dced); }
+.roadmap-stage {
+  position:relative; z-index:1; min-width:0; overflow:hidden;
+  border:1px solid var(--line); border-radius:14px; background:var(--panel);
+  box-shadow:0 7px 22px rgba(27,48,82,.045);
+  animation:roadmap-enter .35s ease both;
+}
+.roadmap-stage[hidden] { display:none; }
+.roadmap-stage summary { display:flex; align-items:center; gap:13px; padding:16px; list-style:none; cursor:pointer; }
+.roadmap-stage summary::-webkit-details-marker { display:none; }
+.roadmap-stage summary::after { content:"+"; margin-left:auto; color:var(--muted); font-size:20px; transition:transform .2s ease; }
+.roadmap-stage[open] summary::after { content:"−"; }
+.roadmap-stage-marker { display:grid; place-items:center; width:29px; height:29px; flex:0 0 auto; border:1px solid #d6d3ff; border-radius:50%; background:var(--panel); color:#5b50c7; font-size:11px; font-weight:750; }
+.roadmap-stage.is-complete .roadmap-stage-marker { border-color:#177c65; background:#177c65; color:white; }
+.roadmap-stage-title { min-width:0; }
+.roadmap-stage-title strong,.roadmap-stage-title span { display:block; }
+.roadmap-stage-title strong { font-size:14px; }
+.roadmap-stage-title span { color:var(--muted); font-size:11px; }
+.roadmap-stage-body { padding:0 17px 18px 58px; animation:roadmap-enter .24s ease both; }
+.roadmap-stage-body > p { margin:0 0 13px; color:var(--muted); font-size:12px; }
+.roadmap-topics { display:grid; gap:7px; }
+.roadmap-topic { display:flex; align-items:flex-start; gap:9px; padding:9px 10px; border-radius:9px; background:var(--soft-surface,#f7f8fc); font-size:12px; cursor:pointer; }
+.roadmap-topic[hidden] { display:none; }
+.roadmap-topic input,.roadmap-project input { width:16px; height:16px; flex:0 0 auto; margin:1px 0 0; accent-color:#6758d5; }
+.roadmap-topic:has(input:checked) span { color:var(--muted); text-decoration:line-through; }
+.roadmap-stage-extras { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+.roadmap-stage-extra { padding:10px 11px; border:1px solid var(--line); border-radius:9px; font-size:11px; }
+.roadmap-stage-extra strong { display:block; margin-bottom:3px; }
+.roadmap-stage-extra span { color:var(--muted); }
+.roadmap-projects { display:grid; gap:7px; margin-top:12px; }
+.roadmap-project { display:flex; align-items:flex-start; gap:8px; font-size:12px; }
+.roadmap-resource-panel { display:grid; gap:10px; }
+.roadmap-resource-panel h3 { margin:0; }
+.roadmap-resource-card { padding:13px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+.roadmap-resource-card > div { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.roadmap-resource-card strong { font-size:12px; }
+.roadmap-resource-card p { margin:6px 0 9px; color:var(--muted); font-size:11px; }
+.roadmap-resource-card a { font-size:11px; font-weight:700; }
+.roadmap-bookmark { border:0; padding:3px; background:none; color:var(--muted); font-size:17px; }
+.roadmap-bookmark[aria-pressed="true"] { color:#7657de; }
+.roadmap-toast { position:fixed; z-index:10; right:22px; bottom:22px; max-width:min(360px,calc(100vw - 32px)); padding:12px 16px; color:white; background:#17263d; border-radius:10px; box-shadow:var(--shadow); animation:roadmap-enter .2s ease both; }
+.roadmap-toast[hidden] { display:none; }
+@keyframes roadmap-enter { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+html[data-theme="dark"] {
+  color-scheme:dark; --bg:#0e1422; --panel:#171f30; --panel2:#202a40;
+  --line:#2c3850; --text:#edf1fb; --muted:#a3afc5; --blue:#8292ff;
+  --green:#54c6a5; --nav:#0a1020; --shadow:0 12px 32px rgba(0,0,0,.2); --soft-surface:#202a3b;
+}
+html[data-theme="dark"] .btn.secondary,
+html[data-theme="dark"] .roadmap-stage-marker { color:var(--text); background:#202a3b; border-color:var(--line); }
+html[data-theme="dark"] .btn.secondary:hover:not(:disabled) { background:#283550; }
+html[data-theme="dark"] .field,
+html[data-theme="dark"] .roadmap-career-card,
+html[data-theme="dark"] .job-fit-item,
+html[data-theme="dark"] .dashboard-role-card { color:var(--text); background:var(--panel); border-color:var(--line); }
+html[data-theme="dark"] .roadmap-category,.roadmap-skill-list .tag { background:#29294a; color:#c3baff; }
+html[data-theme="dark"] .roadmap-role-icon { background:#29294a; color:#c3baff; }
+html[data-theme="dark"] .roadmap-next { border-color:#38355d; background:linear-gradient(110deg,#24223e,#202b42); }
+html[data-theme="dark"] .notice { color:#d8e2ff; background:#1b2941; border-color:#334665; }
+html[data-theme="dark"] .tag { color:#c7d4ff; background:#24324c; }
+html[data-theme="dark"] .progress { background:#303a50; }
+html[data-theme="dark"] .roadmap-topic { color:var(--text); }
+@media(max-width:1100px) {
+  .roadmap-career-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .roadmap-timeline { grid-template-columns:minmax(0,1fr) 260px; }
+}
+@media(max-width:800px) {
+  .roadmap-timeline { grid-template-columns:1fr; }
+  .roadmap-resource-panel { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .roadmap-resource-panel h3 { grid-column:1/-1; }
+}
+@media(max-width:560px) {
+  .roadmap-career-grid { grid-template-columns:1fr; }
+  .roadmap-stats { gap:7px; }
+  .roadmap-stat { padding:11px; }
+  .roadmap-stat strong { font-size:17px; }
+  .roadmap-stat span { font-size:10px; }
+  .roadmap-hero { grid-template-columns:1fr auto; gap:10px; }
+  .roadmap-ring { width:83px; height:83px; }
+  .roadmap-ring-inner { width:66px; height:66px; }
+  .roadmap-ring-inner strong { font-size:17px; }
+  .roadmap-stage-list::before { left:17px; }
+  .roadmap-stage summary { gap:9px; padding:13px 11px; }
+  .roadmap-stage-marker { width:27px; height:27px; }
+  .roadmap-stage-body { padding:0 12px 14px 47px; }
+  .roadmap-stage-extras,.roadmap-resource-panel { grid-template-columns:1fr; }
+  .roadmap-resource-panel h3 { grid-column:auto; }
+  .roadmap-next { align-items:flex-start; flex-direction:column; }
+  .roadmap-controls { align-items:stretch; }
+  .roadmap-controls .field { width:100%; }
+}
+@media print {
+  body { background:#fff; color:#111; }
+  .sidebar,header,.roadmap-intro,.roadmap-picker,.roadmap-back,.roadmap-controls,
+  .roadmap-next button,.roadmap-bookmark,.roadmap-toast { display:none !important; }
+  .app { display:block; }
+  main { max-width:none; padding:0; }
+  .view { display:none !important; }
+  #view-roadmap.active { display:block !important; }
+  .roadmap-detail[hidden] { display:none !important; }
+  .roadmap-timeline { display:block; }
+  .roadmap-stage { break-inside:avoid; box-shadow:none; }
+  .roadmap-stage:not([open]) .roadmap-stage-body { display:block; }
+  .roadmap-resource-panel { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:18px; }
+}
+@media(max-width:1050px) {
+  .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .featuregrid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:1000px) {
+  .two { grid-template-columns:1fr; }
+  .job-fit-list { grid-template-columns:1fr; }
+}
+@media(max-width:650px) {
+  .app { grid-template-columns:1fr; }
+  .sidebar { position:static; height:auto; padding:10px 12px 12px; }
+  .brand { margin:0 0 5px; padding:5px 8px; }
+  .nav { display:flex; gap:5px; overflow-x:auto; padding:2px 0 6px; scrollbar-width:thin; }
+  .nav button { width:auto; flex:0 0 auto; margin:0; padding:9px 11px; white-space:nowrap; }
+  main { padding:21px 16px; }
+  .featuregrid { grid-template-columns:1fr; }
+  .card { padding:18px; }
+  header { align-items:flex-start; margin-bottom:22px; }
+}
+@media(max-width:390px) {
+  .stats { grid-template-columns:1fr; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+}
+
+/* Shared application design system */
+:root {
+  --bg:#f5f6fb;
+  --panel:#fff;
+  --panel2:#f0f2ff;
+  --line:#e4e7f0;
+  --text:#182136;
+  --muted:#737e96;
+  --blue:#5b5ce2;
+  --green:#16836c;
+  --nav:#11182a;
+  --shadow:0 12px 34px rgba(27,35,67,.055);
+  --shadow-hover:0 18px 42px rgba(32,42,86,.11);
+  --radius-card:18px;
+  --soft-surface:#f7f8fc;
+  color-scheme:light;
+}
+html { min-width:320px; background:var(--bg); }
+body {
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse at 86% 0%,rgba(113,104,235,.065),transparent 30%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,"Segoe UI",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  font-size:14px;
+  line-height:1.6;
+  transition:background-color .22s ease,color .22s ease;
+}
+.app { grid-template-columns:264px minmax(0,1fr); }
+.sidebar {
+  z-index:4;
+  padding:26px 16px;
+  background:linear-gradient(180deg,#11182a 0%,#151d32 100%);
+  border-right:1px solid rgba(255,255,255,.055);
+  box-shadow:8px 0 30px rgba(18,26,48,.045);
+}
+.brand {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:11px 12px 22px;
+  margin-bottom:13px;
+  font-size:20px;
+}
+.brand:first-letter { color:#b6a8ff; }
+.brand span { color:#9eabff; }
+.nav button {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-height:44px;
+  padding:10px 12px;
+  margin:4px 0;
+  border:1px solid transparent;
+  border-radius:11px;
+  color:#aab5cb;
+  font-size:13px;
+  font-weight:550;
+  transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.nav button:hover { color:#fff; background:rgba(255,255,255,.065); transform:translateX(2px); }
+.nav button.active {
+  color:#fff;
+  background:linear-gradient(110deg,rgba(101,107,222,.28),rgba(112,91,201,.18));
+  border-color:rgba(145,144,255,.18);
+  box-shadow:inset 3px 0 #9c91ff;
+}
+main {
+  width:100%;
+  max-width:none;
+  padding:34px clamp(28px,3.35vw,62px) 56px;
+  margin:0;
+}
+header {
+  position:relative;
+  padding:4px 0 24px;
+  margin-bottom:26px;
+  border-bottom:1px solid var(--line);
+}
+header h1 { margin:6px 0 5px; font-size:clamp(28px,2.4vw,36px); font-weight:740; }
+header > div:first-child > .small { letter-spacing:.12em; font-weight:750; font-size:10px; }
+header #welcome { margin:0; font-size:13px; }
+.user-tools { gap:10px; }
+.user-tools > #userEmail { padding-right:8px; }
+h2 { font-size:20px; font-weight:700; letter-spacing:-.025em; }
+h3 { font-size:15px; font-weight:680; letter-spacing:-.01em; }
+.view.active { animation:page-arrive .25s ease both; }
+@keyframes page-arrive { from { opacity:.65; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+.grid { gap:20px; }
+.stats { margin:0 0 22px; }
+.card {
+  padding:24px;
+  border-color:var(--line);
+  border-radius:var(--radius-card);
+  background:var(--panel);
+  box-shadow:var(--shadow);
+  transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.stats .card {
+  position:relative;
+  overflow:hidden;
+  min-height:144px;
+  padding:21px 22px;
+}
+.stats .card::before {
+  position:absolute;
+  top:0;
+  left:22px;
+  width:42px;
+  height:3px;
+  border-radius:0 0 4px 4px;
+  background:linear-gradient(90deg,#6172ee,#a278ed);
+  content:"";
+}
+.stats .number { margin:12px 0 5px; font-size:34px; }
+.number { font-variant-numeric:tabular-nums; }
+.progress { height:9px; background:#eceef6; }
+.progress span { background:linear-gradient(90deg,#5d71eb,#8661dc); }
+.btn {
+  min-height:42px;
+  padding:10px 16px;
+  border-radius:10px;
+  background:linear-gradient(115deg,#596de4,#7558d4);
+  box-shadow:0 5px 13px rgba(87,91,205,.14);
+  font-size:13px;
+  font-weight:680;
+  transition:background .18s ease,transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.btn:hover:not(:disabled) {
+  background:linear-gradient(115deg,#4c5fd2,#684bc2);
+  box-shadow:0 8px 18px rgba(87,91,205,.22);
+  transform:translateY(-2px);
+}
+.btn.secondary { background:var(--panel); color:var(--text); border-color:var(--line); box-shadow:none; }
+.btn.secondary:hover:not(:disabled) { background:var(--panel2); border-color:#c5c8ef; box-shadow:none; }
+.field {
+  min-height:44px;
+  padding:11px 13px;
+  border-color:var(--line);
+  border-radius:10px;
+  background:var(--panel);
+  color:var(--text);
+  transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease;
+}
+.field:focus { border-color:#7777e8; outline:0; box-shadow:0 0 0 4px rgba(91,92,226,.13); }
+select.field { color:var(--text); }
+select.field option { background:var(--panel); color:var(--text); }
+textarea.field { min-height:130px; }
+.dropzone {
+  border-color:#b9bce2;
+  border-radius:14px;
+  background:linear-gradient(145deg,#f8f8ff,#f1f3ff);
+}
+.dropzone:hover,.dropzone:focus-within { border-color:#7777e8; background:#f0f1ff; }
+.featuregrid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:15px; }
+.feature {
+  min-height:132px;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:var(--shadow);
+  transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.feature:hover { border-color:#b9b7ed; box-shadow:var(--shadow-hover); transform:translateY(-3px); }
+.feature-icon {
+  display:grid;
+  place-items:center;
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:linear-gradient(140deg,#eff0ff,#f6efff);
+  color:#6159ce;
+}
+.feature strong { margin:11px 0 3px; font-size:14px; }
+.feature>span:last-child { font-size:12px; }
+.notice { border-radius:12px; }
+.rowitem { padding:16px 0; }
+.tag { border-radius:999px; background:#f0f1ff; color:#4f51ad; }
+.job-fit-item,.dashboard-role-card {
+  border-radius:14px;
+  background:var(--soft-surface);
+  transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease,background-color .18s ease;
+}
+.job-fit-item:hover,.dashboard-role-card:hover { border-color:#bfc0e7; box-shadow:var(--shadow); transform:translateY(-2px); }
+.role-roadmap-step { border-color:var(--line); border-radius:12px; background:var(--soft-surface); }
+.role-phase { background:var(--panel2); color:#5758bd; }
+.status { border-radius:9px; }
+.error { color:#b43645; }
+.success { color:#08775f; }
+a { color:#525ac7; }
+a:hover { color:#373c9f; }
+.roadmap-intro {
+  color:#fff;
+  background:linear-gradient(125deg,#142443 0%,#263d77 55%,#5a4ec4 100%);
+  box-shadow:0 18px 44px rgba(48,50,126,.13);
+}
+.roadmap-career-card,.roadmap-stage,.roadmap-resource-card { border-radius:15px; }
+.roadmap-stage { transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease; }
+.roadmap-stage:hover { border-color:#c5c1ef; box-shadow:var(--shadow); }
+.roadmap-career-card:hover { box-shadow:var(--shadow-hover); }
+.roadmap-resource-card { transition:border-color .18s ease,transform .18s ease; }
+.roadmap-resource-card:hover { border-color:#c4c0ef; transform:translateY(-2px); }
+
+html[data-theme="dark"] {
+  color-scheme:dark;
+  --bg:#0d1220;
+  --panel:#151c2d;
+  --panel2:#202842;
+  --line:#28334a;
+  --text:#eef1fb;
+  --muted:#a0abc1;
+  --blue:#a5adff;
+  --green:#62d0b1;
+  --nav:#090e1b;
+  --shadow:0 12px 34px rgba(0,0,0,.19);
+  --shadow-hover:0 18px 42px rgba(0,0,0,.28);
+  --soft-surface:#1a2336;
+}
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(ellipse at 87% 0%,rgba(102,95,215,.12),transparent 32%),
+    var(--bg);
+}
+html[data-theme="dark"] .sidebar { background:linear-gradient(180deg,#090e1b,#101729); }
+html[data-theme="dark"] .nav button.active {
+  color:#f5f4ff;
+  background:linear-gradient(110deg,rgba(107,112,222,.27),rgba(112,91,201,.18));
+  border-color:rgba(145,144,255,.15);
+}
+html[data-theme="dark"] .field,
+html[data-theme="dark"] .btn.secondary,
+html[data-theme="dark"] .dropzone,
+html[data-theme="dark"] .job-fit-item,
+html[data-theme="dark"] .dashboard-role-card,
+html[data-theme="dark"] .role-roadmap-step {
+  color:var(--text);
+  background:var(--panel);
+  border-color:var(--line);
+}
+html[data-theme="dark"] .field::placeholder { color:#8490a8; }
+html[data-theme="dark"] .field:focus { border-color:#7779dc; box-shadow:0 0 0 4px rgba(125,124,236,.16); }
+html[data-theme="dark"] .dropzone:hover,html[data-theme="dark"] .dropzone:focus-within { background:#202842; }
+html[data-theme="dark"] .feature-icon,
+html[data-theme="dark"] .roadmap-role-icon { background:#29294a; color:#c3baff; }
+html[data-theme="dark"] .tag,
+html[data-theme="dark"] .roadmap-skill-list .tag,
+html[data-theme="dark"] .roadmap-category,
+html[data-theme="dark"] .role-phase { background:#29294a; color:#d0c8ff; }
+html[data-theme="dark"] .btn.secondary:hover:not(:disabled) { background:#202a40; border-color:#414968; }
+html[data-theme="dark"] .feature:hover,
+html[data-theme="dark"] .job-fit-item:hover,
+html[data-theme="dark"] .dashboard-role-card:hover,
+html[data-theme="dark"] .roadmap-stage:hover,
+html[data-theme="dark"] .roadmap-resource-card:hover { border-color:#55557d; }
+html[data-theme="dark"] .notice { color:#dce4ff; background:#1b2941; border-color:#334665; }
+html[data-theme="dark"] .roadmap-next { border-color:#38355d; background:linear-gradient(110deg,#24223e,#202b42); }
+html[data-theme="dark"] .roadmap-topic { color:var(--text); }
+html[data-theme="dark"] .progress { background:#303a50; }
+
+@media(min-width:1500px) {
+  .app { grid-template-columns:276px minmax(0,1fr); }
+  main { padding-right:clamp(56px,4vw,88px); padding-left:clamp(56px,4vw,88px); }
+  .featuregrid { grid-template-columns:repeat(5,minmax(0,1fr)); }
+}
+@media(max-width:1250px) {
+  .app { grid-template-columns:236px minmax(0,1fr); }
+  main { padding-right:30px; padding-left:30px; }
+  .featuregrid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media(max-width:1050px) {
+  .app { grid-template-columns:220px minmax(0,1fr); }
+  main { padding-right:24px; padding-left:24px; }
+}
+@media(max-width:650px) {
+  .app { grid-template-columns:minmax(0,1fr); }
+  .sidebar { box-shadow:0 6px 20px rgba(18,26,48,.09); }
+  main { padding:22px 18px 36px; }
+  header { padding-bottom:18px; }
+  .featuregrid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .stats .card { min-height:126px; }
+}
+@media(max-width:430px) {
+  .featuregrid { grid-template-columns:1fr; }
+  .user-tools { width:100%; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .view.active { animation:none; }
+}
+.app {
+  grid-template-columns:264px minmax(0,1fr);
+  transition:grid-template-columns .22s ease;
+}
+.brand { flex:1; min-width:0; }
+.brand-mark { flex:0 0 auto; color:#b6a8ff; font-size:21px; }
+.sidebar-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.sidebar-control {
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+  padding:0;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:10px;
+  color:#d5dcf2;
+  background:rgba(255,255,255,.055);
+  font-size:18px;
+  transition:background .18s ease,transform .18s ease;
+}
+.sidebar-control:hover { background:rgba(255,255,255,.13); }
+.nav button { display:flex; align-items:center; gap:11px; }
+.nav-icon { display:inline-grid; place-items:center; width:22px; flex:0 0 22px; font-size:16px; }
+.nav-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sidebar-profile {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  margin:20px 4px 2px;
+  padding:14px 8px 0;
+  border-top:1px solid rgba(255,255,255,.1);
+}
+.sidebar-avatar {
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  color:#fff;
+  background:linear-gradient(140deg,#795ce8,#5069d7);
+  font-size:13px;
+  font-weight:750;
+}
+.sidebar-profile-copy { min-width:0; color:#f4f6ff; font-size:12px; }
+.sidebar-profile-copy span { display:block; overflow:hidden; color:#9da9c0; font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
+.app.sidebar-collapsed { grid-template-columns:78px minmax(0,1fr); }
+.sidebar-collapsed .sidebar { padding-right:11px; padding-left:11px; }
+.sidebar-collapsed .nav-label,.sidebar-collapsed .sidebar-profile-copy { display:none; }
+.sidebar-collapsed .nav button { justify-content:center; padding-right:6px; padding-left:6px; }
+.sidebar-collapsed .nav-icon { width:28px; flex-basis:28px; font-size:18px; }
+.sidebar-collapsed .sidebar-profile { justify-content:center; margin-right:0; margin-left:0; padding-right:0; padding-left:0; }
+.sidebar-profile-copy strong { display:block; overflow:hidden; font-weight:650; text-overflow:ellipsis; white-space:nowrap; }
+.sidebar-collapsed .brand { gap:0; font-size:0; }
+.sidebar-collapsed .brand .brand-mark { font-size:21px; }
+.sidebar-collapsed .brand > span:not(.brand-mark) { display:none; }
+.sidebar-collapsed .sidebar-heading { display:flex; flex-direction:column; gap:0; }
+.sidebar-collapsed .sidebar-control { margin:0 auto 15px; }
+.sidebar-collapsed .nav button { min-height:46px; }
+.mobile-menu-toggle { display:none; }
+.sidebar-backdrop { display:none; }
+:root { --blue:#795ce8; }
+html[data-theme="dark"] { --blue:#aa98ff; }
+.btn:not(.secondary) { background:linear-gradient(115deg,#795ce8,#6654d2); }
+.btn:not(.secondary):hover:not(:disabled) { background:linear-gradient(115deg,#6e50dc,#5845c5); }
+@media(max-width:1250px) and (min-width:651px) {
+  .app:not(.sidebar-collapsed) { grid-template-columns:236px minmax(0,1fr); }
+}
+@media(max-width:1050px) and (min-width:651px) {
+  .app:not(.sidebar-collapsed) { grid-template-columns:220px minmax(0,1fr); }
+}
+@media(max-width:650px) {
+  body.nav-open { overflow:hidden; }
+  .app,.app.sidebar-collapsed { display:block; min-height:100vh; }
+  .sidebar,.sidebar-collapsed .sidebar {
+    position:fixed;
+    z-index:20;
+    inset:0 auto 0 0;
+    display:flex;
+    width:min(300px,86vw);
+    height:100dvh;
+    flex-direction:column;
+    padding:20px 15px;
+    overflow-y:auto;
+    box-shadow:18px 0 50px rgba(8,13,28,.26);
+    transform:translateX(-105%);
+    transition:transform .24s ease;
+  }
+  .sidebar.mobile-open { transform:translateX(0); }
+  .sidebar .sidebar-heading,.sidebar-collapsed .sidebar-heading { display:flex; flex-direction:row; }
+  .sidebar .brand,.sidebar-collapsed .brand { justify-content:flex-start; gap:9px; padding:8px 8px 17px; margin:0; font-size:20px; }
+  .sidebar .brand .brand-mark,.sidebar-collapsed .brand .brand-mark { font-size:21px; }
+  .sidebar .brand > span:not(.brand-mark),.sidebar-collapsed .brand > span:not(.brand-mark) { display:inline; }
+  .sidebar .desktop-sidebar-toggle { display:none; }
+  .sidebar .nav,.sidebar-collapsed .nav { display:grid; gap:3px; overflow:visible; padding:6px 0; }
+  .sidebar .nav button,.sidebar-collapsed .nav button {
+    width:100%;
+    min-height:46px;
+    justify-content:flex-start;
+    margin:0;
+    padding:10px 11px;
+    white-space:normal;
+  }
+  .sidebar .nav-label,.sidebar-collapsed .nav-label { display:inline; }
+  .sidebar .nav-icon,.sidebar-collapsed .nav-icon { width:24px; flex-basis:24px; font-size:16px; }
+  .sidebar .sidebar-profile,.sidebar-collapsed .sidebar-profile { justify-content:flex-start; margin-top:auto; padding:14px 6px 0; }
+  .sidebar .sidebar-profile-copy,.sidebar-collapsed .sidebar-profile-copy { display:block; }
+  .sidebar-backdrop.is-visible {
+    position:fixed;
+    z-index:19;
+    inset:0;
+    display:block;
+    border:0;
+    background:rgba(8,13,28,.46);
+    animation:page-arrive .18s ease both;
+  }
+  header { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:12px; }
+  .mobile-menu-toggle { display:grid; grid-column:1; grid-row:1; }
+  header > div:first-of-type { grid-column:2; grid-row:1; min-width:0; }
+  .user-tools { grid-column:1/-1; justify-content:flex-end; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .app,.sidebar,.sidebar-backdrop.is-visible { transition:none; animation:none; }
+}
+#view-dashboard { display:none; }
+#view-dashboard.active { display:block; animation:dashboard-arrive .35s ease both; }
+#view-dashboard .dashboard-welcome {
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  min-height:158px; margin-bottom:22px; overflow:hidden; position:relative;
+  padding:28px 32px; border:1px solid #e6e3fb;
+  background:linear-gradient(112deg,#fff 15%,#f6f3ff 70%,#edf1ff);
+}
+#view-dashboard .dashboard-welcome::after {
+  content:""; position:absolute; width:270px; height:270px; right:14%; top:-180px;
+  border-radius:50%; background:radial-gradient(circle,rgba(135,103,236,.18),transparent 70%);
+  pointer-events:none;
+}
+#view-dashboard .dashboard-eyebrow {
+  display:block; margin-bottom:5px; color:#7865d9; font-size:10px;
+  font-weight:800; letter-spacing:.13em; line-height:1.5;
+}
+#view-dashboard .dashboard-welcome h2 {
+  margin:2px 0 4px; font-size:clamp(23px,2.4vw,30px); letter-spacing:-.04em;
+}
+#view-dashboard .dashboard-welcome p { margin:0; color:var(--muted); font-size:14px; }
+#view-dashboard .dashboard-date {
+  z-index:1; display:flex; align-items:center; gap:10px; flex:0 0 auto;
+  padding:11px 15px; border:1px solid rgba(114,98,208,.14); border-radius:12px;
+  color:#4e4f74; background:rgba(255,255,255,.75); font-size:12px; font-weight:650;
+}
+#view-dashboard .dashboard-date-icon { color:#7762d9; font-size:17px; }
+#view-dashboard .dashboard-stat-grid {
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:15px; margin-bottom:22px;
+}
+#view-dashboard .dashboard-stat-card {
+  min-height:154px; padding:19px 20px; border-radius:15px;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+#view-dashboard .dashboard-stat-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-hover); }
+#view-dashboard .dashboard-stat-top { display:flex; align-items:center; gap:10px; }
+#view-dashboard .dashboard-stat-icon,#view-dashboard .dashboard-panel-icon {
+  display:grid; place-items:center; width:34px; height:34px; flex:0 0 34px;
+  border-radius:11px; font-size:16px; font-weight:700;
+}
+#view-dashboard .dashboard-stat-icon.resume { color:#6557d7; background:#f0edff; }
+#view-dashboard .dashboard-stat-icon.skills { color:#2b7fbc; background:#eaf5ff; }
+#view-dashboard .dashboard-stat-icon.learning { color:#258e72; background:#e8f7f1; }
+#view-dashboard .dashboard-stat-icon.careers { color:#d58538; background:#fff3e7; }
+#view-dashboard .dashboard-stat-label { color:var(--muted); font-size:12px; font-weight:600; }
+#view-dashboard .dashboard-stat-value {
+  display:block; margin:9px 0 3px; font-size:29px; font-weight:780;
+  letter-spacing:-.045em; line-height:1.1;
+}
+#view-dashboard .dashboard-stat-foot { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:10px; }
+#view-dashboard .dashboard-stat-foot .progress { width:52px; height:5px; flex:0 0 52px; }
+#view-dashboard .dashboard-stat-card .progress span { background:linear-gradient(90deg,#7660e8,#5798eb); }
+#view-dashboard .dashboard-main-grid { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); gap:18px; align-items:start; }
+#view-dashboard .dashboard-column { display:grid; gap:18px; min-width:0; }
+#view-dashboard .dashboard-panel { min-width:0; padding:23px; border-radius:16px; }
+#view-dashboard .dashboard-panel-heading { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:18px; }
+#view-dashboard .dashboard-panel-heading h2 { margin:0; font-size:17px; letter-spacing:-.025em; }
+#view-dashboard .dashboard-panel-heading .dashboard-eyebrow { margin-bottom:3px; }
+#view-dashboard .dashboard-panel-icon { color:#7360d8; background:#f0edff; }
+#view-dashboard .dashboard-text-link {
+  display:inline-flex; align-items:center; gap:6px; padding:5px 0;
+  border:0; color:#6956d3; background:transparent; font-size:11px; font-weight:700;
+  white-space:nowrap;
+}
+#view-dashboard .dashboard-text-link:hover { color:#4637a9; }
+#view-dashboard .dashboard-resume-panel { padding-bottom:21px; }
+#view-dashboard .dashboard-resume-file {
+  display:flex; align-items:center; gap:12px; min-width:0; margin-bottom:15px;
+  padding:13px; border:1px solid var(--line); border-radius:12px; background:var(--soft-surface);
+}
+#view-dashboard .dashboard-resume-file-icon {
+  display:grid; place-items:center; width:40px; height:44px; flex:0 0 40px;
+  border-radius:9px; color:#715bd8; background:#efecff; font-size:9px; font-weight:800;
+}
+#view-dashboard .dashboard-resume-file > div { display:grid; flex:1; min-width:0; gap:2px; }
+#view-dashboard .dashboard-resume-file > div strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
+#view-dashboard .dashboard-resume-file > div span { color:var(--muted); font-size:10px; }
+#view-dashboard .dashboard-resume-file > b { flex:0 0 auto; color:#6250ce; font-size:20px; }
+#view-dashboard .dashboard-resume-file > b small { color:var(--muted); font-size:10px; font-weight:600; }
+#view-dashboard .dashboard-resume-empty { margin:0 0 15px; }
+#view-dashboard .dashboard-resume-empty strong { font-size:13px; }
+#view-dashboard .dashboard-resume-empty p { margin:3px 0 0; color:var(--muted); font-size:11px; }
+#view-dashboard .dashboard-upload-zone { padding:17px 12px; border-radius:11px; }
+#view-dashboard .dashboard-upload-zone > * { display:block; }
+#view-dashboard .dashboard-upload-zone strong { margin:3px 0; font-size:12px; }
+#view-dashboard .dashboard-upload-zone .small { font-size:10px; }
+#view-dashboard .dashboard-upload-icon { color:#715bd8; font-size:20px; font-weight:700; }
+#view-dashboard .dashboard-upload-zone-compact { padding:9px 12px; }
+#view-dashboard .dashboard-upload-zone-compact .dashboard-upload-icon { display:none; }
+#view-dashboard .dashboard-file-name { margin:5px 0; }
+#view-dashboard .dashboard-resume-actions { display:flex; gap:9px; margin-top:11px; }
+#view-dashboard .dashboard-resume-actions .btn { flex:1; padding:9px 11px; font-size:11px; }
+#view-dashboard .dashboard-panel .status { font-size:11px; }
+#view-dashboard .dashboard-skill-categories { display:flex; flex-wrap:wrap; gap:6px; margin:-4px 0 14px; }
+#view-dashboard .dashboard-skill-categories span { padding:4px 8px; border-radius:20px; color:#5f53bd; background:#f1efff; font-size:10px; }
+#view-dashboard .dashboard-skill-chart { display:grid; gap:10px; margin-bottom:13px; }
+#view-dashboard .dashboard-skill-bar { display:grid; grid-template-columns:minmax(72px,105px) minmax(0,1fr); align-items:center; gap:12px; }
+#view-dashboard .dashboard-skill-bar > span { overflow:hidden; color:var(--muted); font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
+#view-dashboard .dashboard-skill-bar .progress { height:6px; }
+#view-dashboard .dashboard-skill-bar .progress span { background:linear-gradient(90deg,#7960e5,#6494ed); }
+#view-dashboard .dashboard-skill-tags { display:flex; flex-wrap:wrap; gap:6px; }
+#view-dashboard .dashboard-skill-tags .tag { margin:0; padding:5px 8px; border-radius:7px; font-size:10px; }
+#view-dashboard .dashboard-skill-tags .tag small { margin-left:3px; opacity:.72; }
+#view-dashboard .dashboard-more-skills,#view-dashboard .dashboard-chart-note { margin:10px 0 0; color:var(--muted); font-size:10px; }
+#view-dashboard .dashboard-visual-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:18px; }
+#view-dashboard .dashboard-visual-card { min-width:0; padding:20px; }
+#view-dashboard .dashboard-visual-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:16px; }
+#view-dashboard .dashboard-visual-heading h2 { margin:0 0 4px; font-size:17px; }
+#view-dashboard .dashboard-visual-heading p { margin:0; font-size:13px; }
+#view-dashboard .dashboard-visual-heading > strong { flex:0 0 auto; color:var(--blue); font-size:20px; }
+#view-dashboard .dashboard-chart-rows { display:grid; gap:13px; }
+#view-dashboard .dashboard-chart-row { display:grid; grid-template-columns:minmax(90px,130px) minmax(0,1fr) auto; align-items:center; gap:10px; }
+#view-dashboard .dashboard-chart-row > span:first-child { overflow:hidden; font-size:13px; text-overflow:ellipsis; white-space:nowrap; }
+#view-dashboard .dashboard-chart-row .progress { height:8px; }
+#view-dashboard .dashboard-chart-row .progress span { background:var(--green); }
+#view-dashboard .dashboard-chart-row.is-gap .progress span { background:#d79526; }
+#view-dashboard .dashboard-chart-row > small { color:var(--muted); font-size:12px; white-space:nowrap; }
+#view-dashboard .dashboard-chart-legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:16px; color:var(--muted); font-size:12px; }
+#view-dashboard .dashboard-chart-legend span { display:inline-flex; align-items:center; gap:6px; }
+#view-dashboard .dashboard-chart-legend i { width:9px; height:9px; border-radius:50%; background:var(--green); }
+#view-dashboard .dashboard-chart-legend .legend-gap { background:#d79526; }
+#view-dashboard .dashboard-chart-empty { padding:14px; border:1px dashed var(--line); border-radius:10px; color:var(--muted); font-size:14px; }
+#view-dashboard .dashboard-progress-body { display:flex; align-items:center; gap:18px; padding:1px 0 18px; }
+#view-dashboard .dashboard-progress-ring {
+  display:grid; place-items:center; width:108px; height:108px; flex:0 0 108px;
+  border-radius:50%; background:conic-gradient(#765ee4 var(--progress,0deg),#eeedf7 var(--progress,0deg));
+  animation:dashboard-ring-in .75s ease both;
+}
+#view-dashboard .dashboard-progress-ring > div {
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  width:84px; height:84px; border-radius:50%; background:var(--panel);
+}
+#view-dashboard .dashboard-progress-ring strong { font-size:22px; letter-spacing:-.04em; line-height:1.1; }
+#view-dashboard .dashboard-progress-ring span { color:var(--muted); font-size:9px; }
+#view-dashboard .dashboard-progress-copy { display:grid; gap:4px; min-width:0; }
+#view-dashboard .dashboard-progress-copy > strong { font-size:12px; }
+#view-dashboard .dashboard-progress-copy > span { color:var(--muted); font-size:10px; }
+#view-dashboard .dashboard-task-count { display:flex; align-items:center; gap:6px; margin-top:6px; }
+#view-dashboard .dashboard-task-count b { color:var(--text); font-size:11px; }
+#view-dashboard .dashboard-task-count i { width:3px; height:3px; border-radius:50%; background:#9ca4b4; }
+#view-dashboard .dashboard-full-button { display:flex; justify-content:center; align-items:center; gap:10px; width:100%; padding:10px; font-size:11px; }
+#view-dashboard .dashboard-recommendations { display:grid; gap:10px; }
+#view-dashboard .dashboard-role-card { margin:0; padding:13px; border:1px solid var(--line); border-radius:11px; background:var(--soft-surface); }
+#view-dashboard .dashboard-role-header { display:flex; align-items:center; justify-content:space-between; gap:9px; margin-bottom:8px; }
+#view-dashboard .dashboard-role-header h3 { margin:0 0 2px; font-size:12px; }
+#view-dashboard .dashboard-role-header .small { color:#6b58d3; font-size:10px; font-weight:700; }
+#view-dashboard .dashboard-role-header .btn { flex:0 0 auto; padding:6px 9px; font-size:9px; }
+#view-dashboard .dashboard-role-card > .small { color:var(--muted); font-size:9px; }
+#view-dashboard .dashboard-role-card .tag { margin:2px 3px 2px 0; padding:3px 6px; font-size:9px; }
+#view-dashboard .role-roadmap { margin-top:9px; }
+#view-dashboard .role-roadmap-step { padding:8px 0; border-top:1px solid var(--line); }
+#view-dashboard .role-roadmap-step strong { font-size:10px; }
+#view-dashboard .role-roadmap-step ul { padding-left:16px; margin:4px 0 0; color:var(--muted); font-size:10px; }
+#view-dashboard .dashboard-empty { display:flex; align-items:center; flex-direction:column; padding:16px 10px 10px; text-align:center; }
+#view-dashboard .dashboard-empty > span { display:grid; place-items:center; width:36px; height:36px; margin-bottom:8px; border-radius:11px; color:#7662d9; background:#f0edff; font-size:16px; }
+#view-dashboard .dashboard-empty > strong { font-size:12px; }
+#view-dashboard .dashboard-empty p { max-width:290px; margin:3px 0 8px; color:var(--muted); font-size:10px; }
+#view-dashboard .dashboard-journey-panel { margin-top:18px; }
+#view-dashboard .dashboard-journey { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+#view-dashboard .dashboard-journey-step {
+  position:relative; display:grid; grid-template-columns:36px minmax(0,1fr); align-items:center;
+  column-gap:9px; min-width:0; padding:13px 10px; border:1px solid var(--line);
+  border-radius:12px; color:var(--text); background:var(--panel); text-align:left;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+#view-dashboard .dashboard-journey-step:hover { transform:translateY(-2px); border-color:#b8adef; box-shadow:var(--shadow); }
+#view-dashboard .dashboard-journey-marker { position:absolute; top:7px; right:9px; color:#b0b4c4; font-size:9px; font-weight:750; }
+#view-dashboard .dashboard-journey-icon { display:grid; place-items:center; grid-row:span 2; width:34px; height:34px; border-radius:10px; color:#705bd7; background:#f0edff; font-size:15px; }
+#view-dashboard .dashboard-journey-step strong { overflow:hidden; padding-right:19px; font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
+#view-dashboard .dashboard-journey-description { grid-column:2; margin-top:1px; color:var(--muted); font-size:9px; line-height:1.4; }
+#view-dashboard .dashboard-journey-status { grid-column:1/-1; margin-top:10px; padding-top:8px; border-top:1px solid var(--line); color:var(--muted); font-size:9px; font-weight:650; }
+#view-dashboard .dashboard-journey-step[data-status="completed"] .dashboard-journey-status { color:#178269; }
+#view-dashboard .dashboard-journey-step[data-status="in-progress"] .dashboard-journey-status { color:#705bd7; }
+#view-dashboard .dashboard-bottom-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; margin-top:18px; }
+#view-dashboard .dashboard-activity { display:grid; }
+#view-dashboard .dashboard-activity-item { display:grid; grid-template-columns:31px minmax(0,1fr) auto; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
+#view-dashboard .dashboard-activity-item:first-child { padding-top:0; }
+#view-dashboard .dashboard-activity-item:last-child { padding-bottom:0; border-bottom:0; }
+#view-dashboard .dashboard-activity-icon { display:grid; place-items:center; width:30px; height:30px; border-radius:9px; color:#705bd7; background:#f0edff; font-size:13px; }
+#view-dashboard .dashboard-activity-item > div { display:grid; min-width:0; }
+#view-dashboard .dashboard-activity-item > div strong { overflow:hidden; font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
+#view-dashboard .dashboard-activity-item > div span { overflow:hidden; color:var(--muted); font-size:9px; text-overflow:ellipsis; white-space:nowrap; }
+#view-dashboard .dashboard-activity-item time { color:var(--muted); font-size:9px; white-space:nowrap; }
+#view-dashboard .dashboard-activity-empty { padding-top:0; }
+#view-dashboard .dashboard-quick-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+#view-dashboard .dashboard-quick-actions button {
+  display:grid; grid-template-columns:27px minmax(0,1fr) 12px; align-items:center; gap:8px;
+  min-width:0; padding:11px 9px; border:1px solid var(--line); border-radius:10px;
+  color:var(--text); background:var(--panel); text-align:left;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+#view-dashboard .dashboard-quick-actions button:hover { transform:translateY(-2px); border-color:#b9adef; background:var(--soft-surface); }
+#view-dashboard .dashboard-quick-actions button > span { display:grid; place-items:center; width:27px; height:27px; border-radius:8px; color:#705bd7; background:#f0edff; font-size:13px; }
+#view-dashboard .dashboard-quick-actions button strong { overflow:hidden; font-size:9px; text-overflow:ellipsis; white-space:nowrap; }
+#view-dashboard .dashboard-quick-actions button i { color:var(--muted); font-size:11px; font-style:normal; }
+html[data-theme="dark"] #view-dashboard .dashboard-welcome { border-color:#343352; background:linear-gradient(112deg,#1b2032,#24213d 70%,#202c43); }
+html[data-theme="dark"] #view-dashboard .dashboard-date { border-color:#3a3b57; color:#d4d7e8; background:rgba(28,33,50,.8); }
+html[data-theme="dark"] #view-dashboard .dashboard-stat-icon.resume,
+html[data-theme="dark"] #view-dashboard .dashboard-panel-icon,
+html[data-theme="dark"] #view-dashboard .dashboard-empty > span,
+html[data-theme="dark"] #view-dashboard .dashboard-activity-icon,
+html[data-theme="dark"] #view-dashboard .dashboard-quick-actions button > span,
+html[data-theme="dark"] #view-dashboard .dashboard-journey-icon,
+html[data-theme="dark"] #view-dashboard .dashboard-resume-file-icon { color:#c8bcff; background:#302c4d; }
+html[data-theme="dark"] #view-dashboard .dashboard-stat-icon.skills { color:#9bd2ff; background:#21354a; }
+html[data-theme="dark"] #view-dashboard .dashboard-stat-icon.learning { color:#8ee0c4; background:#1d3a36; }
+html[data-theme="dark"] #view-dashboard .dashboard-stat-icon.careers { color:#ffc58c; background:#44352b; }
+html[data-theme="dark"] #view-dashboard .dashboard-role-card,
+html[data-theme="dark"] #view-dashboard .dashboard-resume-file,
+html[data-theme="dark"] #view-dashboard .dashboard-quick-actions button { background:var(--soft-surface); }
+html[data-theme="dark"] #view-dashboard .dashboard-skill-categories span { color:#c8bcff; background:#302c4d; }
+html[data-theme="dark"] #view-dashboard .dashboard-journey-step { background:var(--panel); }
+html[data-theme="dark"] #view-dashboard .dashboard-journey-step[data-status="completed"] .dashboard-journey-status { color:#85d9bd; }
+@keyframes dashboard-arrive { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+@keyframes dashboard-ring-in { from { transform:rotate(-25deg) scale(.96); } to { transform:rotate(0) scale(1); } }
+@media(max-width:1250px) {
+  #view-dashboard .dashboard-stat-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #view-dashboard .dashboard-journey { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:950px) {
+  #view-dashboard .dashboard-main-grid { grid-template-columns:minmax(0,1fr); }
+  #view-dashboard .dashboard-bottom-grid { grid-template-columns:minmax(0,1fr); }
+}
+@media(max-width:650px) {
+  #view-dashboard .dashboard-welcome { align-items:flex-start; flex-direction:column; gap:14px; min-height:0; padding:22px; }
+  #view-dashboard .dashboard-date { align-self:flex-start; }
+  #view-dashboard .dashboard-stat-grid { gap:10px; }
+  #view-dashboard .dashboard-stat-card { min-height:140px; padding:15px; }
+  #view-dashboard .dashboard-stat-value { font-size:25px; }
+  #view-dashboard .dashboard-panel { padding:18px; }
+  #view-dashboard .dashboard-panel-heading { align-items:flex-start; }
+  #view-dashboard .dashboard-journey { gap:8px; }
+  #view-dashboard .dashboard-journey-step { padding:11px 8px; }
+}
+@media(max-width:420px) {
+  #view-dashboard .dashboard-stat-grid { grid-template-columns:minmax(0,1fr); }
+  #view-dashboard .dashboard-stat-card { min-height:125px; }
+  #view-dashboard .dashboard-journey { grid-template-columns:minmax(0,1fr); }
+  #view-dashboard .dashboard-progress-body { align-items:flex-start; gap:12px; }
+  #view-dashboard .dashboard-progress-ring { width:88px; height:88px; flex-basis:88px; }
+  #view-dashboard .dashboard-progress-ring > div { width:68px; height:68px; }
+  #view-dashboard .dashboard-progress-ring strong { font-size:19px; }
+  #view-dashboard .dashboard-quick-actions { grid-template-columns:minmax(0,1fr); }
+  #view-dashboard .dashboard-visual-grid { grid-template-columns:minmax(0,1fr); }
+  #view-dashboard .dashboard-visual-card { padding:16px; }
+  #view-dashboard .dashboard-chart-row { grid-template-columns:minmax(78px,105px) minmax(0,1fr) auto; gap:8px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  #view-dashboard.active,#view-dashboard .dashboard-progress-ring { animation:none; }
+}
+
+:root {
+  --bg:#f8f8fb; --panel:#fff; --panel2:#f3f2ff; --line:#e7e7ef;
+  --text:#191a2b; --muted:#62677a; --blue:#6555d9; --green:#137c65;
+  --nav:#fff; --shadow:none; --radius-card:14px; --soft-surface:#fafaff;
+  color-scheme:light;
+}
+html[data-theme="dark"] {
+  --bg:#11121a; --panel:#191a24; --panel2:#242432; --line:#30313e;
+  --text:#f2f1f8; --muted:#b1b2c2; --blue:#a496ff; --green:#6fd0b2;
+  --nav:#191a24; --soft-surface:#20212c; color-scheme:dark;
+}
+html,body { min-height:100%; background:var(--bg); color:var(--text); }
+body { font-size:16px; line-height:1.55; background:var(--bg); }
+button,input,textarea,select { font:inherit; }
+.app { grid-template-columns:244px minmax(0,1fr); background:var(--bg); }
+.sidebar { background:var(--nav); color:var(--text); border-right:1px solid var(--line); box-shadow:none; }
+.brand,.sidebar-profile-copy { color:var(--text); }
+.brand span { color:var(--blue); }
+.nav button { color:var(--muted); font-size:14px; min-height:48px; }
+.nav button:hover,.nav button.active { background:var(--panel2); color:var(--text); box-shadow:none; }
+.nav button.active { border-color:var(--line); border-left:3px solid var(--blue); }
+.nav-icon svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.sidebar-avatar { color:white; background:var(--blue); border:0; border-radius:50%; }
+.sidebar-profile-copy span { color:var(--muted); }
+main { padding:32px clamp(20px,4vw,56px); }
+header { border-color:var(--line); }
+h1 { font-size:clamp(28px,3vw,40px); font-weight:750; }
+h2 { font-size:22px; }
+.card,.feature,.dashboard-role-card,.job-fit-item { border-radius:14px; box-shadow:none; }
+.card { border-color:var(--line); background:var(--panel); }
+.dashboard-welcome { min-height:0; padding:24px; color:var(--text); background:var(--panel); border:1px solid var(--line); }
+#view-dashboard .dashboard-welcome::after { display:none; }
+#view-dashboard .dashboard-welcome h2 { color:var(--text); font-size:25px; }
+#view-dashboard .dashboard-welcome p { color:var(--muted); font-size:16px; }
+.dashboard-eyebrow,.roadmap-eyebrow { color:var(--muted); letter-spacing:.06em; }
+.dashboard-stat-grid { grid-template-columns:repeat(3,minmax(0,1fr)); margin:16px 0 22px; }
+#view-dashboard .dashboard-stat-card { min-height:130px; }
+#view-dashboard .dashboard-stat-card::before { display:none; }
+#view-dashboard .dashboard-stat-value { font-size:32px; }
+.btn { min-height:44px; border-radius:10px; background:var(--blue); box-shadow:none; transition:background .16s ease,color .16s ease,border-color .16s ease; }
+.btn:not(.secondary),.btn:not(.secondary):hover:not(:disabled) { background:var(--blue); box-shadow:none; transform:none; }
+.btn.secondary { color:var(--text); background:var(--panel); border-color:var(--line); }
+.progress,.progress span { transition:width .18s ease; }
+.progress span { background:var(--blue); }
+.field { min-height:44px; background:var(--panel); color:var(--text); border:1px solid var(--line); }
+.tag,.level-chip { display:inline-flex; align-items:center; padding:5px 10px; border-radius:999px; background:var(--panel2); color:var(--text); font-size:14px; }
+.level-chip { margin-left:8px; color:var(--blue); font-weight:650; }
+.rowitem { padding:15px 0; border-color:var(--line); }
+.muted,.small { color:var(--muted); }
+.small { font-size:14px; }
+.dashboard-bottom-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.dashboard-bottom-grid .card { display:grid; align-content:start; gap:12px; }
+.dashboard-resume-empty p { font-size:16px !important; }
+.dashboard-upload-zone { background:var(--panel2); border-color:var(--line); color:var(--text); }
+.onboarding-card { margin:16px 0 20px; padding:20px 24px; }
+.onboarding-card h2 { margin:0; }
+.onboarding-card p { margin:3px 0 14px; }
+.onboarding-steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:0; padding:0; list-style:none; }
+.onboarding-steps li { display:grid; grid-template-columns:32px minmax(0,1fr); align-items:center; gap:8px; padding:12px; border:1px solid var(--line); border-radius:12px; }
+.onboarding-steps li > span { display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:var(--panel2); color:var(--blue); font-weight:700; }
+.onboarding-steps li strong { font-size:15px; }
+.onboarding-steps li button { grid-column:1/-1; }
+.text-button { padding:4px 2px; border:0; color:var(--blue); background:transparent; font-weight:650; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+.skipOnboarding,.text-button:hover { color:var(--text); }
+.profile-menu { position:absolute; z-index:8; top:calc(100% + 8px); right:52px; width:200px; padding:6px; border:1px solid var(--line); border-radius:12px; background:var(--panel); box-shadow:0 10px 24px rgba(0,0,0,.12); }
+.profile-menu button { display:block; width:100%; padding:11px; border:0; border-radius:8px; color:var(--text); background:transparent; text-align:left; cursor:pointer; }
+.profile-menu button:hover { background:var(--panel2); }
+.avatar-menu-button { display:flex; align-items:center; gap:8px; padding:3px 8px; border:0; border-radius:999px; color:var(--text); background:transparent; cursor:pointer; }
+#logout { display:none; }
+.score-breakdown { display:grid; gap:10px; margin:14px 0 20px; }
+.score-breakdown > div { display:grid; grid-template-columns:1fr auto; align-items:center; gap:7px 12px; }
+.score-breakdown .progress { grid-column:1/-1; }
+.score-explanation { grid-column:1/-1; color:var(--muted); font-size:14px; }
+.empty-state { padding:16px; border:1px dashed var(--line); border-radius:12px; }
+.empty-state p { margin:4px 0 12px; color:var(--muted); }
+.weekly-plan,.interview-intro,.interview-question { margin:0 0 18px; padding:18px; }
+.weekly-plan h3 { margin-top:0; }
+.weekly-plan-list { display:grid; gap:8px; margin:14px 0 0; padding:0; list-style:none; }
+.weekly-plan-list li { display:grid; grid-template-columns:58px minmax(0,1fr); align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; }
+.weekly-plan-list li > span { color:var(--muted); font-size:14px; font-weight:650; }
+.weekly-plan-list label { display:flex; align-items:center; gap:10px; min-height:24px; cursor:pointer; }
+.weekly-plan-list input { width:20px; height:20px; accent-color:var(--blue); }
+.interview-intro h2 { margin:4px 0 8px; }
+.interview-question h3 { margin:0 0 8px; font-size:18px; }
+.interview-question .muted { margin:0 0 14px; }
+.interview-answer { min-height:130px; resize:vertical; }
+.interview-question-footer { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:10px; }
+.interview-answer-status { min-height:22px; color:var(--muted); font-size:14px; }
+.roadmap-added-skills { margin:0 0 18px; padding:18px; }
+.roadmap-added-skills h3 { margin-top:0; }
+.added-skills-list { display:grid; gap:8px; }
+.added-skill-item { display:grid; grid-template-columns:22px minmax(0,1fr) auto; align-items:center; gap:10px; padding:10px; border:1px solid var(--line); border-radius:10px; }
+.added-skill-item input { width:20px; height:20px; accent-color:var(--blue); }
+.added-skill-item small { color:var(--muted); }
+.added-skill-item.is-complete > span { text-decoration:line-through; color:var(--muted); }
+.job-fit-item { margin-bottom:12px; padding:18px; border-color:var(--line); background:var(--panel); }
+.job-fit-item .progress { margin:10px 0 14px; }
+.roadmap-intro { color:var(--text); background:var(--panel); border:1px solid var(--line); }
+.roadmap-intro::after { display:none; }
+.roadmap-intro h2,.roadmap-intro p { color:var(--text); }
+.roadmap-role-icon { background:var(--panel2); color:var(--blue); }
+.roadmap-career-card,.roadmap-stage,.roadmap-resource-card { border-color:var(--line); border-radius:14px; box-shadow:none; background:var(--panel); }
+.roadmap-topic,.roadmap-stage-extra,.roadmap-project { border-color:var(--line); background:var(--panel); }
+.notice { color:var(--text); background:var(--panel2); border-color:var(--line); }
+:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+.visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+@media(max-width:900px) { .dashboard-stat-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(max-width:650px) {
+  .app,.app.sidebar-collapsed { display:block; }
+  .sidebar,.sidebar-collapsed .sidebar {
+    position:fixed; z-index:20; inset:auto 0 0; display:block; width:100%;
+    height:auto; padding:5px 5px max(5px,env(safe-area-inset-bottom));
+    overflow:visible; transform:none; border-top:1px solid var(--line); box-shadow:0 -4px 16px rgba(0,0,0,.06);
+  }
+  .sidebar-heading,.sidebar-profile,.desktop-sidebar-toggle,.sidebar-backdrop,.mobile-menu-toggle { display:none !important; }
+  .sidebar .nav,.sidebar-collapsed .nav { display:flex; justify-content:space-around; gap:0; padding:0; overflow:visible; }
+  .sidebar .nav button,.sidebar-collapsed .nav button {
+    display:flex; flex:1 1 0; flex-direction:column; justify-content:center; gap:3px;
+    min-width:0; min-height:54px; margin:0; padding:5px 2px; border:0; border-radius:9px;
+    color:var(--muted); font-size:11px; white-space:normal;
+  }
+  .sidebar .nav button.active { border-left:0; color:var(--blue); background:var(--panel2); }
+  .sidebar .nav-icon,.sidebar-collapsed .nav-icon { width:22px; flex-basis:22px; font-size:16px; }
+  .sidebar .nav-label,.sidebar-collapsed .nav-label { display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
+  main { padding:18px 16px calc(88px + env(safe-area-inset-bottom)); }
+  .dashboard-stat-grid { grid-template-columns:1fr; gap:10px; }
+  .dashboard-bottom-grid,.onboarding-steps { grid-template-columns:1fr; }
+  .onboarding-card { padding:18px; }
+  .profile-menu { right:0; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+<aside class="sidebar" id="appSidebar">
+  <div class="sidebar-heading">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">✦</span> Career<span>Infinity</span></div>
+    <button class="sidebar-control desktop-sidebar-toggle" id="sidebarCollapse" type="button" aria-label="Collapse sidebar" aria-expanded="true" title="Collapse sidebar">‹</button>
+  </div>
+  <nav class="nav" id="navigation" aria-label="Main navigation">
+    <button class="active" data-view="dashboard" aria-current="page" title="Home"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/></svg></span><span class="nav-label">Home</span></button>
+    <button data-view="resume" title="Resume"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg></span><span class="nav-label">Resume</span></button>
+    <button data-view="skills" title="Skills & Gaps"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/></svg></span><span class="nav-label">Skills &amp; Gaps</span></button>
+    <button data-view="roadmap" title="Roadmap"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="19" r="2"/><path d="M6 7v3a3 3 0 0 0 3 3h6a3 3 0 0 1 3 3v1"/></svg></span><span class="nav-label">Roadmap</span></button>
+    <button data-view="interview" title="Interview Prep"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg></span><span class="nav-label">Interview Prep</span></button>
+    <button data-view="jobs" title="Jobs & Drives"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18m-11 0v2h4v-2"/></svg></span><span class="nav-label">Jobs &amp; Drives</span></button>
+  </nav>
+  <div class="sidebar-profile">
+    <div class="sidebar-avatar" id="sidebarAvatar" aria-hidden="true">C</div>
+    <div class="sidebar-profile-copy"><strong id="sidebarProfileName">CareerInfinity</strong><span id="sidebarProfileEmail">Signed-in account</span></div>
+  </div>
+</aside>
+<button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation" tabindex="-1"></button>
+
+<main id="mainContent">
+<header>
+  <button class="sidebar-control mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="appSidebar">Menu</button>
+  <div>
+    <div class="muted small">AI-POWERED CAREER PLATFORM</div>
+    <h1 id="pageTitle">Your career dashboard</h1>
+    <p class="muted" id="welcome">Build skills. Find your direction. Grow.</p>
+  </div>
+  <div class="user-tools">
+    <button class="avatar-menu-button" id="profileMenuButton" type="button" aria-expanded="false" aria-controls="profileMenu" aria-label="Open profile menu"><span class="sidebar-avatar" id="headerAvatar">C</span><span id="userEmail" class="small">Checking login...</span></button>
+    <div class="profile-menu" id="profileMenu" hidden>
+      <button type="button" data-go="profile">Profile &amp; settings</button>
+      <button type="button" id="menuLogout">Log out</button>
+    </div>
+    <button class="btn secondary theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark theme" title="Switch to dark theme">
+      <svg class="theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.4A8.6 8.6 0 0 1 8.6 3.8 8.7 8.7 0 1 0 20.2 15.4Z"/></svg>
+      <svg class="theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+    </button>
+    <button class="btn secondary" id="logout">Log out</button>
+  </div>
+</header>
+<p id="appStatus" class="status" role="status" aria-live="polite"></p>
+<input type="file" id="resumeFile" accept=".pdf,.docx" class="visually-hidden">
+
+<!-- 1. DASHBOARD -->
+<section class="view active" id="view-dashboard">
+  <section class="dashboard-welcome card" aria-labelledby="dashboardWelcome">
+    <div>
+      <span class="dashboard-eyebrow">YOUR CAREER WORKSPACE</span>
+      <h2 id="dashboardWelcome">Welcome back!</h2>
+      <p id="nextActionDescription">Your next step will be based on your profile.</p>
+    </div>
+    <button class="btn" type="button" id="nextActionButton" data-go="resume">Get started</button>
+  </section>
+  <section class="card onboarding-card" id="onboardingCard" aria-label="Quick setup">
+    <div><h2>Three quick steps to get your gap</h2><p class="muted">Skip any step. You can update your profile later.</p></div>
+    <ol class="onboarding-steps">
+      <li><span>1</span><strong>Pick a target role</strong><button class="btn secondary" type="button" data-go="profile">Choose role</button></li>
+      <li><span>2</span><strong>Upload your resume</strong><button class="btn secondary" type="button" data-go="resume">Upload resume</button></li>
+      <li><span>3</span><strong>See your skill gap</strong><button class="btn secondary" type="button" data-go="skills">View gap</button></li>
+    </ol>
+    <button class="text-button" id="skipOnboarding" type="button">Skip setup</button>
+  </section>
+
+  <div class="dashboard-stat-grid" aria-label="Career overview">
+    <article class="card dashboard-stat-card">
+      <div class="dashboard-stat-top"><span class="dashboard-stat-label">Resume score</span></div>
+      <strong class="dashboard-stat-value" id="profileScore">—</strong>
+      <div class="dashboard-stat-foot"><div class="progress" role="progressbar" aria-label="Resume score" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="profileBar" style="width:0%"></span></div><span id="dashboardResumeStatHint">Analyze a resume to see your score</span></div>
+    </article>
+    <article class="card dashboard-stat-card">
+      <div class="dashboard-stat-top"><span class="dashboard-stat-label">Role match</span></div>
+      <strong class="dashboard-stat-value" id="matchScore">—</strong>
+      <div class="dashboard-stat-foot"><span id="dashboardCareerStatHint">Set your target role to see a match</span></div>
+    </article>
+    <article class="card dashboard-stat-card">
+      <div class="dashboard-stat-top"><span class="dashboard-stat-label">Roadmap progress</span></div>
+      <strong class="dashboard-stat-value" id="learningScore">0%</strong>
+      <div class="dashboard-stat-foot"><div class="progress" role="progressbar" aria-label="Roadmap progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="learningBar" style="width:0%"></span></div><span id="dashboardLearningStatHint">Choose a target role to begin</span></div>
+    </article>
+  </div>
+
+  <div class="dashboard-bottom-grid">
+    <article class="card dashboard-panel">
+      <h2>Your resume</h2>
+      <div id="dashboardResumeContent" aria-live="polite"></div>
+      <label class="dropzone dashboard-upload-zone" id="dashboardUploadZone" for="resumeFile">
+        <strong>Upload your resume</strong><span class="small">PDF or DOCX · Maximum 5 MB</span>
+      </label>
+      <p id="fileName" class="small dashboard-file-name">No file selected</p>
+      <button class="btn" id="uploadBtn" disabled>Analyze resume</button>
+      <button class="btn secondary" type="button" data-go="resume">View analysis</button>
+      <div id="uploadStatus" class="status" aria-live="polite"></div>
+    </article>
+    <article class="card dashboard-panel">
+      <h2>Your skills</h2>
+      <div id="dashboardSkillsContent" aria-live="polite"></div>
+      <button class="btn secondary" type="button" data-go="skills">See Skills &amp; Gaps</button>
+    </article>
+  </div>
+  <div class="dashboard-visual-grid" aria-label="Career visualizations">
+    <article class="card dashboard-visual-card">
+      <div class="dashboard-visual-heading">
+        <div><h2>Skills for your target role</h2><p id="dashboardMatchChartCaption" class="muted">See which skills your resume already shows.</p></div>
+        <strong id="dashboardMatchChartScore" aria-live="polite">—</strong>
+      </div>
+      <div id="dashboardSkillMatchChart" aria-live="polite"></div>
+    </article>
+    <article class="card dashboard-visual-card">
+      <div class="dashboard-visual-heading">
+        <div><h2>Roadmap progress</h2><p id="dashboardProgressChartCaption" class="muted">Your saved learning progress, at a glance.</p></div>
+        <strong id="dashboardProgressChartScore" aria-live="polite">—</strong>
+      </div>
+      <div id="dashboardProgressChart" aria-live="polite"></div>
+    </article>
+  </div>
+</section>
+
+<!-- Skills and career-match insights share the same resume analysis. -->
+<section class="view" id="view-skills">
+  <div class="card">
+    <h2>Skills &amp; Gaps</h2>
+    <p class="muted">See what your resume already shows and what to build for your target role.</p>
+    <h3>Your skills</h3>
+    <div id="skillResults"><div class="empty-state"><strong>No resume yet</strong><p>Upload a resume to see skill signals and levels.</p><button class="btn" type="button" data-go="resume">Upload a resume</button></div></div>
+    <h3>Role match</h3>
+    <div id="careerResults"><div class="empty-state"><strong>Your role match starts with your profile</strong><p>Choose a target role and upload a resume to see your match.</p><button class="btn secondary" type="button" data-go="profile">Choose a target role</button></div></div>
+  </div>
+</section>
+
+<!-- Roadmap owns learning and project progress. -->
+<section class="view" id="view-roadmap">
+  <div class="card roadmap-intro">
+    <div class="roadmap-eyebrow">Your learning workspace</div>
+    <h2>Make your next move count.</h2>
+    <p>Explore a career, follow a practical skill-by-skill path, and keep track of what you have completed.</p>
+  </div>
+  <div class="notice roadmap-resume-notice" id="roadmapResumeNotice">
+    Add your resume for skill-based role guidance. <button class="text-button" type="button" data-go="resume">Upload a resume</button>
+  </div>
+
+  <div class="roadmap-picker" id="roadmapPicker">
+    <div class="roadmap-toolbar">
+      <div>
+        <h2 style="margin:0 0 4px">Find your direction</h2>
+        <p class="muted small" style="margin:0">Choose a role to see its learning roadmap.</p>
+      </div>
+      <label class="roadmap-search">
+        <span class="roadmap-search-icon" aria-hidden="true">⌕</span>
+        <span class="small" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">Search career roles</span>
+        <input class="field" id="roadmapSearch" type="search" placeholder="Search careers or skills…" autocomplete="off">
+      </label>
+    </div>
+    <div class="roadmap-categories" id="roadmapCategories" aria-label="Filter careers by category"></div>
+    <div class="roadmap-career-grid" id="roadmapCareerGrid" aria-live="polite"></div>
+  </div>
+
+  <div class="roadmap-detail" id="roadmapDetail" hidden>
+    <button class="btn secondary roadmap-back" id="roadmapBack" type="button">← All careers</button>
+    <div class="card roadmap-hero">
+      <div>
+        <div class="roadmap-eyebrow" style="color:#7064cf">CAREER LEARNING PLAN</div>
+        <h2 id="roadmapRoleTitle"></h2>
+        <p id="roadmapRoleDescription"></p>
+        <div class="roadmap-meta" id="roadmapRoleMeta"></div>
+      </div>
+      <div class="roadmap-ring" id="roadmapProgressRing" role="progressbar" aria-label="Career roadmap completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="roadmap-ring-inner"><strong id="roadmapProgressValue">0%</strong><span>complete</span></div>
+      </div>
+    </div>
+    <div class="roadmap-stats">
+      <div class="roadmap-stat"><strong id="roadmapMilestonesDone">0/0</strong><span>Milestones complete</span></div>
+      <div class="roadmap-stat"><strong id="roadmapTopicsDone">0/0</strong><span>Topics checked off</span></div>
+      <div class="roadmap-stat"><strong id="roadmapProjectsDone">0/0</strong><span>Projects complete</span></div>
+    </div>
+    <section class="card weekly-plan" aria-labelledby="weeklyPlanHeading">
+      <h3 id="weeklyPlanHeading">Your 7-day plan</h3>
+      <p class="muted">A small daily focus, picked from your next roadmap steps.</p>
+      <div id="weeklyPlanContent"></div>
+    </section>
+    <section class="card roadmap-added-skills" aria-labelledby="addedSkillsHeading">
+      <h3 id="addedSkillsHeading">Skills you added</h3>
+      <div id="addedSkillsList" class="added-skills-list"><p class="muted">Add a skill gap here to track it on your roadmap.</p></div>
+    </section>
+    <div class="roadmap-next" id="roadmapNext">
+      <div><strong id="roadmapNextTitle">Your next milestone</strong><p id="roadmapNextDescription">Choose a career to get started.</p></div>
+      <button class="btn" id="roadmapResume" type="button">Resume learning</button>
+    </div>
+    <div class="roadmap-controls">
+      <label class="roadmap-search">
+        <span class="roadmap-search-icon" aria-hidden="true">⌕</span>
+        <span class="small" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">Search roadmap topics</span>
+        <input class="field" id="roadmapTopicSearch" type="search" placeholder="Search topics…">
+      </label>
+      <select class="field" id="roadmapStageFilter" aria-label="Filter roadmap stages">
+        <option value="all">All stages</option>
+        <option value="incomplete">In progress</option>
+        <option value="complete">Completed</option>
+      </select>
+      <button class="btn secondary" id="roadmapExpandAll" type="button">Expand all</button>
+      <button class="btn secondary" id="roadmapCollapseAll" type="button">Collapse all</button>
+      <button class="btn secondary" id="roadmapPrint" type="button">Print</button>
+      <button class="btn secondary" id="roadmapReset" type="button">Reset progress</button>
+    </div>
+    <div class="roadmap-timeline">
+      <div class="roadmap-stage-list" id="roadmapStages"></div>
+      <aside class="roadmap-resource-panel" id="roadmapResources" aria-label="Official learning platforms"></aside>
+    </div>
+  </div>
+  <div class="roadmap-toast" id="roadmapToast" role="status" aria-live="polite" hidden></div>
+</section>
+
+<!-- 5. RESUME ANALYZER -->
+<section class="view" id="view-resume">
+  <div class="grid two">
+    <div class="card">
+      <h2>Your resume, made clearer</h2>
+      <p class="muted">Upload a PDF or DOCX to get an honest score breakdown, skill signals, and specific ways to improve.</p>
+      <button class="btn secondary" id="chooseResume">Choose resume</button>
+      <p class="small" id="resumeFileName">No file selected</p>
+      <button class="btn" id="uploadBtn2" disabled>Upload & Analyze</button>
+      <div id="uploadStatus2" class="status" aria-live="polite"></div>
+    </div>
+    <div class="card">
+      <h2>Analysis results</h2>
+      <div id="resumeResults">Upload a resume to see results.</div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="view-interview">
+  <div class="card interview-intro">
+    <p class="eyebrow">PRACTICE, NO PRESSURE</p>
+    <h2>Interview Prep</h2>
+    <p class="muted" id="interviewIntro">Practice prompts are based on your target role and skills from your resume. Your answers are private to your account.</p>
+    <p id="interviewStatus" class="status" role="status" aria-live="polite"></p>
+  </div>
+  <div class="card" id="interviewEmptyState" hidden>
+    <h3 id="interviewEmptyTitle">Let's personalize your practice</h3>
+    <p class="muted" id="interviewEmptyDescription"></p>
+    <button class="btn" type="button" id="interviewEmptyAction" data-go="profile">Set your target role</button>
+  </div>
+  <div id="interviewQuestionList" aria-live="polite"></div>
+</section>
+
+<section class="view" id="view-jobs">
+  <div class="card job-fit-card">
+    <h2>Roles that fit your profile</h2>
+    <p class="muted">Skill matches come from your latest resume analysis. These are role estimates, not live vacancies.</p>
+    <div id="jobsResults" aria-live="polite">Upload a resume to see role matches and skills to build.</div>
+  </div>
+  <div class="card">
+    <h2>Your saved drives</h2>
+  <p class="small">Save opportunities you find. They sync with your profile.</p>
+  <form id="driveForm">
+    <label for="company">Company</label>
+    <input class="field" id="company" placeholder="Company name" maxlength="100" autocomplete="organization" required>
+    <label for="driveDetails">Role, eligibility and deadline</label>
+    <input class="field" id="driveDetails" placeholder="Graduate trainee, 2027 batch..." maxlength="300" required>
+    <button class="btn" id="addDrive" type="submit">Add opportunity</button>
+  </form>
+  <div id="driveList" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- Profile data and preferences are available from the avatar menu. -->
+<section class="view" id="view-profile">
+  <div class="card">
+    <h2>Your profile</h2>
+    <p class="muted">A few details help us make your roadmap more relevant.</p>
+    <form id="profileForm">
+      <label for="profileName">Name</label>
+      <input class="field" id="profileName" maxlength="200" autocomplete="name">
+      <label for="profileTargetRole">Target role</label>
+      <select class="field" id="profileTargetRole">
+        <option value="">Choose a target role</option>
+        <option>Frontend Developer</option><option>Python Developer</option>
+        <option>Data Analyst</option><option>Machine Learning Engineer</option>
+        <option>Cloud Support Associate</option><option>Automation Engineer</option>
+        <option>Agentic AI Engineer</option>
+      </select>
+      <label for="profileEducation">Education</label>
+      <input class="field" id="profileEducation" maxlength="200" placeholder="Degree and college">
+      <label for="profileGraduationYear">Graduation year</label>
+      <input class="field" id="profileGraduationYear" type="number" min="1950" max="2100">
+      <label for="profileGithub">GitHub link</label>
+      <input class="field" id="profileGithub" type="url" maxlength="200" autocomplete="url">
+      <label for="profileLinkedin">LinkedIn link</label>
+      <input class="field" id="profileLinkedin" type="url" maxlength="200" autocomplete="url">
+      <p class="small">Signed in as <span id="settingsEmail">Loading...</span></p>
+      <button class="btn" type="submit" id="saveProfile">Save profile</button>
+      <p id="profileStatus" class="status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+</main>
+</div>
+
+<script type="module">
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from
+  "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+/* Firebase web-app config (public client settings). */
+const firebaseConfig = {
+  apiKey: "AIzaSyBtPNgsU-UNxrTsYRODcmIF8FhEgGjRIKc",
+  authDomain: "carrerinfinity-28ab1.firebaseapp.com",
+  projectId: "carrerinfinity-28ab1",
+  storageBucket: "carrerinfinity-28ab1.firebasestorage.app",
+  messagingSenderId: "70680959232",
+  appId: "1:70680959232:web:9e4edfb7221a523a5c3be5",
+  measurementId: "G-Q747T1QPT2"
+};
+
+const $ = id => document.getElementById(id);
+const titles = {
+  dashboard:"Home",
+  resume:"Resume",
+  skills:"Skills & Gaps",
+  roadmap:"Roadmap",
+  interview:"Interview Prep",
+  jobs:"Jobs & Drives",
+  profile:"Profile"
+};
+
+let auth;
+let currentUser = null;
+let selectedResume = null;
+let isUploading = false;
+let dashboardSnapshot = null;
+let dashboardActivities = [];
+let profileData = {
+  name:"", target_role:"", education:"", graduation_year:"",
+  github:"", linkedin:"", progress:{selectedRole:"",progress:{},bookmarks:[],addedSkills:[],completedSkills:[]},
+  drives:[], interview_answers:{}
+};
+let profileSaveQueue = Promise.resolve();
+let roadmapState = profileData.progress;
+let roadmapCategory = "All";
+let roadmapToastTimer;
+
+const ROADMAP_CAREERS = [
+  {
+    id:"ai-engineer", title:"AI Engineer", category:"Artificial Intelligence", icon:"✧", duration:"6–9 months",
+    description:"Design and ship useful AI systems, from machine-learning foundations to generative AI applications.",
+    skills:["Python","Machine learning","LLMs","RAG","Deployment"],
+    topics:[
+      ["Python foundations","Data structures and algorithms","Git and command line"],
+      ["Linear algebra","Probability and statistics","Model evaluation"],
+      ["Data preparation","Supervised learning","Feature engineering"],
+      ["Neural networks","Transformers and embeddings","LLMs and prompt design"],
+      ["RAG and vector search","AI APIs and evaluation","Deployment and monitoring"],
+      ["Portfolio case studies","Responsible AI","Technical interview practice"]
+    ],
+    projects:["Create a documented AI application","Build and evaluate an LLM-powered tool","Publish a portfolio and prepare a technical case study"]
+  },
+  {
+    id:"ml-engineer", title:"Machine Learning Engineer", category:"Artificial Intelligence", icon:"⌘", duration:"6–9 months",
+    description:"Build, evaluate, and deploy dependable machine-learning models for real-world problems.",
+    skills:["Python","Statistics","scikit-learn","PyTorch","MLOps"],
+    topics:[
+      ["Python for data work","Data structures","Git and reproducible notebooks"],
+      ["Probability and statistics","Linear algebra","Optimization basics"],
+      ["Data cleaning","Feature engineering","SQL and dataset versioning"],
+      ["Regression and classification","Ensemble methods","Model evaluation"],
+      ["Neural networks","Experiment tracking","Serving and monitoring models"],
+      ["ML portfolio projects","Model trade-offs","Technical interview practice"]
+    ],
+    projects:["Analyze and clean a real dataset","Compare models against a clear baseline","Deploy and document an evaluated model"]
+  },
+  {
+    id:"data-scientist", title:"Data Scientist", category:"Data & Analytics", icon:"◉", duration:"6–9 months",
+    description:"Turn complex datasets into sound analysis, predictive models, and clear recommendations.",
+    skills:["Python","SQL","Statistics","Visualization","Machine learning"],
+    topics:[
+      ["Python and notebooks","SQL essentials","Data structures"],
+      ["Descriptive statistics","Probability","Experiment design"],
+      ["Data cleaning","Exploratory analysis","Visualization and storytelling"],
+      ["Regression and classification","Feature engineering","Model evaluation"],
+      ["Forecasting and experimentation","Communicating uncertainty","Responsible data practice"],
+      ["Portfolio case studies","Business recommendations","Technical interview practice"]
+    ],
+    projects:["Explore and explain a public dataset","Test a measurable hypothesis","Present a model and its limitations"]
+  },
+  {
+    id:"agentic-ai-engineer", title:"Agentic AI Engineer", category:"Artificial Intelligence", icon:"✧", duration:"5–8 months",
+    description:"Build AI-powered workflows that use tools reliably, with clear evaluation and human oversight.",
+    skills:["Python","LLMs","RAG","AI Agents","APIs"],
+    topics:[
+      ["Python foundations","HTTP and API basics","Git and virtual environments"],
+      ["LLM concepts and limits","Prompt design","Structured outputs"],
+      ["Embeddings and retrieval","RAG foundations","Source-grounded responses"],
+      ["Tool calling patterns","Agent state and workflow design","Human approval checkpoints"],
+      ["Evaluate quality and reliability","Protect credentials and user data","Logging and failure handling"],
+      ["Build a bounded agent project","Test edge cases and document limits","Explain design trade-offs"]
+    ],
+    projects:["Create a source-grounded study assistant with citations","Build a tool-using workflow that asks before external actions","Publish an evaluation report with failure cases and safeguards"]
+  },
+  {
+    id:"data-analyst", title:"Data Analyst", category:"Data & Analytics", icon:"▤", duration:"3–6 months",
+    description:"Use spreadsheets, SQL, and dashboards to answer practical questions and communicate insights.",
+    skills:["SQL","Spreadsheets","Power BI","Data visualization","Communication"],
+    topics:[
+      ["Spreadsheet formulas","Data types and tables","Analytical thinking"],
+      ["SQL filtering and joins","Aggregations","Window functions"],
+      ["Data cleaning","Descriptive statistics","Charts and data storytelling"],
+      ["Dashboard design","Power BI or Tableau","Metrics and KPI definitions"],
+      ["Cohort and trend analysis","Quality checks","Presenting recommendations"],
+      ["Portfolio dashboards","Business case studies","Analyst interview practice"]
+    ],
+    projects:["Clean and summarize a messy dataset","Build a decision-ready dashboard","Write an insight brief with recommendations"]
+  },
+  {
+    id:"full-stack", title:"Full Stack Developer", category:"Software Engineering", icon:"⌘", duration:"6–9 months",
+    description:"Create complete web applications across responsive interfaces, APIs, and databases.",
+    skills:["HTML/CSS","JavaScript","Frontend framework","APIs","Databases"],
+    topics:[
+      ["Semantic HTML and CSS","JavaScript fundamentals","Git and command line"],
+      ["Responsive layout","Accessible interfaces","Component-based UI"],
+      ["Frontend framework","State and forms","API integration"],
+      ["Backend runtime","REST API design","Authentication concepts"],
+      ["Database modeling","Testing and debugging","Deployment fundamentals"],
+      ["Full-stack portfolio","Code review and documentation","Technical interview practice"]
+    ],
+    projects:["Build an accessible responsive interface","Create an API-backed application","Deploy a documented full-stack portfolio project"]
+  },
+  {
+    id:"frontend", title:"Frontend Developer", category:"Software Engineering", icon:"▧", duration:"4–6 months",
+    description:"Build accessible, responsive, and fast interfaces that make digital products feel effortless.",
+    skills:["HTML","CSS","JavaScript","Accessibility","React"],
+    topics:[
+      ["Semantic HTML","CSS layout and responsive design","JavaScript fundamentals"],
+      ["Accessibility and keyboard UX","Browser and DOM basics","Design systems"],
+      ["Component architecture","State and forms","API data fetching"],
+      ["Responsive interaction design","Testing UI states","Performance basics"],
+      ["Animation and transitions","Web accessibility checks","Polish and error states"],
+      ["Frontend project portfolio","Technical communication","Interview coding practice"]
+    ],
+    projects:["Recreate a polished responsive product page","Build an accessible interactive application","Publish a tested, documented portfolio"]
+  },
+  {
+    id:"backend", title:"Backend Developer", category:"Software Engineering", icon:"▰", duration:"5–8 months",
+    description:"Design reliable APIs and services that securely power web and mobile applications.",
+    skills:["Programming","APIs","SQL","Authentication","Testing"],
+    topics:[
+      ["Programming fundamentals","Data structures","Git and command line"],
+      ["HTTP and networking","API and REST design","Input validation"],
+      ["Relational databases","SQL and indexes","Data modeling"],
+      ["Authentication and authorization","Testing services","Error handling"],
+      ["Caching and performance","Logging and observability","Deployment basics"],
+      ["API portfolio project","Security fundamentals","Backend interview practice"]
+    ],
+    projects:["Design a clear API contract","Build and test a database-backed service","Deploy a documented backend project"]
+  },
+  {
+    id:"cloud", title:"Cloud Engineer", category:"Cloud & Operations", icon:"☁", duration:"5–8 months",
+    description:"Build and operate secure cloud infrastructure with a focus on reliability and cost awareness.",
+    skills:["Networking","Linux","Cloud platform","Infrastructure as code","Security"],
+    topics:[
+      ["Linux and shell basics","Networking fundamentals","Git"],
+      ["Cloud compute and storage","Identity and access","Cloud networking"],
+      ["Containers","Infrastructure as code","Configuration management"],
+      ["Monitoring and logging","Reliability concepts","Cost awareness"],
+      ["Security fundamentals","Backup and recovery","Deployment automation"],
+      ["Cloud architecture project","Operational documentation","Cloud interview practice"]
+    ],
+    projects:["Deploy a small cloud-hosted service","Automate repeatable infrastructure","Document a secure, monitored architecture"]
+  },
+  {
+    id:"cybersecurity", title:"Cybersecurity Engineer", category:"Cloud & Operations", icon:"⬡", duration:"6–9 months",
+    description:"Strengthen systems by learning security fundamentals, defensive tooling, and responsible testing.",
+    skills:["Networking","Linux","Security fundamentals","Monitoring","Incident response"],
+    topics:[
+      ["Networking and protocols","Linux and command line","Security principles"],
+      ["Identity and access","Web security concepts","Cryptography basics"],
+      ["System hardening","Vulnerability management","Secure configuration"],
+      ["Logs and threat detection","Incident response","Security operations"],
+      ["Risk assessment","Security testing in authorized labs","Privacy and compliance concepts"],
+      ["Defensive security portfolio","Clear incident reporting","Security interview practice"]
+    ],
+    projects:["Create a secure configuration checklist","Analyze sample logs in a lab","Write a defensive incident-response playbook"]
+  },
+  {
+    id:"devops", title:"DevOps Engineer", category:"Cloud & Operations", icon:"⇄", duration:"5–8 months",
+    description:"Improve how software is built and delivered through automation, cloud platforms, and observability.",
+    skills:["Linux","Git","CI/CD","Containers","Cloud"],
+    topics:[
+      ["Linux and shell scripting","Git workflows","Networking basics"],
+      ["Build and release pipelines","Automated testing","Artifact management"],
+      ["Containers and images","Container orchestration concepts","Service configuration"],
+      ["Cloud fundamentals","Infrastructure as code","Secrets management"],
+      ["Monitoring and alerting","Reliability practices","Incident learning"],
+      ["Automated deployment project","Operational documentation","DevOps interview practice"]
+    ],
+    projects:["Create a continuous integration pipeline","Containerize and deploy an application","Add monitoring and document recovery steps"]
+  },
+  {
+    id:"automation-engineer", title:"Automation Engineer", category:"Automation & Operations", icon:"⚙", duration:"4–6 months",
+    description:"Reduce repetitive work with dependable scripts, API integrations, and maintainable automated tests.",
+    skills:["Python","Workflow Automation","APIs","Testing","Playwright"],
+    topics:[
+      ["Python or JavaScript foundations","Git basics","Command-line workflows"],
+      ["HTTP and API fundamentals","JSON and webhooks","Authentication and secret handling"],
+      ["Workflow design and triggers","n8n, Zapier, or similar tools","Retries and clear error paths"],
+      ["Browser automation with Playwright","Selectors and stable test design","Accessibility-aware checks"],
+      ["Test data and isolated environments","Logs and failure notifications","Human review for important actions"],
+      ["Automate a real repetitive task","Add tests and useful documentation","Measure time saved and failure rate"]
+    ],
+    projects:["Build a tested browser workflow for a public demo site","Connect two sample services with a webhook and safe retry handling","Document an automation with setup, failure, and manual recovery steps"]
+  },
+  {
+    id:"python-developer", title:"Python Developer", category:"Software Engineering", icon:"{ }", duration:"3–5 months",
+    description:"Build useful Python applications, APIs, and data-backed tools.",
+    skills:["Python","SQL","Git","Flask","Django"],
+    topics:[
+      ["Python syntax and data structures","Functions and modules","Git basics"],
+      ["File handling and testing","SQL queries","Debugging"],
+      ["HTTP and API basics","Flask or Django foundations","Input validation"],
+      ["Database-backed projects","Authentication concepts","Error handling"],
+      ["Testing and documentation","Deployment basics","Project polish"],
+      ["Portfolio case study","Code review practice","Interview preparation"]
+    ],
+    projects:["Build a small Python CLI tool","Create a documented API","Ship a tested database-backed project"]
+  },
+  {
+    id:"cloud-support", title:"Cloud Support Associate", category:"Cloud & Operations", icon:"☁", duration:"3–5 months",
+    description:"Learn cloud foundations and practice clear, methodical technical support.",
+    skills:["AWS","Azure","Google Cloud","Docker","Git"],
+    topics:[
+      ["Networking fundamentals","Linux basics","Cloud concepts"],
+      ["Compute and storage","Identity and access basics","Cloud cost awareness"],
+      ["Containers and Docker","Monitoring and logs","Troubleshooting practice"],
+      ["Support documentation","Ticket communication","Incident basics"],
+      ["Security fundamentals","Backup and recovery","Service reliability"],
+      ["Cloud lab write-up","Support case practice","Interview preparation"]
+    ],
+    projects:["Deploy a small cloud-hosted service","Document a troubleshooting runbook","Create a cloud architecture diagram and notes"]
+  }
+];
+
+const ROADMAP_CATEGORIES = ["All", ...new Set(ROADMAP_CAREERS.map(career => career.category))];
+const ROADMAP_RESOURCES = [
+  {id:"aws",name:"AWS Skill Builder",description:"Explore official AWS cloud and technology learning paths.",url:"https://skillbuilder.aws/"},
+  {id:"microsoft",name:"Microsoft Learn",description:"Browse official modules and learning paths for Microsoft technologies.",url:"https://learn.microsoft.com/en-us/training/"},
+  {id:"google-cloud",name:"Google Cloud Skills Boost",description:"Find hands-on learning paths from Google Cloud.",url:"https://www.cloudskillsboost.google/"},
+  {id:"ibm",name:"IBM SkillsBuild",description:"Explore IBM learning resources for digital and professional skills.",url:"https://skillsbuild.org/"},
+  {id:"coursera",name:"Coursera",description:"Browse courses from universities and industry partners; terms vary.",url:"https://www.coursera.org/"},
+  {id:"edx",name:"edX",description:"Explore courses and programs from participating institutions.",url:"https://www.edx.org/"},
+  {id:"freecodecamp",name:"freeCodeCamp",description:"Practice programming and web development through guided learning.",url:"https://www.freecodecamp.org/learn/"},
+  {id:"kaggle",name:"Kaggle Learn",description:"Try short, hands-on learning exercises in data and machine learning.",url:"https://www.kaggle.com/learn"}
+];
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  })[ch]);
+}
+
+function interviewIdPart(value) {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 32);
+}
+
+function renderInterviewPrep() {
+  const empty = $("interviewEmptyState");
+  const list = $("interviewQuestionList");
+  const analysisSkills = dashboardSnapshot?.data?.skills || [];
+  const skills = [...new Set(analysisSkills.map(skill => skill.name).filter(Boolean))].slice(0, 5);
+  const targetRole = String(profileData.target_role || "").trim();
+
+  list.innerHTML = "";
+  if (!targetRole || !dashboardSnapshot || !skills.length) {
+    empty.hidden = false;
+    list.hidden = true;
+    if (!targetRole) {
+      $("interviewEmptyTitle").textContent = "Choose a target role first";
+      $("interviewEmptyDescription").textContent = "Your practice prompts will use your target role and skills detected from your resume.";
+      $("interviewEmptyAction").textContent = "Set your target role";
+      $("interviewEmptyAction").dataset.go = "profile";
+    } else if (!dashboardSnapshot) {
+      $("interviewEmptyTitle").textContent = "Upload your resume to begin";
+      $("interviewEmptyDescription").textContent = "We’ll use skills detected in your resume to create focused practice prompts for " + targetRole + ".";
+      $("interviewEmptyAction").textContent = "Upload a resume";
+      $("interviewEmptyAction").dataset.go = "resume";
+    } else {
+      $("interviewEmptyTitle").textContent = "No skills detected yet";
+      $("interviewEmptyDescription").textContent = "Add a clear skills section to your resume, then analyze it again to get role-specific prompts.";
+      $("interviewEmptyAction").textContent = "Review your resume";
+      $("interviewEmptyAction").dataset.go = "resume";
+    }
+    return;
+  }
+
+  empty.hidden = true;
+  list.hidden = false;
+  const roleMatch = (dashboardSnapshot.data.career_matches || []).find(career =>
+    career.title.toLowerCase() === targetRole.toLowerCase()
+  );
+  const primarySkill = skills[0];
+  const secondarySkill = skills.find(skill => skill !== primarySkill) || primarySkill;
+  const missingSkill = roleMatch?.gaps?.[0];
+  const roleId = interviewIdPart(targetRole) || "target-role";
+  const prompts = [
+    {
+      id:`${roleId}-project-${interviewIdPart(primarySkill) || "skill"}`,
+      question:`Pick a project on your resume where you used ${primarySkill}. What were you trying to solve, what did you do, and what changed?`,
+      focus:"Use a real project and be specific about your contribution."
+    },
+    {
+      id:`${roleId}-role-${interviewIdPart(secondarySkill) || "skill"}`,
+      question:`For a ${targetRole} role, how would you explain when to use ${secondarySkill} and one trade-off you considered?`,
+      focus:"Explain your thinking in plain language; an example helps."
+    },
+    missingSkill
+      ? {
+          id:`${roleId}-gap-${interviewIdPart(missingSkill) || "skill"}`,
+          question:`Your resume doesn't yet show ${missingSkill}. How would you build and validate this skill for a ${targetRole} project?`,
+          focus:"A small project or learning milestone is a good starting point."
+        }
+      : {
+          id:`${roleId}-growth-${interviewIdPart(primarySkill) || "skill"}`,
+          question:`What would you improve next in a ${targetRole} project using ${primarySkill}, and how would you measure the result?`,
+          focus:"Talk through one practical next step and how you’d check its impact."
+        }
+  ];
+  const answers = profileData.interview_answers || {};
+  $("interviewIntro").textContent = `Practice prompts for ${targetRole}, based on ${skills.join(", ")} detected in your resume. These are guided templates, not AI grading. Your answers are saved to your account.`;
+  list.innerHTML = `<p class="muted">Try context → action → result. You can save a draft and come back later.</p>${prompts.map((prompt, index) => `
+    <article class="card interview-question">
+      <p class="eyebrow">QUESTION ${index + 1}</p>
+      <h3>${escapeHTML(prompt.question)}</h3>
+      <p class="muted">${escapeHTML(prompt.focus)}</p>
+      <label class="visually-hidden" for="interview-answer-${escapeHTML(prompt.id)}">Your answer to question ${index + 1}</label>
+      <textarea class="field interview-answer" id="interview-answer-${escapeHTML(prompt.id)}" maxlength="4000" placeholder="Write your answer here...">${escapeHTML(answers[prompt.id] || "")}</textarea>
+      <div class="interview-question-footer">
+        <span class="interview-answer-status" id="interview-status-${escapeHTML(prompt.id)}" role="status" aria-live="polite"></span>
+        <button class="btn secondary" type="button" data-save-interview="${escapeHTML(prompt.id)}">Save answer</button>
+      </div>
+    </article>
+  `).join("")}`;
+}
+
+function navigate(name) {
+  if (!titles[name]) return;
+  document.querySelectorAll(".view").forEach(section => {
+    section.classList.toggle("active", section.id === "view-" + name);
+  });
+  document.querySelectorAll("[data-view]").forEach(button => {
+    button.classList.toggle("active", button.dataset.view === name);
+    if (button.dataset.view === name) {
+      button.setAttribute("aria-current", "page");
+    } else {
+      button.removeAttribute("aria-current");
+    }
+  });
+  $("pageTitle").textContent = titles[name];
+  if (name === "roadmap" && profileData.target_role) {
+    const role = ROADMAP_CAREERS.find(item => item.title.toLowerCase() === profileData.target_role.toLowerCase());
+    if (role && roadmapState.selectedRole !== role.id) openRoadmapCareer(role.id);
+  }
+  if (name === "interview") renderInterviewPrep();
+  $("profileMenu").hidden = true;
+  $("profileMenuButton").setAttribute("aria-expanded", "false");
+  closeMobileNavigation(false);
+}
+
+document.querySelectorAll("[data-view]").forEach(button =>
+  button.addEventListener("click", () => navigate(button.dataset.view))
+);
+document.addEventListener("click", event => {
+  const button = event.target.closest("[data-go]");
+  if (button) navigate(button.dataset.go);
+});
+
+function status(id, message, type="") {
+  $(id).textContent = message;
+  $(id).className = "status " + type;
+}
+
+async function apiRequest(path, method="GET", body=null) {
+  if (!currentUser) throw new Error("Please sign in before continuing.");
+  const token = await currentUser.getIdToken();
+  const response = await fetch(path, {
+    method,
+    headers: {
+      Authorization:`Bearer ${token}`,
+      ...(body ? {"Content-Type":"application/json"} : {})
+    },
+    body:body ? JSON.stringify(body) : undefined
+  });
+  let payload = {};
+  try {
+    payload = await response.json();
+  } catch {
+    throw new Error("The server returned an invalid response.");
+  }
+  if (!response.ok) {
+    if (response.status === 401) await signOut(auth);
+    throw new Error(payload.error || "We couldn't save that. Please try again.");
+  }
+  return payload;
+}
+
+function persistProfile(patch) {
+  profileData = {...profileData, ...patch};
+  profileSaveQueue = profileSaveQueue.catch(() => {}).then(async () => {
+    const response = await apiRequest("/api/profile", "PATCH", {profile:patch});
+    profileData = response.profile;
+    roadmapState = profileData.progress || roadmapState;
+    renderDashboard();
+    if ("target_role" in patch || "interview_answers" in patch) renderInterviewPrep();
+  });
+  return profileSaveQueue;
+}
+
+function readUserCollection(collection, isValid) {
+  const value = profileData[collection];
+  return Array.isArray(value) ? value.filter(isValid) : [];
+}
+
+function saveUserCollection(collection, value) {
+  persistProfile({[collection === "roadmap" ? "progress" : collection]:value}).catch(error => {
+    console.error(`Unable to save ${collection} to the profile.`, error);
+    status("appStatus", error.message, "error");
+  });
+  return true;
+}
+
+function recordDashboardActivity(type, title, description) {
+  const activity = {
+    id: `${type}-${Date.now()}`,
+    type,
+    title,
+    description,
+    timestamp: new Date().toISOString()
+  };
+  dashboardActivities = [activity, ...dashboardActivities].slice(0, 12);
+  renderDashboard();
+}
+
+function renderDashboardSkills(skills = []) {
+  const container = $("dashboardSkillsContent");
+  if (!skills.length) {
+    container.innerHTML = '<div class="dashboard-empty"><span aria-hidden="true">⌘</span><strong>Your skills will appear here</strong><p>Analyze your resume to see the skills detected in your experience.</p><button class="dashboard-text-link" type="button" data-go="resume">Analyze a resume <span aria-hidden="true">→</span></button></div>';
+    return;
+  }
+
+  const topSkills = skills.slice(0, 6);
+  const skillCategories = {
+    "Software development": ["Python", "Java", "JavaScript", "TypeScript", "HTML", "CSS", "React", "Node.js", "Flask", "Django", "Git"],
+    "Data & AI": ["SQL", "Machine Learning", "TensorFlow", "PyTorch", "Data Analysis", "Excel", "Power BI"],
+    "Cloud & operations": ["Docker", "AWS", "Azure", "Google Cloud"],
+    "Professional skills": ["Communication", "Leadership"]
+  };
+  const categoryCounts = new Map();
+  skills.forEach(skill => {
+    const category = String(skill.category || "").trim()
+      || Object.entries(skillCategories).find(([, names]) => names.includes(skill.name))?.[0];
+    if (category) categoryCounts.set(category, (categoryCounts.get(category) || 0) + 1);
+  });
+  const categories = [...categoryCounts.entries()];
+  container.innerHTML = `
+    ${categories.length
+      ? `<div class="dashboard-skill-categories">${categories.map(([category, count]) => `<span>${escapeHTML(category)} <b>${count}</b></span>`).join("")}</div>`
+      : ""}
+    ${categories.length
+      ? `<div class="dashboard-skill-chart" aria-label="Distribution of detected skills">${categories.map(([category, count]) => {
+        const share = Math.round(count / skills.length * 100);
+        return `<div class="dashboard-skill-bar"><span>${escapeHTML(category)}</span><div class="progress" role="progressbar" aria-label="${escapeHTML(category)} share of detected skills" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${share}"><span style="width:${share}%"></span></div></div>`;
+      }).join("")}</div>`
+      : `<p class="dashboard-chart-note">A skill distribution chart is not available for this analysis.</p>`}
+    <div class="dashboard-skill-tags">${topSkills.map(skill => `<span class="tag">${escapeHTML(skill.name || "Skill")}${skill.level ? ` <small>${escapeHTML(skill.level)}</small>` : ""}</span>`).join("")}</div>
+    ${skills.length > topSkills.length ? `<p class="dashboard-more-skills">+${skills.length - topSkills.length} more identified skills</p>` : ""}
+  `;
+}
+
+function renderDashboardActivity() {
+  const container = $("dashboardActivity");
+  if (!dashboardActivities.length) {
+    container.innerHTML = '<div class="dashboard-empty dashboard-activity-empty"><span aria-hidden="true">◷</span><strong>Your activity will show up here</strong><p>Resume analysis, learning progress, interview practice and certificates are recorded as you go.</p></div>';
+    return;
+  }
+  const icons = { resume: "▤", learning: "↗", interview: "◉", certificate: "♜" };
+  container.innerHTML = dashboardActivities.slice(0, 5).map(activity => {
+    const date = new Date(activity.timestamp);
+    const dateLabel = Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    return `
+      <div class="dashboard-activity-item">
+        <span class="dashboard-activity-icon" aria-hidden="true">${icons[activity.type] || "•"}</span>
+        <div><strong>${escapeHTML(activity.title)}</strong><span>${escapeHTML(activity.description)}</span></div>
+        <time>${escapeHTML(dateLabel)}</time>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderDashboardJourney(progress) {
+  const hasAnalysis = Boolean(dashboardSnapshot);
+  const interviewDone = dashboardActivities.some(activity => activity.type === "interview");
+  const steps = {
+    upload: hasAnalysis ? "Completed" : "In progress",
+    analyze: hasAnalysis ? "Completed" : "Locked",
+    build: progress.completed ? (progress.completed === progress.total ? "Completed" : "In progress") : (hasAnalysis ? "In progress" : "Locked"),
+    interview: interviewDone ? "Completed" : (hasAnalysis && progress.completed ? "In progress" : "Locked")
+  };
+  document.querySelectorAll("[data-journey-step]").forEach(step => {
+    const state = steps[step.dataset.journeyStep] || "Locked";
+    step.dataset.status = state.toLowerCase().replace(" ", "-");
+    step.querySelector(".dashboard-journey-status").textContent = state;
+  });
+}
+
+function renderDashboard() {
+  const hasAnalysis = Boolean(dashboardSnapshot);
+  const data = hasAnalysis ? dashboardSnapshot.data : null;
+  const skills = data?.skills || [];
+  const careers = (data?.career_matches || []);
+  const targetMatch = careers.find(career =>
+    career.title.toLowerCase() === String(profileData.target_role || "").toLowerCase()
+  );
+  const resumeScore = hasAnalysis ? Math.max(0, Math.min(100, Number(data.resume_score) || 0)) : null;
+  const role = getRoadmapCareer(roadmapState.selectedRole)
+    || ROADMAP_CAREERS.find(career => career.title === profileData.target_role);
+  const roadmapProgress = role ? getRoadmapMetrics(role) : {completed:0,total:0,percent:0};
+  const percent = roadmapProgress.percent;
+
+  $("profileScore").textContent = hasAnalysis ? `${resumeScore}%` : "—";
+  $("profileBar").style.width = `${resumeScore || 0}%`;
+  $("profileBar").parentElement.setAttribute("aria-valuenow", resumeScore || 0);
+  $("dashboardResumeStatHint").textContent = hasAnalysis ? "From your latest resume analysis" : "Analyze a resume to see your score";
+  $("matchScore").textContent = targetMatch ? `${targetMatch.match}%` : "—";
+  $("dashboardCareerStatHint").textContent = profileData.target_role
+    ? (hasAnalysis
+      ? (targetMatch ? profileData.target_role : "Re-analyze your resume for this role")
+      : `${profileData.target_role} · upload a resume`)
+    : "Choose a target role in your profile";
+  $("learningScore").textContent = `${percent}%`;
+  $("learningBar").style.width = `${percent}%`;
+  $("learningBar").parentElement.setAttribute("aria-valuenow", percent);
+  $("dashboardLearningStatHint").textContent = role
+    ? `${roadmapProgress.complete} of ${roadmapProgress.total} steps complete`
+    : "Choose a target role to begin";
+
+  $("onboardingCard").hidden = $("skipOnboarding").dataset.skipped === "true"
+    || Boolean(profileData.target_role && hasAnalysis);
+  $("roadmapResumeNotice").hidden = hasAnalysis;
+
+  if (!hasAnalysis) {
+    $("nextActionDescription").textContent = profileData.target_role
+      ? "Upload your resume to see your real skill gaps."
+      : "Choose a target role, then upload your resume to find your gap.";
+    $("nextActionButton").textContent = profileData.target_role ? "Upload your resume" : "Choose target role";
+    $("nextActionButton").dataset.go = profileData.target_role ? "resume" : "profile";
+  } else if (!profileData.target_role) {
+    $("nextActionDescription").textContent = "Choose a role that feels right; you can change it anytime.";
+    $("nextActionButton").textContent = "Choose target role";
+    $("nextActionButton").dataset.go = "profile";
+  } else if (targetMatch?.gaps?.length) {
+    $("nextActionDescription").textContent = `You're ${targetMatch.gaps.length} skills away from ${profileData.target_role}.`;
+    $("nextActionButton").textContent = "See your skill gaps";
+    $("nextActionButton").dataset.go = "skills";
+  } else {
+    $("nextActionDescription").textContent = "Your resume covers the core skills we check for this role.";
+    $("nextActionButton").textContent = "Continue your roadmap";
+    $("nextActionButton").dataset.go = "roadmap";
+  }
+
+  $("dashboardResumeContent").innerHTML = hasAnalysis
+    ? `<div class="dashboard-resume-file"><span class="dashboard-resume-file-icon" aria-hidden="true">PDF</span><div><strong>${escapeHTML(dashboardSnapshot.filename)}</strong><span>Last analyzed ${escapeHTML(new Date(dashboardSnapshot.analyzedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }))}</span></div><b>${resumeScore}<small>/100</small></b></div>`
+    : '<div class="dashboard-resume-empty"><strong>Get your resume insights</strong><p>Upload a resume to see your score, detected skills and personalized career matches.</p></div>';
+  $("dashboardUploadZone").classList.toggle("dashboard-upload-zone-compact", hasAnalysis);
+  $("dashboardUploadZone").querySelector("strong").textContent = hasAnalysis ? "Choose another resume" : "Upload your resume";
+  $("fileName").hidden = !selectedResume;
+  $("uploadBtn").textContent = hasAnalysis ? "Analyze new resume" : "Analyze resume";
+
+  renderDashboardSkills(skills);
+  renderJobs(careers);
+  renderDashboardVisualizations(careers, role, roadmapProgress);
+}
+
+function renderDashboardVisualizations(careers, role, progress) {
+  const matchChart = $("dashboardSkillMatchChart");
+  const matchScore = $("dashboardMatchChartScore");
+  const matchCaption = $("dashboardMatchChartCaption");
+  const targetCareer = careers.find(career =>
+    career.title.toLowerCase() === String(profileData.target_role || "").toLowerCase()
+  );
+
+  if (!profileData.target_role) {
+    matchScore.textContent = "—";
+    matchCaption.textContent = "Choose a target role to see your skill fit.";
+    matchChart.innerHTML = '<div class="dashboard-chart-empty">Your skill-match chart will appear after you choose a target role. <button class="text-button" type="button" data-go="profile">Choose a role</button></div>';
+  } else if (!dashboardSnapshot) {
+    matchScore.textContent = "—";
+    matchCaption.textContent = `${profileData.target_role} · upload a resume to compare skills.`;
+    matchChart.innerHTML = '<div class="dashboard-chart-empty">Analyze your resume to see which core skills are detected and which to build. <button class="text-button" type="button" data-go="resume">Upload a resume</button></div>';
+  } else if (!targetCareer) {
+    matchScore.textContent = "—";
+    matchCaption.textContent = `Refresh your analysis to match ${profileData.target_role}.`;
+    matchChart.innerHTML = '<div class="dashboard-chart-empty">Your saved resume analysis doesn’t include this role yet. Re-analyze your resume to see the skill match. <button class="text-button" type="button" data-go="resume">Re-analyze resume</button></div>';
+  } else {
+    const requiredSkills = targetCareer.required_skills || [];
+    const matched = new Set(targetCareer.matched_skills || []);
+    matchScore.textContent = `${Math.max(0, Math.min(100, Number(targetCareer.match) || 0))}%`;
+    matchCaption.textContent = `${matched.size} of ${requiredSkills.length} core skills detected for ${profileData.target_role}.`;
+    matchChart.innerHTML = requiredSkills.length
+      ? `<div class="dashboard-chart-rows">${requiredSkills.map(skill => {
+          const isMatched = matched.has(skill);
+          return `<div class="dashboard-chart-row${isMatched ? "" : " is-gap"}">
+            <span>${escapeHTML(skill)}</span>
+            <div class="progress" role="progressbar" aria-label="${escapeHTML(skill)} ${isMatched ? "detected in resume" : "not yet detected"}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${isMatched ? 100 : 0}"><span style="width:${isMatched ? 100 : 0}%"></span></div>
+            <small>${isMatched ? "On resume" : "To build"}</small>
+          </div>`;
+        }).join("")}</div>
+        <div class="dashboard-chart-legend"><span><i></i>Detected on resume</span><span><i class="legend-gap"></i>Not detected yet</span></div>`
+      : '<div class="dashboard-chart-empty">No skill requirements are available for this role yet.</div>';
+  }
+
+  const progressChart = $("dashboardProgressChart");
+  const progressScore = $("dashboardProgressChartScore");
+  const progressCaption = $("dashboardProgressChartCaption");
+  if (!role) {
+    progressScore.textContent = "—";
+    progressCaption.textContent = "Choose a target role to start a roadmap.";
+    progressChart.innerHTML = '<div class="dashboard-chart-empty">Your learning progress will appear here after you choose a roadmap. <button class="text-button" type="button" data-go="roadmap">Explore roadmaps</button></div>';
+    return;
+  }
+
+  const saved = getCareerProgress(role);
+  const addedSkills = [...new Set(roadmapState.addedSkills || [])];
+  const completedSkills = new Set(roadmapState.completedSkills || []);
+  const rows = [
+    {label:"Topics", done:progress.topicDone, total:progress.topicTotal},
+    {label:"Projects", done:progress.projectDone, total:progress.projectTotal},
+    ...(addedSkills.length ? [{
+      label:"Added skill gaps",
+      done:addedSkills.filter(skill => completedSkills.has(skill)).length,
+      total:addedSkills.length
+    }] : [])
+  ];
+  progressScore.textContent = `${progress.percent}%`;
+  progressCaption.textContent = `${role.title} · ${progress.complete} of ${progress.total} roadmap steps complete.`;
+  progressChart.innerHTML = `<div class="dashboard-chart-rows">${rows.map(row => {
+    const percent = row.total ? Math.round(row.done / row.total * 100) : 0;
+    return `<div class="dashboard-chart-row">
+      <span>${escapeHTML(row.label)}</span>
+      <div class="progress" role="progressbar" aria-label="${escapeHTML(row.label)} complete" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}"><span style="width:${percent}%"></span></div>
+      <small>${row.done}/${row.total}</small>
+    </div>`;
+  }).join("")}</div>
+  <div class="dashboard-chart-legend"><span><i></i>Progress saved to your account</span></div>
+  <p class="dashboard-chart-note">${saved.topics.length || 0} topic check-offs and ${saved.projects.length || 0} project check-offs in this roadmap.</p>`;
+}
+
+function renderJobs(careers = []) {
+  const jobs = $("jobsResults");
+  if (!dashboardSnapshot) {
+    jobs.innerHTML = '<div class="empty-state"><strong>No resume yet</strong><p>Upload a resume to see role matches based on your skills.</p><button class="btn" type="button" data-go="resume">Upload a resume</button></div>';
+    return;
+  }
+  if (!careers.length) {
+    jobs.innerHTML = '<div class="empty-state"><strong>No role matches yet</strong><p>Add relevant skills and projects to your resume, then analyze it again.</p></div>';
+    return;
+  }
+  const rankedCareers = [...careers].sort((a, b) => {
+    const targetRole = String(profileData.target_role || "").toLowerCase();
+    const aTarget = a.title.toLowerCase() === targetRole;
+    const bTarget = b.title.toLowerCase() === targetRole;
+    return Number(bTarget) - Number(aTarget) || Number(b.match) - Number(a.match);
+  });
+  jobs.innerHTML = rankedCareers.map(career => {
+    const match = Math.max(0, Math.min(100, Number(career.match) || 0));
+    const gaps = Array.isArray(career.gaps) ? career.gaps : [];
+    return `<article class="job-fit-item">
+      <div class="job-fit-summary"><h3>${escapeHTML(career.title)}${career.title.toLowerCase() === String(profileData.target_role || "").toLowerCase() ? ' <span class="level-chip">Your target</span>' : ""}</h3><strong>${match}% skill match</strong></div>
+      <div class="progress" role="progressbar" aria-label="${escapeHTML(career.title)} skill match" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${match}"><span style="width:${match}%"></span></div>
+      <p><strong>Skills in your resume</strong></p>
+      ${(career.matched_skills || []).map(skill => `<span class="tag">${escapeHTML(skill)}</span>`).join("") || '<span class="small">No matching skills detected yet.</span>'}
+      <p><strong>Skills you’re missing</strong></p>
+      ${gaps.length ? gaps.map(skill => `<span class="tag">${escapeHTML(skill)}</span> <button class="text-button" type="button" data-add-skill="${escapeHTML(skill)}">Add to my roadmap</button>`).join("") : '<span class="success">Your resume mentions all listed core skills.</span>'}
+    </article>`;
+  }).join("");
+}
+
+function setProfileFields() {
+  $("profileName").value = profileData.name || "";
+  const availableRoles = [...$("profileTargetRole").options].map(option => option.value);
+  $("profileTargetRole").value = availableRoles.includes(profileData.target_role) ? profileData.target_role : "";
+  $("profileEducation").value = profileData.education || "";
+  $("profileGraduationYear").value = profileData.graduation_year || "";
+  $("profileGithub").value = profileData.github || "";
+  $("profileLinkedin").value = profileData.linkedin || "";
+}
+
+function saveProfileFromForm(event) {
+  event.preventDefault();
+  const role = $("profileTargetRole").value;
+  if (role && !ROADMAP_CAREERS.some(career => career.title === role)) {
+    status("profileStatus", "Choose a role from the available options.", "error");
+    return;
+  }
+  const updates = {
+    name:$("profileName").value.trim(),
+    target_role:role,
+    education:$("profileEducation").value.trim(),
+    graduation_year:$("profileGraduationYear").value ? Number($("profileGraduationYear").value) : "",
+    github:$("profileGithub").value.trim(),
+    linkedin:$("profileLinkedin").value.trim()
+  };
+  const matchingCareer = ROADMAP_CAREERS.find(career => career.title === role);
+  roadmapState.selectedRole = matchingCareer?.id || "";
+  updates.progress = roadmapState;
+  $("saveProfile").disabled = true;
+  status("profileStatus", "Saving your profile...");
+  persistProfile(updates).then(() => {
+    $("dashboardWelcome").textContent = updates.name ? `Welcome back, ${updates.name}.` : "Welcome back!";
+    $("sidebarProfileName").textContent = updates.name || "CareerInfinity";
+    $("sidebarAvatar").textContent = (updates.name || currentUser.email || "C").trim().charAt(0).toUpperCase();
+    $("headerAvatar").textContent = $("sidebarAvatar").textContent;
+    status("profileStatus", "Profile saved.", "success");
+    if (matchingCareer) openRoadmapCareer(matchingCareer.id, false);
+  }).catch(error => {
+    console.error("Unable to save profile.", error);
+    status("profileStatus", error.message, "error");
+  }).finally(() => {
+    $("saveProfile").disabled = false;
+  });
+}
+
+function loadDashboardData() {
+  $("appStatus").textContent = "Loading your profile...";
+  apiRequest("/api/profile").then(response => {
+    profileData = {...profileData, ...(response.profile || {})};
+    roadmapState = profileData.progress || roadmapState;
+    dashboardSnapshot = response.analysis
+      ? {
+          filename:response.analysis.filename,
+          analyzedAt:response.analysis.analyzed_at,
+          data:response.analysis.data
+        }
+      : null;
+    setProfileFields();
+    loadRoadmapState();
+    renderSavedItems("driveList", profileData.drives || [], makeDriveElement);
+    if (dashboardSnapshot) renderAnalysis(dashboardSnapshot.data, {persist:false});
+    status("appStatus", "");
+    renderDashboard();
+    renderInterviewPrep();
+  }).catch(error => {
+    console.error("Unable to load account profile.", error);
+    status("appStatus", error.message, "error");
+    renderDashboard();
+  });
+}
+
+function showRoadmapToast(message) {
+  const toast = $("roadmapToast");
+  toast.textContent = message;
+  toast.hidden = false;
+  clearTimeout(roadmapToastTimer);
+  roadmapToastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+}
+
+function getRoadmapCareer(id) {
+  return ROADMAP_CAREERS.find(career => career.id === id);
+}
+
+function getCareerProgress(career) {
+  const saved = roadmapState.progress[career.id] || {};
+  return {
+    topics: Array.isArray(saved.topics) ? saved.topics : [],
+    projects: Array.isArray(saved.projects) ? saved.projects : []
+  };
+}
+
+function getRoadmapMetrics(career) {
+  const saved = getCareerProgress(career);
+  const topicTotal = career.topics.reduce((total, topics) => total + topics.length, 0);
+  const projectTotal = career.projects.length;
+  const topicDone = saved.topics.length;
+  const projectDone = saved.projects.length;
+  const addedSkills = [...new Set(roadmapState.addedSkills || [])];
+  const completedSkills = new Set(roadmapState.completedSkills || []);
+  const total = topicTotal + projectTotal + addedSkills.length;
+  const complete = topicDone + projectDone
+    + addedSkills.filter(skill => completedSkills.has(skill)).length;
+  const stageComplete = career.topics.map((topics, index) =>
+    topics.every((_, topicIndex) => saved.topics.includes(`${index}-${topicIndex}`))
+    && (index < 3 || saved.projects.includes(String(index - 3)))
+  );
+  return {
+    topicTotal, projectTotal, topicDone, projectDone, total, complete,
+    percent: total ? Math.round(complete / total * 100) : 0,
+    stageComplete,
+    stagesDone: stageComplete.filter(Boolean).length
+  };
+}
+
+function renderRoadmapCategories() {
+  $("roadmapCategories").innerHTML = ROADMAP_CATEGORIES.map(category => `
+    <button class="category-chip${roadmapCategory === category ? " active" : ""}"
+      type="button" data-category="${escapeHTML(category)}"
+      aria-pressed="${roadmapCategory === category}">${escapeHTML(category)}</button>
+  `).join("");
+}
+
+function renderCareerCards() {
+  const search = $("roadmapSearch").value.trim().toLowerCase();
+  const matches = ROADMAP_CAREERS.filter(career =>
+    (roadmapCategory === "All" || career.category === roadmapCategory)
+    && `${career.title} ${career.category} ${career.description} ${career.skills.join(" ")}`
+      .toLowerCase().includes(search)
+  );
+
+  $("roadmapCareerGrid").innerHTML = matches.length
+    ? matches.map((career, index) => {
+      const progress = getRoadmapMetrics(career);
+      return `
+        <article class="roadmap-career-card" style="animation-delay:${Math.min(index, 6) * 35}ms">
+          <div class="roadmap-career-top">
+            <span class="roadmap-role-icon" aria-hidden="true">${escapeHTML(career.icon)}</span>
+            <span class="roadmap-category">${escapeHTML(career.category)}</span>
+          </div>
+          <h3>${escapeHTML(career.title)}</h3>
+          <p>${escapeHTML(career.description)}</p>
+          <div class="roadmap-skill-list">${career.skills.map(skill =>
+            `<span class="tag">${escapeHTML(skill)}</span>`
+          ).join("")}</div>
+          <div class="roadmap-card-footer">
+            <span class="small">${escapeHTML(career.duration)} · ${progress.percent}% done</span>
+            <button class="btn" type="button" data-roadmap-role="${escapeHTML(career.id)}">Explore path</button>
+          </div>
+        </article>`;
+    }).join("")
+    : '<div class="roadmap-empty"><strong>No careers found</strong><p>Try a different search or category.</p></div>';
+}
+
+function renderRoadmapResources(career) {
+  const resourceIds = career.category === "Artificial Intelligence" || career.category === "Data & Analytics"
+    ? ["kaggle", "ibm", "coursera", "edx"]
+    : career.category === "Software Engineering"
+      ? ["freecodecamp", "microsoft", "coursera", "edx"]
+      : ["aws", "microsoft", "google-cloud", "ibm"];
+  $("roadmapResources").innerHTML = `
+    <h3>Official learning platforms</h3>
+    <p class="small muted" style="margin:-6px 0 0;grid-column:1/-1">Explore provider catalogs. Course availability and pricing vary.</p>
+    ${resourceIds.map(id => {
+      const resource = ROADMAP_RESOURCES.find(item => item.id === id);
+      const bookmarked = roadmapState.bookmarks.includes(resource.id);
+      return `
+        <article class="roadmap-resource-card">
+          <div>
+            <strong>${escapeHTML(resource.name)}</strong>
+            <button class="roadmap-bookmark" type="button" data-bookmark="${escapeHTML(resource.id)}"
+              aria-label="${bookmarked ? "Remove bookmark for" : "Bookmark"} ${escapeHTML(resource.name)}"
+              aria-pressed="${bookmarked}" title="${bookmarked ? "Remove bookmark" : "Bookmark resource"}">${bookmarked ? "★" : "☆"}</button>
+          </div>
+          <p>${escapeHTML(resource.description)}</p>
+          <a href="${escapeHTML(resource.url)}" target="_blank" rel="noopener noreferrer">Visit official site ↗</a>
+        </article>`;
+    }).join("")}
+    <p class="small muted" style="grid-column:1/-1">Your roadmap progress is saved to your account.</p>
+  `;
+}
+
+function updateRoadmapMetrics(career) {
+  const metrics = getRoadmapMetrics(career);
+  $("roadmapProgressValue").textContent = `${metrics.percent}%`;
+  $("roadmapProgressRing").style.setProperty("--progress", `${metrics.percent * 3.6}deg`);
+  $("roadmapProgressRing").setAttribute("aria-valuenow", metrics.percent);
+  $("roadmapMilestonesDone").textContent = `${metrics.stagesDone}/${career.topics.length}`;
+  $("roadmapTopicsDone").textContent = `${metrics.topicDone}/${metrics.topicTotal}`;
+  $("roadmapProjectsDone").textContent = `${metrics.projectDone}/${metrics.projectTotal}`;
+
+  const nextStage = metrics.stageComplete.findIndex(isComplete => !isComplete);
+  if (nextStage < 0) {
+    $("roadmapNextTitle").textContent = "Roadmap complete";
+    $("roadmapNextDescription").textContent = "You have checked off every topic and project in this learning plan.";
+    $("roadmapResume").textContent = "Review roadmap";
+    $("roadmapResume").dataset.stageIndex = "0";
+  } else {
+    $("roadmapNextTitle").textContent = `Up next · ${ROADMAP_STAGE_TITLES[nextStage]}`;
+    $("roadmapNextDescription").textContent = "Pick up where you left off and keep building momentum.";
+    $("roadmapResume").textContent = "Resume learning";
+    $("roadmapResume").dataset.stageIndex = String(nextStage);
+  }
+
+  document.querySelectorAll(".roadmap-stage").forEach((stage, index) => {
+    const complete = metrics.stageComplete[index];
+    stage.classList.toggle("is-complete", complete);
+    stage.querySelector(".roadmap-stage-marker").textContent = complete ? "✓" : String(index + 1).padStart(2, "0");
+    stage.setAttribute("aria-label", `${ROADMAP_STAGE_TITLES[index]}${complete ? ", completed" : ""}`);
+  });
+  renderCareerCards();
+  applyRoadmapFilters();
+}
+
+const ROADMAP_STAGE_TITLES = [
+  "Build your foundations",
+  "Learn the core concepts",
+  "Get fluent with the tools",
+  "Build practical projects",
+  "Go deeper and specialize",
+  "Get career-ready"
+];
+
+function renderRoadmapStages(career) {
+  const saved = getCareerProgress(career);
+  const metrics = getRoadmapMetrics(career);
+  const firstIncomplete = metrics.stageComplete.findIndex(isComplete => !isComplete);
+  $("roadmapStages").innerHTML = career.topics.map((topics, stageIndex) => {
+    const projectIndex = stageIndex - 3;
+    const project = projectIndex >= 0 ? career.projects[projectIndex] : "";
+    const completed = metrics.stageComplete[stageIndex];
+    const skillRange = career.skills.slice(stageIndex % career.skills.length, stageIndex % career.skills.length + 2);
+    const stageSearch = `${ROADMAP_STAGE_TITLES[stageIndex]} ${topics.join(" ")} ${project}`.toLowerCase();
+    return `
+      <details class="roadmap-stage${completed ? " is-complete" : ""}" data-stage-index="${stageIndex}"
+        data-stage-search="${escapeHTML(stageSearch)}" ${stageIndex === firstIncomplete ? "open" : ""}>
+        <summary>
+          <span class="roadmap-stage-marker">${completed ? "✓" : String(stageIndex + 1).padStart(2, "0")}</span>
+          <span class="roadmap-stage-title">
+            <strong>${escapeHTML(ROADMAP_STAGE_TITLES[stageIndex])}</strong>
+            <span>${topics.length} topics · ${stageIndex < 3 ? "1–2 weeks" : "2–3 weeks"}</span>
+          </span>
+        </summary>
+        <div class="roadmap-stage-body">
+          <p>Learning objectives: ${escapeHTML(topics.join(", "))}.</p>
+          <div class="roadmap-topics">
+            ${topics.map((topic, topicIndex) => {
+              const key = `${stageIndex}-${topicIndex}`;
+              return `<label class="roadmap-topic" data-topic-label="${escapeHTML(topic.toLowerCase())}">
+                <input type="checkbox" data-topic-index="${escapeHTML(key)}" ${saved.topics.includes(key) ? "checked" : ""}>
+                <span>${escapeHTML(topic)}</span>
+              </label>`;
+            }).join("")}
+          </div>
+          <div class="roadmap-stage-extras">
+            <div class="roadmap-stage-extra"><strong>Skills to develop</strong><span>${escapeHTML(skillRange.join(" · "))}</span></div>
+            <div class="roadmap-stage-extra"><strong>Practical assignment</strong><span>Apply ${escapeHTML(topics[0])} in a small, documented exercise.</span></div>
+          </div>
+          ${project ? `<div class="roadmap-projects"><strong class="small">Project suggestion</strong>
+            <label class="roadmap-project"><input type="checkbox" data-project-index="${projectIndex}" ${saved.projects.includes(String(projectIndex)) ? "checked" : ""}><span>${escapeHTML(project)}</span></label>
+          </div>` : ""}
+        </div>
+      </details>`;
+  }).join("");
+  renderAddedSkills();
+  renderWeeklyPlan(career);
+  updateRoadmapMetrics(career);
+}
+
+function renderWeeklyPlan(career) {
+  const saved = getCareerProgress(career);
+  const tasks = career.topics.flatMap((topics, stageIndex) =>
+    topics.map((topic, topicIndex) => ({
+      topic,
+      key:`${stageIndex}-${topicIndex}`,
+      complete:saved.topics.includes(`${stageIndex}-${topicIndex}`)
+    }))
+  ).filter(task => !task.complete).slice(0, 7);
+  $("weeklyPlanContent").innerHTML = tasks.length
+    ? `<ol class="weekly-plan-list">${tasks.map((task, index) => `
+        <li><span>Day ${index + 1}</span><label><input type="checkbox" data-topic-index="${task.key}"><span>${escapeHTML(task.topic)}</span></label></li>
+      `).join("")}</ol>`
+    : '<div class="empty-state"><strong>All roadmap topics checked off</strong><p>Choose another skill to keep learning.</p></div>';
+}
+
+function renderAddedSkills() {
+  const skills = [...new Set(roadmapState.addedSkills || [])];
+  $("addedSkillsList").innerHTML = skills.length
+    ? skills.map(skill => {
+      const completed = (roadmapState.completedSkills || []).includes(skill);
+      return `<label class="added-skill-item${completed ? " is-complete" : ""}">
+        <input type="checkbox" data-complete-skill="${escapeHTML(skill)}" ${completed ? "checked" : ""}>
+        <span>${escapeHTML(skill)}</span><small>${completed ? "Prove it complete" : "Prove it: practice or build a project"}</small>
+      </label>`;
+    }).join("")
+    : '<p class="muted">Add a skill gap from Skills &amp; Gaps to track it on your roadmap.</p>';
+}
+
+function openRoadmapCareer(careerId, persist = true) {
+  const career = getRoadmapCareer(careerId);
+  if (!career) return;
+  roadmapState.selectedRole = career.id;
+  profileData.target_role = career.title;
+  $("profileTargetRole").value = career.title;
+  if (persist) {
+    persistProfile({target_role:career.title, progress:roadmapState}).catch(error => {
+      console.error("Unable to save the selected roadmap.", error);
+      status("appStatus", error.message, "error");
+    });
+  }
+  $("roadmapPicker").hidden = true;
+  $("roadmapDetail").hidden = false;
+  $("roadmapRoleTitle").textContent = career.title;
+  $("roadmapRoleDescription").textContent = career.description;
+  $("roadmapRoleMeta").innerHTML = `
+    <span>${escapeHTML(career.category)}</span><span>${escapeHTML(career.duration)} estimated</span>
+    <span>${career.topics.length} learning stages</span>
+    <span>${career.skills.length} core skills</span>`;
+  $("roadmapTopicSearch").value = "";
+  $("roadmapStageFilter").value = "all";
+  renderRoadmapStages(career);
+  renderRoadmapResources(career);
+}
+
+function showRoadmapPicker() {
+  roadmapState.selectedRole = "";
+  saveUserCollection("roadmap", roadmapState);
+  $("roadmapDetail").hidden = true;
+  $("roadmapPicker").hidden = false;
+  renderCareerCards();
+}
+
+function applyRoadmapFilters() {
+  const career = getRoadmapCareer(roadmapState.selectedRole);
+  if (!career || $("roadmapDetail").hidden) return;
+  const query = $("roadmapTopicSearch").value.trim().toLowerCase();
+  const filter = $("roadmapStageFilter").value;
+  const metrics = getRoadmapMetrics(career);
+  let visibleCount = 0;
+
+  document.querySelectorAll(".roadmap-stage").forEach((stage, index) => {
+    const topicLabels = [...stage.querySelectorAll(".roadmap-topic")];
+    const titleMatches = stage.querySelector("summary").textContent.toLowerCase().includes(query);
+    topicLabels.forEach(label => {
+      label.hidden = Boolean(query) && !titleMatches && !label.dataset.topicLabel.includes(query);
+    });
+    const searchMatches = !query || stage.dataset.stageSearch.includes(query);
+    const statusMatches = filter === "all"
+      || (filter === "complete" && metrics.stageComplete[index])
+      || (filter === "incomplete" && !metrics.stageComplete[index]);
+    stage.hidden = !(searchMatches && statusMatches);
+    if (!stage.hidden) visibleCount++;
+  });
+
+  let empty = $("roadmapNoStages");
+  if (!visibleCount && !empty) {
+    empty = document.createElement("p");
+    empty.id = "roadmapNoStages";
+    empty.className = "roadmap-empty";
+    empty.textContent = "No stages match these filters. Try another search or filter.";
+    $("roadmapStages").append(empty);
+  } else if (visibleCount && empty) {
+    empty.remove();
+  }
+}
+
+function loadRoadmapState() {
+  const saved = profileData.progress || {};
+  roadmapState = {
+    selectedRole:typeof saved.selectedRole === "string" ? saved.selectedRole : "",
+    progress:saved.progress && typeof saved.progress === "object" ? saved.progress : {},
+    bookmarks:Array.isArray(saved.bookmarks) ? saved.bookmarks : [],
+    addedSkills:Array.isArray(saved.addedSkills) ? saved.addedSkills : [],
+    completedSkills:Array.isArray(saved.completedSkills) ? saved.completedSkills : []
+  };
+  if (!getRoadmapCareer(roadmapState.selectedRole)) {
+    const target = ROADMAP_CAREERS.find(career => career.title === profileData.target_role);
+    roadmapState.selectedRole = target?.id || "";
+  }
+  if (roadmapState.selectedRole) openRoadmapCareer(roadmapState.selectedRole, false);
+  else renderCareerCards();
+}
+
+function saveRoadmapProgress() {
+  if (!saveUserCollection("roadmap", roadmapState)) return false;
+  const career = getRoadmapCareer(roadmapState.selectedRole);
+  if (career) updateRoadmapMetrics(career);
+  renderDashboard();
+  return true;
+}
+
+function toggleRoadmapCheck(input) {
+  const career = getRoadmapCareer(roadmapState.selectedRole);
+  if (!career) return;
+  const saved = getCareerProgress(career);
+  if (input.dataset.topicIndex !== undefined) {
+    const key = input.dataset.topicIndex;
+    saved.topics = input.checked
+      ? [...new Set([...saved.topics, key])]
+      : saved.topics.filter(value => value !== key);
+  } else {
+    const key = input.dataset.projectIndex;
+    saved.projects = input.checked
+      ? [...new Set([...saved.projects, key])]
+      : saved.projects.filter(value => value !== key);
+  }
+  roadmapState.progress[career.id] = saved;
+  if (saveRoadmapProgress()) {
+    renderWeeklyPlan(career);
+    showRoadmapToast("Progress saved to your account.");
+  }
+}
+
+function initializeRoadmap() {
+  renderRoadmapCategories();
+  renderCareerCards();
+  $("roadmapSearch").addEventListener("input", renderCareerCards);
+  $("roadmapCategories").addEventListener("click", event => {
+    const button = event.target.closest("[data-category]");
+    if (!button) return;
+    roadmapCategory = button.dataset.category;
+    renderRoadmapCategories();
+    renderCareerCards();
+  });
+  $("roadmapCareerGrid").addEventListener("click", event => {
+    const button = event.target.closest("[data-roadmap-role]");
+    if (button) openRoadmapCareer(button.dataset.roadmapRole);
+  });
+  $("roadmapBack").addEventListener("click", showRoadmapPicker);
+  $("roadmapStages").addEventListener("change", event => {
+    const input = event.target.closest("[data-topic-index], [data-project-index]");
+    if (input) toggleRoadmapCheck(input);
+  });
+  $("weeklyPlanContent").addEventListener("change", event => {
+    const input = event.target.closest("[data-topic-index]");
+    if (input) toggleRoadmapCheck(input);
+  });
+  $("roadmapTopicSearch").addEventListener("input", applyRoadmapFilters);
+  $("roadmapStageFilter").addEventListener("change", applyRoadmapFilters);
+  $("roadmapExpandAll").addEventListener("click", () =>
+    document.querySelectorAll(".roadmap-stage:not([hidden])").forEach(stage => { stage.open = true; })
+  );
+  $("roadmapCollapseAll").addEventListener("click", () =>
+    document.querySelectorAll(".roadmap-stage").forEach(stage => { stage.open = false; })
+  );
+  $("roadmapResume").addEventListener("click", () => {
+    const stage = $("roadmapStages").querySelector(`[data-stage-index="${$("roadmapResume").dataset.stageIndex}"]`);
+    if (stage && !stage.hidden) {
+      stage.open = true;
+      stage.scrollIntoView({
+        behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        block:"center"
+      });
+      stage.querySelector("summary").focus();
+    } else {
+      $("roadmapTopicSearch").value = "";
+      $("roadmapStageFilter").value = "all";
+      applyRoadmapFilters();
+      const next = $("roadmapStages").querySelector(`[data-stage-index="${$("roadmapResume").dataset.stageIndex}"]`);
+      if (next) {
+        next.open = true;
+        next.scrollIntoView({
+          behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+          block:"center"
+        });
+        next.querySelector("summary").focus();
+      }
+    }
+  });
+  $("roadmapPrint").addEventListener("click", () => window.print());
+  $("roadmapReset").addEventListener("click", () => {
+    const career = getRoadmapCareer(roadmapState.selectedRole);
+    if (!career || !confirm(`Reset all saved progress for ${career.title}? This cannot be undone.`)) return;
+    delete roadmapState.progress[career.id];
+    if (saveRoadmapProgress()) {
+      openRoadmapCareer(career.id);
+      showRoadmapToast("Progress reset for this career.");
+    }
+  });
+  $("roadmapResources").addEventListener("click", event => {
+    const button = event.target.closest("[data-bookmark]");
+    if (!button) return;
+    const id = button.dataset.bookmark;
+    roadmapState.bookmarks = roadmapState.bookmarks.includes(id)
+      ? roadmapState.bookmarks.filter(bookmark => bookmark !== id)
+      : [...roadmapState.bookmarks, id];
+    if (saveUserCollection("roadmap", roadmapState)) {
+      renderRoadmapResources(getRoadmapCareer(roadmapState.selectedRole));
+      showRoadmapToast(roadmapState.bookmarks.includes(id) ? "Resource bookmarked." : "Bookmark removed.");
+    }
+  });
+}
+
+try {
+  const savedTheme = localStorage.getItem("careerInfinity:theme");
+  document.documentElement.dataset.theme = savedTheme === "dark" ? "dark" : "light";
+  $("themeToggle").setAttribute("aria-label", `Switch to ${savedTheme === "dark" ? "light" : "dark"} theme`);
+  $("themeToggle").title = `Switch to ${savedTheme === "dark" ? "light" : "dark"} theme`;
+} catch (error) {
+  console.error("Unable to load theme preference.", error);
+}
+
+$("themeToggle").addEventListener("click", () => {
+  const dark = document.documentElement.dataset.theme !== "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  $("themeToggle").setAttribute("aria-label", `Switch to ${dark ? "light" : "dark"} theme`);
+  $("themeToggle").title = `Switch to ${dark ? "light" : "dark"} theme`;
+  try {
+    localStorage.setItem("careerInfinity:theme", dark ? "dark" : "light");
+  } catch (error) {
+    console.error("Unable to save theme preference.", error);
+    status("appStatus", "Theme changed, but this browser could not save your preference.", "error");
+  }
+});
+
+function renderSavedItems(elementId, items, renderItem) {
+  const list = $(elementId);
+  list.replaceChildren();
+  items.forEach(item => list.append(renderItem(item)));
+}
+
+function makeDriveElement(drive) {
+  const item = document.createElement("div");
+  item.className = "rowitem";
+  const company = document.createElement("strong");
+  company.textContent = drive.company;
+  const details = document.createElement("p");
+  details.textContent = drive.details;
+  item.append(company, details);
+  return item;
+}
+
+function loadUserData() {
+  loadDashboardData();
+}
+
+function selectFile(file) {
+  if (!file) return false;
+  const ext = file.name.toLowerCase().split(".").pop();
+  if (!["pdf","docx"].includes(ext)) {
+    selectedResume = null;
+    $("resumeFile").value = "";
+    $("fileName").textContent = "No file selected";
+    $("resumeFileName").textContent = "No file selected";
+    $("uploadBtn").disabled = true;
+    $("uploadBtn2").disabled = true;
+    status("uploadStatus", "Please choose a PDF or DOCX resume.", "error");
+    status("uploadStatus2", "Please choose a PDF or DOCX resume.", "error");
+    return false;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    selectedResume = null;
+    $("resumeFile").value = "";
+    $("fileName").textContent = "No file selected";
+    $("resumeFileName").textContent = "No file selected";
+    $("uploadBtn").disabled = true;
+    $("uploadBtn2").disabled = true;
+    status("uploadStatus", "Maximum file size is 5 MB.", "error");
+    status("uploadStatus2", "Maximum file size is 5 MB.", "error");
+    return false;
+  }
+  selectedResume = file;
+  $("fileName").textContent = file.name;
+  $("resumeFileName").textContent = file.name;
+  $("uploadBtn").disabled = isUploading;
+  $("uploadBtn2").disabled = isUploading;
+  status("uploadStatus", "");
+  status("uploadStatus2", "");
+  return true;
+}
+
+$("resumeFile").addEventListener("change", e => selectFile(e.target.files[0]));
+$("chooseResume").addEventListener("click", () => $("resumeFile").click());
+
+async function uploadResume(statusId, buttonId) {
+  if (isUploading) return;
+  if (!currentUser) {
+    status(statusId, "Please sign in first.", "error");
+    return;
+  }
+  if (!selectedResume) {
+    status(statusId, "Choose a resume first.", "error");
+    return;
+  }
+
+  const buttons = [$("uploadBtn"), $("uploadBtn2")];
+  const originalTexts = buttons.map(item => item.textContent);
+  isUploading = true;
+  buttons.forEach(item => {
+    item.disabled = true;
+    item.textContent = "Analyzing...";
+  });
+  status(statusId, "Uploading resume and extracting text...");
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 60_000);
+
+  try {
+    const token = await currentUser.getIdToken();
+    const form = new FormData();
+    form.append("resume", selectedResume);
+
+    const response = await fetch("/api/analyze-resume", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token },
+      body: form,
+      signal: controller.signal
+    });
+
+    const contentType = response.headers.get("content-type") || "";
+    let data = { error: "The server returned an unexpected response." };
+    if (contentType.includes("application/json")) {
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error("The server returned an invalid response. Please try again.");
+      }
+    }
+    if (!response.ok) {
+      if (response.status === 401) {
+        await signOut(auth);
+        throw new Error("Your session expired. Please sign in again.");
+      }
+      throw new Error(data.error || "Resume analysis failed.");
+    }
+
+    renderAnalysis(data, { filename: selectedResume.name });
+    status(statusId, "Resume analyzed successfully.", "success");
+    $("welcome").textContent = "Your resume insights are ready.";
+  } catch (error) {
+    const message = error.name === "AbortError"
+      ? "Resume analysis timed out. Please try again."
+      : error instanceof TypeError
+        ? "Could not reach the server. Check your connection and try again."
+        : error.message || "Resume analysis failed. Please try again.";
+    status(statusId, message, "error");
+  } finally {
+    clearTimeout(timeoutId);
+    isUploading = false;
+    buttons.forEach((item, index) => {
+      item.disabled = !selectedResume;
+      item.textContent = originalTexts[index];
+    });
+  }
+}
+
+$("uploadBtn").addEventListener("click", () => uploadResume("uploadStatus","uploadBtn"));
+$("uploadBtn2").addEventListener("click", () => uploadResume("uploadStatus2","uploadBtn2"));
+
+const ROLE_ROADMAPS = {
+  "Python Developer": [
+    { phase: "Month 1", title: "Strengthen Python fundamentals", tasks: ["Practice Python syntax, loops, functions, and data structures.", "Build a small CLI project using file handling and modules.", "Review SQL basics for querying and filtering data."] },
+    { phase: "Month 2", title: "Build backend projects", tasks: ["Create a Flask API with routes, models, and validation.", "Add authentication and database operations to a project.", "Deploy a project to a local or cloud environment for practice."] },
+    { phase: "Month 3", title: "Polish portfolio and debugging", tasks: ["Ship two projects with clean code and documentation.", "Practice Git workflows and code review habits.", "Prepare for technical interviews on APIs, debugging, and system design."] }
+  ],
+  "Data Analyst": [
+    { phase: "Month 1", title: "Master data tools", tasks: ["Revisit Excel formulas, filters, pivot tables, and dashboards.", "Practice SQL joins, aggregations, and data cleaning.", "Use Python to read CSV and Excel files."] },
+    { phase: "Month 2", title: "Build analysis workflows", tasks: ["Create dashboards in Power BI or Excel with KPI storytelling.", "Analyze a sample dataset and summarize insights.", "Practice writing business-friendly recommendations from data."] },
+    { phase: "Month 3", title: "Sharpen communication", tasks: ["Create a project case study for a business problem.", "Practice explaining metrics, trade-offs, and recommendations.", "Review mock interview questions for analyst roles."] }
+  ],
+  "Frontend Developer": [
+    { phase: "Month 1", title: "Learn the foundations", tasks: ["Practice semantic HTML, accessibility, and responsive layouts.", "Master CSS layout, spacing, and design systems.", "Build small pages using JavaScript logic and DOM manipulation."] },
+    { phase: "Month 2", title: "Build modern UI projects", tasks: ["Create interactive UI features using React and component design.", "Work with state, forms, and API data fetching.", "Improve CSS animations and mobile-first design."] },
+    { phase: "Month 3", title: "Focus on polish and shipping", tasks: ["Build a portfolio project with clean UX and reusable components.", "Practice debugging browser issues and performance tuning.", "Prepare for front-end interviews on UI logic and project decisions."] }
+  ],
+  "Machine Learning Engineer": [
+    { phase: "Month 1", title: "Strengthen ML foundations", tasks: ["Review Python for data science and machine learning workflows.", "Practice statistics, probability, and data preprocessing.", "Study supervised learning concepts and common metrics."] },
+    { phase: "Month 2", title: "Build and evaluate models", tasks: ["Implement scikit-learn models with train/test splits.", "Learn feature engineering and model evaluation.", "Create notebooks that compare models and explain results."] },
+    { phase: "Month 3", title: "Deploy and explain ML", tasks: ["Build a model project with a clear business use case.", "Practice model interpretability and deployment basics.", "Prepare for interviews around model trade-offs and limitations."] }
+  ],
+  "Cloud Support Associate": [
+    { phase: "Month 1", title: "Learn cloud basics", tasks: ["Review AWS, Azure, and GCP core concepts and shared services.", "Understand networking, compute, storage, and IAM basics.", "Practice simple cloud lab exercises and pricing awareness."] },
+    { phase: "Month 2", title: "Practice support workflows", tasks: ["Learn troubleshooting, monitoring, and alerting concepts.", "Study Docker basics and containerized deployment patterns.", "Review ticket handling and customer communication steps."] },
+    { phase: "Month 3", title: "Prepare for interviews", tasks: ["Document a cloud project in a portfolio or notes.", "Practice explaining cloud architecture trade-offs.", "Review common cloud support and troubleshooting interview questions."] }
+  ]
+};
+
+function getRoleRoadmap(roleTitle, requiredSkills = [], gaps = []) {
+  const title = String(roleTitle || "").trim();
+  const fallbackSkills = [...new Set([...(requiredSkills || []), ...(gaps || [])])].slice(0, 4);
+  if (ROLE_ROADMAPS[title]) return ROLE_ROADMAPS[title];
+
+  return [
+    {
+      phase: "Phase 1",
+      title: `Build the core foundation for ${title}`,
+      tasks: fallbackSkills.length
+        ? fallbackSkills.map(skill => `Improve your understanding of ${skill} and apply it in a small project.`)
+        : [`Review the main skills expected for ${title}.`, "Create a project that demonstrates what you already know."]
+    },
+    {
+      phase: "Phase 2",
+      title: `Apply your skills in a realistic project`,
+      tasks: [
+        `Create a project connected to ${title} that solves a real-world problem.`,
+        "Document your process, tools, and outcome clearly.",
+        "Ask for feedback and iterate on the result."
+      ]
+    },
+    {
+      phase: "Phase 3",
+      title: `Prepare for interviews and opportunities`,
+      tasks: [
+        "Practice explaining your project decisions and trade-offs.",
+        "Review common behavioral and technical questions for this role.",
+        "Track daily learning progress and keep improving your weak areas."
+      ]
+    }
+  ];
+}
+
+function renderDashboardRoles(careers = []) {
+  const section = $("dashboardRoleSection");
+  const container = $("dashboardRoleRoadmaps");
+  if (!section || !container) return;
+
+  const suitableCareers = (careers || [])
+    .filter(career => Number(career.match) > 0)
+    .sort((left, right) => Number(right.match) - Number(left.match))
+    .slice(0, 3);
+  if (!suitableCareers.length) {
+    section.style.display = "block";
+    container.innerHTML = `<div class="dashboard-empty dashboard-career-empty"><span aria-hidden="true">✧</span><strong>${dashboardSnapshot ? "No career matches found yet" : "Your next role starts with your resume"}</strong><p>${dashboardSnapshot ? "Add more role-related skills and experience, then analyze your resume again." : "Analyze your resume to see roles matched to your skills."}</p></div>`;
+    return;
+  }
+
+  section.style.display = "block";
+  container.innerHTML = suitableCareers.map(career => {
+    const roleTitle = escapeHTML(career.title || "Role");
+    const roadmap = getRoleRoadmap(career.title, career.required_skills || [], career.gaps || []);
+    return `
+      <article class="dashboard-role-card">
+        <div class="dashboard-role-header">
+          <div>
+            <h3>${roleTitle}</h3>
+            <div class="small">${Math.max(0, Math.min(100, Number(career.match) || 0))}% match</div>
+          </div>
+          <button class="btn secondary roadmap-toggle" type="button" data-role="${escapeHTML(career.title || "role")}">Show roadmap</button>
+        </div>
+        <div class="small"><strong>Skills to develop:</strong> ${(career.gaps || []).slice(0, 3).map(skill => `<span class="tag">${escapeHTML(skill)}</span>`).join("") || "Continue practicing core job skills."}</div>
+        <div class="role-roadmap" data-role-content="${escapeHTML(career.title || "role")}">
+          ${roadmap.map(step => `
+            <div class="role-roadmap-step">
+              <span class="role-phase">${escapeHTML(step.phase)}</span>
+              <strong>${escapeHTML(step.title)}</strong>
+              <ul>${step.tasks.map(task => `<li>${escapeHTML(task)}</li>`).join("")}</ul>
+            </div>
+          `).join("")}
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function renderAnalysis(data, options = {}) {
+  const skills = data.skills || [];
+  const careers = data.career_matches || [];
+  const score = value => Math.max(0, Math.min(100, Number(value) || 0));
+
+  $("profileScore").textContent = score(data.resume_score) + "%";
+  $("profileBar").style.width = score(data.resume_score) + "%";
+  $("profileBar").parentElement.setAttribute("aria-valuenow", score(data.resume_score));
+
+  $("resumeResults").innerHTML = `
+    <p><strong>Resume score: ${score(data.resume_score)}/100</strong></p>
+    <p class="small muted">A keyword-based estimate, not a hiring decision. Here’s what shaped it:</p>
+    <div class="score-breakdown">${Object.entries(data.resume_breakdown || {}).map(([key, value]) => `
+      <div><span>${escapeHTML({skills:"Skills",projects:"Projects",impact:"Impact & metrics",structure:"Structure",keywords:"Role keywords"}[key] || key)}</span><strong>${score(value)}%</strong>
+      <div class="progress" role="progressbar" aria-label="${escapeHTML(key)} score" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${score(value)}"><span style="width:${score(value)}%"></span></div>
+      <span class="score-explanation">${escapeHTML((data.resume_explanations || {})[key] || "")}</span></div>
+    `).join("")}</div>
+    <h3>Try these improvements</h3>
+    <ul>${(data.suggestions || []).map(s => `<li>${escapeHTML(s)}</li>`).join("")}</ul>
+    <p class="small">${escapeHTML(data.disclaimer || "")}</p>
+  `;
+
+  $("skillResults").innerHTML = skills.length ? skills.map(s => `
+    <div class="rowitem">
+      <strong>${escapeHTML(s.name)}</strong> <span class="level-chip">${escapeHTML(s.level)}</span>
+      <p class="small muted">${escapeHTML(s.reason || "Level reflects how often the skill appears in your resume, not a proficiency test.")}</p>
+    </div>
+  `).join("") : '<div class="empty-state"><strong>No resume analyzed yet</strong><p>Upload your resume to see skill signals and gaps.</p><button class="btn" type="button" data-go="resume">Upload a resume</button></div>';
+
+  const targetCareer = careers.find(career =>
+    career.title.toLowerCase() === String(profileData.target_role || "").toLowerCase()
+  );
+  $("careerResults").innerHTML = profileData.target_role
+    ? targetCareer
+      ? `<article class="job-fit-item"><div class="job-fit-summary"><h3>${escapeHTML(targetCareer.title)}</h3><strong>${score(targetCareer.match)}% skill match</strong></div>
+          <div class="progress" role="progressbar" aria-label="Target role skill match" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${score(targetCareer.match)}"><span style="width:${score(targetCareer.match)}%"></span></div>
+          <p>${escapeHTML(targetCareer.reason || "")}</p><p><strong>Skills to build</strong></p>
+          ${(targetCareer.gaps || []).length ? targetCareer.gaps.map(skill => `<span class="tag">${escapeHTML(skill)}</span> <button class="text-button" type="button" data-add-skill="${escapeHTML(skill)}">Add to my roadmap</button>`).join("") : '<p class="success">Your resume mentions all listed core skills for this role.</p>'}</article>`
+      : `<div class="empty-state"><strong>${escapeHTML(profileData.target_role)} match isn’t available yet</strong><p>We don’t have enough role-specific skill data to calculate a match.</p></div>`
+    : '<div class="empty-state"><strong>Choose a target role first</strong><p>Your role match and missing skills will show here.</p><button class="btn secondary" type="button" data-go="profile">Choose target role</button></div>';
+
+  if (options.persist !== false) {
+    dashboardSnapshot = {
+      filename: options.filename || dashboardSnapshot?.filename || "Resume",
+      analyzedAt: options.analyzedAt || new Date().toISOString(),
+      data: {
+        resume_score: data.resume_score,
+        resume_breakdown: data.resume_breakdown || {},
+        resume_explanations: data.resume_explanations || {},
+        profile_strength: data.profile_strength,
+        career_match_score: data.career_match_score,
+        skills,
+        career_matches: careers,
+        suggestions: data.suggestions || [],
+        disclaimer: data.disclaimer || ""
+      }
+    };
+  }
+  renderDashboard();
+  renderInterviewPrep();
+}
+
+
+$("driveForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const company = $("company").value.trim();
+  const details = $("driveDetails").value.trim();
+  if (!company || !details) {
+    status("appStatus", "Enter the company and opportunity details.", "error");
+    $("company").focus();
+    return;
+  }
+  const drives = readUserCollection("drives", item =>
+    item && typeof item.company === "string" && typeof item.details === "string"
+  );
+  if (drives.some(drive =>
+    drive.company.toLowerCase() === company.toLowerCase()
+    && drive.details.toLowerCase() === details.toLowerCase()
+  )) {
+    status("appStatus", "This opportunity is already saved.", "error");
+    return;
+  }
+  const drive = { company, details };
+  $("addDrive").disabled = true;
+  persistProfile({drives:[...drives, drive]}).then(() => {
+    $("driveList").append(makeDriveElement(drive));
+    $("company").value = "";
+    $("driveDetails").value = "";
+    status("appStatus", "Opportunity saved to your account.", "success");
+  }).catch(error => {
+    console.error("Unable to save opportunity.", error);
+    status("appStatus", error.message, "error");
+  }).finally(() => {
+    $("addDrive").disabled = false;
+  });
+});
+
+document.addEventListener("click", event => {
+  const button = event.target.closest("[data-add-skill]");
+  if (!button) return;
+  const skill = button.dataset.addSkill;
+  roadmapState.addedSkills = [...new Set([...(roadmapState.addedSkills || []), skill])];
+  if (!roadmapState.selectedRole && profileData.target_role) {
+    const role = ROADMAP_CAREERS.find(career => career.title === profileData.target_role);
+    roadmapState.selectedRole = role?.id || "";
+  }
+  persistProfile({progress:roadmapState}).then(() => {
+    showRoadmapToast(`${skill} added to your roadmap.`);
+    navigate("roadmap");
+  }).catch(error => {
+    console.error("Unable to add skill to roadmap.", error);
+    status("appStatus", error.message, "error");
+  });
+});
+document.addEventListener("change", event => {
+  const input = event.target.closest("[data-complete-skill]");
+  if (!input) return;
+  const skill = input.dataset.completeSkill;
+  const completedSkills = new Set(roadmapState.completedSkills || []);
+  if (input.checked) completedSkills.add(skill);
+  else completedSkills.delete(skill);
+  roadmapState.completedSkills = [...completedSkills];
+  if (saveRoadmapProgress()) {
+    const career = getRoadmapCareer(roadmapState.selectedRole);
+    if (career) {
+      renderAddedSkills();
+      updateRoadmapMetrics(career);
+      renderDashboard();
+    }
+    showRoadmapToast(input.checked ? `${skill} marked as practiced.` : `${skill} marked as in progress.`);
+  }
+});
+
+$("profileForm").addEventListener("submit", saveProfileFromForm);
+$("interviewQuestionList").addEventListener("click", async event => {
+  const button = event.target.closest("[data-save-interview]");
+  if (!button) return;
+  const questionId = button.dataset.saveInterview;
+  const answerField = $("interview-answer-" + questionId);
+  const answerStatus = $("interview-status-" + questionId);
+  if (!answerField || !answerStatus) return;
+  button.disabled = true;
+  answerStatus.textContent = "Saving...";
+  try {
+    const answers = Object.fromEntries(Object.entries(profileData.interview_answers || {}).slice(-49));
+    answers[questionId] = answerField.value;
+    await persistProfile({interview_answers:answers});
+    $("interview-status-" + questionId).textContent = "Saved to your account.";
+  } catch (error) {
+    console.error("Unable to save interview answer.", error);
+    answerStatus.textContent = error.message || "Couldn't save your answer. Try again.";
+  } finally {
+    const currentButton = $("interviewQuestionList").querySelector(`[data-save-interview="${questionId}"]`);
+    if (currentButton) currentButton.disabled = false;
+  }
+});
+$("skipOnboarding").addEventListener("click", () => {
+  $("skipOnboarding").dataset.skipped = "true";
+  $("onboardingCard").hidden = true;
+});
+$("profileMenuButton").addEventListener("click", () => {
+  const menu = $("profileMenu");
+  menu.hidden = !menu.hidden;
+  $("profileMenuButton").setAttribute("aria-expanded", String(!menu.hidden));
+  if (!menu.hidden) menu.querySelector("button")?.focus();
+});
+$("menuLogout").addEventListener("click", logout);
+async function logout() {
+  if (!auth) {
+    window.location.href = "/";
+    return;
+  }
+  try {
+    await signOut(auth);
+    window.location.href = "/";
+  } catch (error) {
+    console.error("Unable to sign out.", error);
+    status("appStatus", "Could not log out. Please try again.", "error");
+  }
+}
+$("logout").addEventListener("click", logout);
+initializeRoadmap();
+
+function closeMobileNavigation(returnFocus = false) {
+  $("appSidebar").classList.remove("mobile-open");
+  $("sidebarBackdrop").classList.remove("is-visible");
+  $("sidebarBackdrop").setAttribute("aria-hidden", "true");
+  document.body.classList.remove("nav-open");
+  $("mobileMenuToggle").setAttribute("aria-expanded", "false");
+  $("mobileMenuToggle").setAttribute("aria-label", "Open navigation");
+  $("mobileMenuToggle").textContent = "Menu";
+  if (returnFocus) $("mobileMenuToggle").focus();
+}
+
+function openMobileNavigation() {
+  $("appSidebar").classList.add("mobile-open");
+  $("sidebarBackdrop").classList.add("is-visible");
+  $("sidebarBackdrop").setAttribute("aria-hidden", "false");
+  document.body.classList.add("nav-open");
+  $("mobileMenuToggle").setAttribute("aria-expanded", "true");
+  $("mobileMenuToggle").setAttribute("aria-label", "Close navigation");
+  $("mobileMenuToggle").textContent = "Close";
+  $("appSidebar").querySelector("[aria-current='page']")?.focus();
+}
+
+try {
+  const isCollapsed = localStorage.getItem("careerInfinity:sidebar-collapsed") === "true";
+  document.querySelector(".app").classList.toggle("sidebar-collapsed", isCollapsed);
+  $("sidebarCollapse").setAttribute("aria-expanded", String(!isCollapsed));
+  $("sidebarCollapse").setAttribute("aria-label", isCollapsed ? "Expand sidebar" : "Collapse sidebar");
+  $("sidebarCollapse").title = isCollapsed ? "Expand sidebar" : "Collapse sidebar";
+  $("sidebarCollapse").textContent = isCollapsed ? "›" : "‹";
+} catch (error) {
+  console.error("Unable to load sidebar preference.", error);
+}
+
+$("sidebarCollapse").addEventListener("click", () => {
+  const collapsed = document.querySelector(".app").classList.toggle("sidebar-collapsed");
+  $("sidebarCollapse").setAttribute("aria-expanded", String(!collapsed));
+  $("sidebarCollapse").setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+  $("sidebarCollapse").title = collapsed ? "Expand sidebar" : "Collapse sidebar";
+  $("sidebarCollapse").textContent = collapsed ? "›" : "‹";
+  try {
+    localStorage.setItem("careerInfinity:sidebar-collapsed", String(collapsed));
+  } catch (error) {
+    console.error("Unable to save sidebar preference.", error);
+    status("appStatus", "Sidebar changed, but this browser could not save the preference.", "error");
+  }
+});
+
+$("mobileMenuToggle").addEventListener("click", () => {
+  if ($("appSidebar").classList.contains("mobile-open")) {
+    closeMobileNavigation(true);
+  } else {
+    openMobileNavigation();
+  }
+});
+$("sidebarBackdrop").addEventListener("click", () => closeMobileNavigation(true));
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && $("appSidebar").classList.contains("mobile-open")) {
+    closeMobileNavigation(true);
+  }
+});
+
+try {
+  if (firebaseConfig.apiKey.startsWith("YOUR_") ||
+      firebaseConfig.projectId.startsWith("YOUR_")) {
+    $("userEmail").textContent = "Firebase setup required";
+    status("uploadStatus", "Add your Firebase web configuration before testing.", "error");
+  } else {
+    const app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        window.location.replace("/");
+        return;
+      }
+      currentUser = user;
+      $("userEmail").textContent = user.email || "Signed in";
+      $("sidebarProfileName").textContent = user.displayName || "CareerInfinity";
+      $("sidebarProfileEmail").textContent = user.email || "Signed-in account";
+      $("sidebarAvatar").textContent = (user.displayName || user.email || "C").trim().charAt(0).toUpperCase();
+      $("headerAvatar").textContent = $("sidebarAvatar").textContent;
+      $("dashboardWelcome").textContent = user.displayName ? `Welcome back, ${user.displayName}!` : "Welcome back!";
+      if (user.displayName) $("welcome").textContent = `Welcome back, ${user.displayName}. Your career journey starts here.`;
+      $("settingsEmail").textContent = user.email || "Not available";
+      loadUserData();
+    });
+  }
+} catch (error) {
+  console.error(error);
+  $("userEmail").textContent = "Firebase configuration error";
+}
+</script>
+</body>
+</html>

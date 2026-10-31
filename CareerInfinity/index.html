@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareerInfinity | Login</title>
+  <meta name="description" content="Sign in or create your CareerInfinity account.">
+  <link rel="icon" href="data:,">
+
+  <style>
+    :root {
+      color-scheme:light;
+      --ink:#191a2b; --muted:#62677a; --blue:#6555d9;
+      --line:#e7e7ef; --surface:#fff; --bg:#f8f8fb;
+    }
+    html[data-theme="dark"] {
+      color-scheme:dark; --ink:#f2f1f8; --muted:#b1b2c2; --blue:#a496ff;
+      --line:#30313e; --surface:#191a24; --bg:#11121a;
+    }
+    * { box-sizing:border-box; }
+    body {
+      min-height:100vh; margin:0; padding:24px;
+      display:grid; place-items:center;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+    }
+    .login-card {
+      width:100%; max-width:440px; padding:36px;
+      background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    }
+    .logo { text-align:center; font-size:34px; margin-bottom:8px; }
+    .brand {
+      text-align:center; font-size:29px; font-weight:780; letter-spacing:-.04em;
+      color:var(--ink); margin:0;
+    }
+    .brand span { color:var(--blue); }
+    .subtitle {
+      text-align:center; color:var(--muted); margin:9px 0 28px;
+    }
+    .form-label { display:block; color:var(--ink); font-size:14px; font-weight:650; margin-bottom:7px; }
+    .mb-3 { margin-bottom:18px; }
+    .form-control {
+      display:block; width:100%; padding:12px 13px;
+      color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:9px;
+    }
+    .form-control:focus {
+      border-color:var(--blue); outline:3px solid rgba(53,91,214,.14);
+    }
+    .password-box { position: relative; }
+    .password-box input { padding-right:72px; }
+    .show-btn {
+      position:absolute; right:8px; top:50%; transform:translateY(-50%);
+      border:0; border-radius:6px; padding:6px 9px;
+      background:transparent; color:#294bb8; font-weight:650;
+    }
+    .login-btn {
+      width:100%; padding:13px; margin-top:8px; border:0; border-radius:9px;
+      background:var(--blue); color:white; font-size:15px; font-weight:700;
+      transition:background .16s ease,transform .16s ease;
+    }
+    .login-btn:hover:not(:disabled) { background:#294bb8; transform:translateY(-1px); }
+    .login-btn:disabled { opacity:.65; cursor:wait; }
+    .switch-text { margin-top:22px; text-align:center; color:var(--muted); }
+    .switch-btn {
+      border:0; background:none; color:#294bb8; font-weight:700;
+    }
+    .theme-toggle {
+      position:fixed; top:16px; right:16px; display:grid; place-items:center;
+      width:44px; height:44px; padding:9px;
+      border:1px solid var(--line); border-radius:10px; color:var(--ink);
+      background:var(--surface); cursor:pointer;
+    }
+    .theme-toggle svg { display:block; width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .theme-icon-sun { display:none !important; }
+    html[data-theme="dark"] .theme-icon-sun { display:block !important; }
+    html[data-theme="dark"] .theme-icon-moon { display:none !important; }
+    html[data-theme="dark"] .switch-btn,html[data-theme="dark"] .show-btn { color:var(--blue); }
+    #message { overflow-wrap:anywhere; font-size:14px; min-height:1.5em; }
+    #message.error { color:#a32d35; }
+    #message.success { color:#137c65; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline:3px solid #82a2ff; outline-offset:3px; }
+    @media(max-width:480px) { .login-card { padding:28px 22px; } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition-duration:.01ms !important; } }
+  </style>
+  <script>
+    try {
+      document.documentElement.dataset.theme =
+        localStorage.getItem("careerInfinity:theme") === "dark" ? "dark" : "light";
+    } catch (error) {
+      console.error("Unable to load theme preference.", error);
+    }
+  </script>
+</head>
+
+<body>
+  <button type="button" class="theme-toggle" id="loginThemeToggle" aria-label="Switch to dark theme" title="Switch to dark theme">
+    <svg class="theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.4A8.6 8.6 0 0 1 8.6 3.8 8.7 8.7 0 1 0 20.2 15.4Z"/></svg>
+    <svg class="theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+  </button>
+  <main class="login-card">
+    <div class="logo" aria-hidden="true">✦</div>
+    <h1 class="brand">Career<span>Infinity</span></h1>
+
+    <p class="subtitle" id="subtitle">
+      Sign in to continue your career journey
+    </p>
+
+    <form id="loginForm">
+      <div class="mb-3" id="nameGroup" hidden>
+        <label for="name" class="form-label">Full Name</label>
+        <input type="text" id="name" class="form-control"
+          placeholder="Enter your full name" autocomplete="name">
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" id="email" class="form-control"
+          placeholder="Enter your email" autocomplete="email" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <div class="password-box">
+          <input type="password" id="password" class="form-control"
+            placeholder="Enter your password"
+            autocomplete="current-password" minlength="6" required>
+          <button type="button" class="show-btn" id="showPassword"
+            aria-controls="password" aria-pressed="false">
+            Show
+          </button>
+        </div>
+      </div>
+
+      <div class="mb-3" id="confirmGroup" hidden>
+        <label for="confirmPassword" class="form-label">
+          Confirm Password
+        </label>
+        <input type="password" id="confirmPassword" class="form-control"
+          placeholder="Enter password again" minlength="6">
+      </div>
+
+      <p id="message" role="status" aria-live="polite"></p>
+
+      <button type="submit" class="login-btn" id="submitBtn">
+        Login
+      </button>
+    </form>
+
+    <div class="switch-text">
+      <span id="switchLabel">Don't have an account?</span>
+      <button type="button" class="switch-btn" id="switchMode">
+        Create Account
+      </button>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      updateProfile,
+      signOut
+    } from
+      "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBtPNgsU-UNxrTsYRODcmIF8FhEgGjRIKc",
+      authDomain: "carrerinfinity-28ab1.firebaseapp.com",
+      projectId: "carrerinfinity-28ab1",
+      storageBucket: "carrerinfinity-28ab1.firebasestorage.app",
+      messagingSenderId: "70680959232",
+      appId: "1:70680959232:web:9e4edfb7221a523a5c3be5",
+      measurementId: "G-Q747T1QPT2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const form = document.getElementById("loginForm");
+    const password = document.getElementById("password");
+    const showPassword = document.getElementById("showPassword");
+    const switchMode = document.getElementById("switchMode");
+    const submitBtn = document.getElementById("submitBtn");
+    const message = document.getElementById("message");
+    const nameInput = document.getElementById("name");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const nameGroup = document.getElementById("nameGroup");
+    const confirmGroup = document.getElementById("confirmGroup");
+    const subtitle = document.getElementById("subtitle");
+    const switchLabel = document.getElementById("switchLabel");
+    const themeToggle = document.getElementById("loginThemeToggle");
+
+    themeToggle.setAttribute("aria-label", `Switch to ${document.documentElement.dataset.theme === "dark" ? "light" : "dark"} theme`);
+    themeToggle.title = themeToggle.getAttribute("aria-label");
+    themeToggle.addEventListener("click", () => {
+      const dark = document.documentElement.dataset.theme !== "dark";
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+      themeToggle.setAttribute("aria-label", `Switch to ${dark ? "light" : "dark"} theme`);
+      themeToggle.title = themeToggle.getAttribute("aria-label");
+      try {
+        localStorage.setItem("careerInfinity:theme", dark ? "dark" : "light");
+      } catch (error) {
+        console.error("Unable to save theme preference.", error);
+      }
+    });
+
+    let registerMode = false;
+
+    // Show or hide password
+    showPassword.addEventListener("click", () => {
+      const isHidden = password.type === "password";
+      password.type = isHidden ? "text" : "password";
+      showPassword.textContent = isHidden ? "Hide" : "Show";
+      showPassword.setAttribute("aria-pressed", String(isHidden));
+    });
+
+    // Switch between Login and Create Account
+    switchMode.addEventListener("click", () => {
+      registerMode = !registerMode;
+
+      nameGroup.hidden = !registerMode;
+      confirmGroup.hidden = !registerMode;
+      nameInput.required = registerMode;
+      confirmPassword.required = registerMode;
+
+      password.autocomplete = registerMode
+        ? "new-password"
+        : "current-password";
+
+      subtitle.textContent = registerMode
+        ? "Create your CareerInfinity account"
+        : "Sign in to continue your career journey";
+
+      switchLabel.textContent = registerMode
+        ? "Already have an account?"
+        : "Don't have an account?";
+
+      switchMode.textContent = registerMode
+        ? "Login"
+        : "Create Account";
+
+      submitBtn.textContent = registerMode
+        ? "Create Account"
+        : "Login";
+
+      message.textContent = "";
+      message.className = "";
+    });
+
+    // Handle login and registration
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      message.textContent = "";
+      message.className = "error";
+      submitBtn.disabled = true;
+      submitBtn.textContent = registerMode ? "Creating account..." : "Signing in...";
+
+      const email = document.getElementById("email").value.trim();
+      const pass = password.value;
+
+      try {
+        if (registerMode) {
+          const name = nameInput.value.trim();
+
+          if (pass !== confirmPassword.value) {
+            message.textContent = "Passwords do not match.";
+            return;
+          }
+
+          const credential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            pass
+          );
+
+          await updateProfile(credential.user, {
+            displayName: name
+          });
+
+          await signOut(auth);
+
+          form.reset();
+          registerMode = false;
+
+          nameGroup.hidden = true;
+          confirmGroup.hidden = true;
+          nameInput.required = false;
+          confirmPassword.required = false;
+          password.autocomplete = "current-password";
+          showPassword.textContent = "Show";
+          showPassword.setAttribute("aria-pressed", "false");
+
+          subtitle.textContent =
+            "Sign in to continue your career journey";
+          switchLabel.textContent = "Don't have an account?";
+          switchMode.textContent = "Create Account";
+          submitBtn.textContent = "Login";
+
+          message.className = "success";
+          message.textContent =
+            "Account created successfully! Please log in.";
+
+        } else {
+          // Authenticate the user with Firebase
+          await signInWithEmailAndPassword(auth, email, pass);
+
+          // Open dashboard only after successful login
+          window.location.href = "/dashboard";
+        }
+
+      } catch (error) {
+        const errors = {
+          "auth/invalid-credential":
+            "Incorrect email or password.",
+          "auth/email-already-in-use":
+            "This email is already registered. Please log in.",
+          "auth/weak-password":
+            "Please use a stronger password.",
+          "auth/invalid-email":
+            "Please enter a valid email address.",
+          "auth/operation-not-allowed":
+            "Enable Email/Password in Firebase Authentication.",
+          "auth/network-request-failed":
+            "Check your internet connection.",
+          "auth/too-many-requests":
+            "Too many attempts. Try again later.",
+          "auth/invalid-api-key":
+            "Check your Firebase API key."
+        };
+
+        message.textContent =
+          errors[error.code] || "We couldn't complete that request. Please try again.";
+
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = registerMode ? "Create Account" : "Login";
+      }
+    });
+  </script>
+</body>
+</html>
