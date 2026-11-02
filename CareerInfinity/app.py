@@ -15,6 +15,12 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from zipfile import BadZipFile
 
+# Use the operating system certificate store for outbound TLS. On Windows,
+# Python's bundled CA list may not include trusted enterprise/root certificates
+# even though the OS itself can validate public endpoints such as Firebase.
+import truststore
+truststore.inject_into_ssl()
+
 import httpx
 from docx import Document
 from docx.opc.exceptions import PackageNotFoundError

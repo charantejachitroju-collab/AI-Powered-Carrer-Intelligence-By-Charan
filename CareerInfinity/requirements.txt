@@ -9,3 +9,4 @@ sentence-transformers
 httpx
 pytest
 sqlalchemy
+truststore
