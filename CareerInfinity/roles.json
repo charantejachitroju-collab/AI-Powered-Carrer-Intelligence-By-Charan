@@ -1,0 +1,182 @@
+[
+  {
+    "title": "AI/ML Engineer",
+    "description": "Build, train, evaluate, and deploy machine learning and artificial intelligence systems using data, software engineering, and model operations.",
+    "required_skills": {"Python": 3, "Machine Learning": 3, "TensorFlow": 2, "PyTorch": 2, "SQL": 1},
+    "nice_to_have_skills": ["Docker", "AWS", "Data Analysis"],
+    "typical_keywords": ["model training", "feature engineering", "inference", "MLOps", "experimentation"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 5}
+  },
+  {
+    "title": "Data Scientist",
+    "description": "Use statistics, programming, and machine learning to analyze complex datasets, build predictive models, and communicate evidence-based findings.",
+    "required_skills": {"Python": 3, "SQL": 2, "Machine Learning": 2, "Data Analysis": 3, "Excel": 1},
+    "nice_to_have_skills": ["Power BI", "TensorFlow", "PyTorch"],
+    "typical_keywords": ["statistics", "experimentation", "predictive modeling", "visualization", "research"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 5}
+  },
+  {
+    "title": "Data Analyst",
+    "description": "Query, clean, and interpret business data with spreadsheets, SQL, and reporting tools, then present actionable insights to stakeholders.",
+    "required_skills": {"SQL": 3, "Excel": 3, "Data Analysis": 3, "Power BI": 2, "Python": 1},
+    "nice_to_have_skills": ["Communication", "Google Cloud"],
+    "typical_keywords": ["reporting", "KPI", "dashboard", "business intelligence", "data quality"],
+    "expected_experience_level": "Entry-level",
+    "experience_years": {"min": 0, "max": 2}
+  },
+  {
+    "title": "Backend Developer",
+    "description": "Design and build reliable server-side applications, APIs, data access layers, and authentication for web and mobile products.",
+    "required_skills": {"Python": 2, "Java": 2, "SQL": 2, "APIs": 3, "Git": 1},
+    "nice_to_have_skills": ["Docker", "AWS", "Testing"],
+    "typical_keywords": ["REST", "database", "authentication", "microservices", "server"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 5}
+  },
+  {
+    "title": "Frontend Developer",
+    "description": "Create accessible, responsive user interfaces using HTML, CSS, JavaScript, and component-based web frameworks.",
+    "required_skills": {"HTML": 2, "CSS": 2, "JavaScript": 3, "React": 3, "Git": 1},
+    "nice_to_have_skills": ["TypeScript", "Testing", "APIs"],
+    "typical_keywords": ["accessibility", "responsive design", "components", "browser", "user interface"],
+    "expected_experience_level": "Entry-level",
+    "experience_years": {"min": 0, "max": 2}
+  },
+  {
+    "title": "Full-Stack Developer",
+    "description": "Build complete web applications across frontend interfaces, backend APIs, databases, and deployment workflows.",
+    "required_skills": {"JavaScript": 2, "React": 2, "HTML": 1, "CSS": 1, "APIs": 3, "SQL": 2, "Git": 1},
+    "nice_to_have_skills": ["Python", "Docker", "AWS"],
+    "typical_keywords": ["web application", "end-to-end", "client-server", "deployment", "integration"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 5}
+  },
+  {
+    "title": "DevOps Engineer",
+    "description": "Automate software delivery and infrastructure operations using cloud platforms, containers, testing, and reliable deployment pipelines.",
+    "required_skills": {"Docker": 3, "AWS": 2, "Git": 2, "Python": 1, "Testing": 2},
+    "nice_to_have_skills": ["Azure", "Google Cloud", "APIs"],
+    "typical_keywords": ["CI/CD", "infrastructure as code", "monitoring", "containers", "automation"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 5}
+  },
+  {
+    "title": "Cloud Engineer",
+    "description": "Provision, secure, and operate scalable cloud infrastructure, services, and application environments.",
+    "required_skills": {"AWS": 3, "Azure": 2, "Google Cloud": 2, "Docker": 2, "Git": 1},
+    "nice_to_have_skills": ["Python", "SQL", "Testing"],
+    "typical_keywords": ["cloud infrastructure", "networking", "scalability", "deployment", "reliability"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 5}
+  },
+  {
+    "title": "Data Engineer",
+    "description": "Develop data pipelines and platforms that collect, transform, validate, and deliver reliable data for analytics and machine learning.",
+    "required_skills": {"SQL": 3, "Python": 3, "Google Cloud": 1, "AWS": 1, "Data Analysis": 1},
+    "nice_to_have_skills": ["Docker", "Java", "Azure"],
+    "typical_keywords": ["ETL", "ELT", "data pipeline", "warehouse", "orchestration"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 5}
+  },
+  {
+    "title": "MLOps Engineer",
+    "description": "Build the infrastructure and automation for reproducible machine learning training, deployment, monitoring, and model lifecycle management.",
+    "required_skills": {"Python": 3, "Machine Learning": 2, "Docker": 3, "AWS": 2, "Git": 2},
+    "nice_to_have_skills": ["TensorFlow", "PyTorch", "Google Cloud"],
+    "typical_keywords": ["model registry", "deployment pipeline", "monitoring", "reproducibility", "serving"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 3, "max": 6}
+  },
+  {
+    "title": "NLP Engineer",
+    "description": "Build systems that process and understand human language using machine learning, language models, retrieval, and evaluation.",
+    "required_skills": {"Python": 3, "Machine Learning": 2, "LLMs": 3, "APIs": 1, "PyTorch": 1},
+    "nice_to_have_skills": ["RAG", "LangChain", "TensorFlow"],
+    "typical_keywords": ["natural language processing", "text classification", "embeddings", "information extraction", "evaluation"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 5}
+  },
+  {
+    "title": "QA Engineer",
+    "description": "Improve product quality through test planning, manual and automated testing, defect analysis, and collaboration with engineering teams.",
+    "required_skills": {"Testing": 3, "Selenium": 2, "Playwright": 2, "Python": 1, "Git": 1},
+    "nice_to_have_skills": ["Java", "APIs", "Communication"],
+    "typical_keywords": ["test cases", "regression", "quality assurance", "defects", "automation"],
+    "expected_experience_level": "Entry-level",
+    "experience_years": {"min": 0, "max": 2}
+  },
+  {
+    "title": "Cybersecurity Analyst",
+    "description": "Monitor security events, investigate vulnerabilities and incidents, and help protect systems, networks, and sensitive information.",
+    "required_skills": {"Python": 1, "Linux": 2, "Networking": 2, "Security": 3, "SQL": 1},
+    "nice_to_have_skills": ["AWS", "Azure", "Communication"],
+    "typical_keywords": ["incident response", "threat detection", "vulnerability", "SIEM", "risk assessment"],
+    "expected_experience_level": "Entry-level",
+    "experience_years": {"min": 0, "max": 3}
+  },
+  {
+    "title": "Product Manager",
+    "description": "Set product direction, prioritize customer problems, coordinate delivery across teams, and use research and metrics to guide decisions.",
+    "required_skills": {"Communication": 3, "Leadership": 2, "Data Analysis": 2, "SQL": 1, "Excel": 1},
+    "nice_to_have_skills": ["APIs", "React", "Python"],
+    "typical_keywords": ["roadmap", "discovery", "prioritization", "stakeholders", "product strategy"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 6}
+  },
+  {
+    "title": "Business Intelligence Analyst",
+    "description": "Transform business questions into trusted reports and dashboards using SQL, spreadsheets, data visualization, and stakeholder communication.",
+    "required_skills": {"SQL": 3, "Power BI": 3, "Excel": 2, "Data Analysis": 3, "Communication": 1},
+    "nice_to_have_skills": ["Python", "Google Cloud", "Leadership"],
+    "typical_keywords": ["business intelligence", "dashboard", "metrics", "data visualization", "reporting"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 1, "max": 4}
+  },
+  {
+    "title": "Automation Engineer",
+    "description": "Automate repetitive business and engineering workflows through scripting, APIs, browser automation, and robust testing.",
+    "required_skills": {"Python": 2, "Workflow Automation": 3, "APIs": 2, "Testing": 2, "Playwright": 1},
+    "nice_to_have_skills": ["Selenium", "Docker", "Git"],
+    "typical_keywords": ["workflow", "orchestration", "browser automation", "integration", "efficiency"],
+    "expected_experience_level": "Entry-level",
+    "experience_years": {"min": 0, "max": 3}
+  },
+  {
+    "title": "Agentic AI Engineer",
+    "description": "Develop AI agent applications that combine language models, tools, retrieval, APIs, and workflow automation with measurable safeguards.",
+    "required_skills": {"Python": 2, "LLMs": 3, "RAG": 3, "AI Agents": 3, "APIs": 2},
+    "nice_to_have_skills": ["LangChain", "Workflow Automation", "Docker"],
+    "typical_keywords": ["tool calling", "agent orchestration", "retrieval augmented generation", "evaluation", "guardrails"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 1, "max": 4}
+  },
+  {
+    "title": "Mobile Application Developer",
+    "description": "Build, test, and maintain mobile applications with modern programming languages, user interface frameworks, APIs, and release processes.",
+    "required_skills": {"Java": 2, "JavaScript": 2, "APIs": 2, "Testing": 1, "Git": 1},
+    "nice_to_have_skills": ["React", "TypeScript", "SQL"],
+    "typical_keywords": ["mobile application", "Android", "iOS", "release", "user experience"],
+    "expected_experience_level": "Entry-level",
+    "experience_years": {"min": 0, "max": 3}
+  },
+  {
+    "title": "Database Administrator",
+    "description": "Maintain database reliability, security, performance, backups, and access while supporting application and analytics teams.",
+    "required_skills": {"SQL": 3, "Linux": 2, "Python": 1, "Security": 1, "AWS": 1},
+    "nice_to_have_skills": ["Azure", "Google Cloud", "Docker"],
+    "typical_keywords": ["database performance", "backup", "recovery", "replication", "access control"],
+    "expected_experience_level": "Mid-level",
+    "experience_years": {"min": 2, "max": 5}
+  },
+  {
+    "title": "UX Designer",
+    "description": "Research user needs and design usable, accessible digital experiences through interaction design, prototyping, testing, and collaboration.",
+    "required_skills": {"Communication": 2, "Research": 2, "Design": 3, "Testing": 1, "Leadership": 1},
+    "nice_to_have_skills": ["HTML", "CSS", "Data Analysis"],
+    "typical_keywords": ["user research", "prototyping", "usability", "accessibility", "interaction design"],
+    "expected_experience_level": "Entry-level",
+    "experience_years": {"min": 0, "max": 3}
+  }
+]

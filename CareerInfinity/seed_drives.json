@@ -1,0 +1,38 @@
+[
+  {
+    "company": "Sample Technology Company",
+    "role": "Graduate Software Engineer",
+    "eligibility": "Graduating students; verify requirements with the employer",
+    "package_lpa": "Sample: ₹6–10 LPA",
+    "days_from_today": 30,
+    "mode": "On Campus",
+    "type": "On Campus",
+    "required_skills": ["Python", "SQL", "Git"],
+    "apply_url": "",
+    "is_sample": true
+  },
+  {
+    "company": "Sample Cloud Services",
+    "role": "Associate Cloud Engineer",
+    "eligibility": "Entry-level; verify degree and location criteria",
+    "package_lpa": "Sample: ₹5–9 LPA",
+    "days_from_today": 45,
+    "mode": "Virtual",
+    "type": "Virtual",
+    "required_skills": ["AWS", "Docker", "Git"],
+    "apply_url": "",
+    "is_sample": true
+  },
+  {
+    "company": "Sample Analytics Labs",
+    "role": "Junior Data Analyst",
+    "eligibility": "Entry-level; verify criteria with the employer",
+    "package_lpa": "Sample: ₹4–7 LPA",
+    "days_from_today": 60,
+    "mode": "Off Campus",
+    "type": "Off Campus",
+    "required_skills": ["SQL", "Excel", "Power BI"],
+    "apply_url": "",
+    "is_sample": true
+  }
+]

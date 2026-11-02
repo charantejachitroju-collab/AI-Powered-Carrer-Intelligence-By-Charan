@@ -5,3 +5,7 @@ pypdf
 python-docx
 google-auth
 python-multipart
+sentence-transformers
+httpx
+pytest
+sqlalchemy

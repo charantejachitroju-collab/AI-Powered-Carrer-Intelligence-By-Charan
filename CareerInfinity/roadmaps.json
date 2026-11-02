@@ -1,0 +1,354 @@
+[
+  {
+    "title": "Agentic AI Engineer",
+    "group": "AI and Data",
+    "description": "Design reliable AI agents that use tools, retrieval, and workflows to complete multi-step tasks.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {
+        "id": "agentic-ai-foundations",
+        "title": "LLM and agent foundations",
+        "estimated_weeks": 4,
+        "skills": ["Python", "LLMs", "Prompt Engineering", "APIs", "Tool Calling"],
+        "resources": [
+          {"id":"agentic-ai-anthropic-course","title":"Anthropic Academy","type":"course","provider":"Anthropic","level":"beginner","url":"https://academy.claude.com/","cost":"free","estimated_hours":8,"last_verified":"2026-10-31","needs_verification":false},
+          {"id":"agentic-ai-hf-agents","title":"AI Agents Course","type":"course","provider":"Hugging Face","level":"beginner","url":"https://huggingface.co/learn/agents-course","cost":"free","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}
+        ],
+        "projects": ["Build a tool-using assistant with input validation and a clear audit trail."],
+        "milestone": "Explain agent loops, tool schemas, and safe handling of tool results."
+      },
+      {
+        "id": "agentic-ai-orchestration",
+        "title": "Agent orchestration and retrieval",
+        "estimated_weeks": 5,
+        "skills": ["LangGraph", "RAG", "Embeddings", "State Management", "Evaluation"],
+        "resources": [
+          {"id":"agentic-ai-langgraph-docs","title":"LangGraph tutorials","type":"course","provider":"LangChain","level":"intermediate","url":"https://docs.langchain.com/oss/python/langgraph/overview","cost":"free","estimated_hours":10,"last_verified":"2026-10-31","needs_verification":false},
+          {"id":"agentic-ai-google-ml","title":"Google Machine Learning Crash Course","type":"course","provider":"Google","level":"intermediate","url":"https://developers.google.com/machine-learning/crash-course","cost":"free","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}
+        ],
+        "projects": ["Create a stateful research agent with retrieval, bounded tool permissions, and evaluation cases."],
+        "milestone": "Demonstrate a tested multi-step agent that recovers safely from tool errors."
+      },
+      {
+        "id": "agentic-ai-production",
+        "title": "Production agents and observability",
+        "estimated_weeks": 5,
+        "skills": ["MCP", "Agent Evaluation", "Observability", "Security", "Deployment"],
+        "resources": [
+          {"id":"agentic-ai-mcp-spec","title":"Model Context Protocol documentation","type":"course","provider":"Model Context Protocol","level":"advanced","url":"https://modelcontextprotocol.io/introduction","cost":"free","estimated_hours":8,"last_verified":"2026-10-31","needs_verification":false},
+          {"id":"agentic-ai-aws-ml","title":"AWS Machine Learning learning plan","type":"course","provider":"AWS","level":"advanced","url":"https://aws.amazon.com/training/learn-about/machine-learning/","cost":"varies","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}
+        ],
+        "projects": ["Deploy an agent service with tracing, human approval for sensitive actions, and regression evaluations."],
+        "milestone": "Present a deployed agent with documented safeguards, cost controls, and evaluation results."
+      }
+    ]
+  },
+  {
+    "title": "AI/ML Engineer",
+    "group": "AI and Data",
+    "description": "Build, evaluate, and deploy machine-learning systems with sound software and data practices.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"aiml-foundations","title":"Python, data, and mathematics","estimated_weeks":5,"skills":["Python","Statistics","SQL","Data Analysis","Git"],"resources":[{"id":"aiml-google-ml","title":"Machine Learning Crash Course","type":"course","provider":"Google","level":"beginner","url":"https://developers.google.com/machine-learning/crash-course","cost":"free","estimated_hours":20,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Explore and document a public dataset with reproducible Python notebooks."],"milestone":"Prepare a clean dataset and explain baseline metrics."},
+      {"id":"aiml-modeling","title":"Modeling and deep learning","estimated_weeks":6,"skills":["Machine Learning","PyTorch","TensorFlow","Feature Engineering","Model Evaluation"],"resources":[{"id":"aiml-pytorch","title":"PyTorch tutorials","type":"course","provider":"PyTorch","level":"intermediate","url":"https://pytorch.org/tutorials/","cost":"free","estimated_hours":16,"last_verified":"2026-10-31","needs_verification":false},{"id":"aiml-dlai","title":"Machine Learning Specialization","type":"course","provider":"DeepLearning.AI","level":"intermediate","url":"https://www.deeplearning.ai/courses/machine-learning-specialization/","cost":"varies","estimated_hours":80,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Train and compare a supervised model; track experiments and explain errors."],"milestone":"Ship a validated model with a reproducible training pipeline."},
+      {"id":"aiml-deployment","title":"Deployment and model operations","estimated_weeks":5,"skills":["FastAPI","Docker","Cloud","Monitoring","MLOps"],"resources":[{"id":"aiml-aws-ml","title":"AWS Machine Learning learning plan","type":"course","provider":"AWS","level":"advanced","url":"https://aws.amazon.com/training/learn-about/machine-learning/","cost":"varies","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Serve a model behind an API with tests, monitoring, and a model card."],"milestone":"Deploy a monitored model service and document its limitations."}
+    ]
+  },
+  {
+    "title": "Generative AI Engineer",
+    "group": "AI and Data",
+    "description": "Create grounded generative AI applications using language models, retrieval, evaluation, and secure APIs.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"genai-foundations","title":"LLM application foundations","estimated_weeks":4,"skills":["Python","LLMs","Prompt Engineering","APIs","Embeddings"],"resources":[      {"id":"genai-anthropic","title":"Anthropic Academy","type":"course","provider":"Anthropic","level":"beginner","url":"https://academy.claude.com/","cost":"free","estimated_hours":8,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a structured-output assistant with input validation and tests."],"milestone":"Build a working LLM application with predictable output handling."},
+      {"id":"genai-rag","title":"Retrieval and application quality","estimated_weeks":5,"skills":["RAG","Vector Search","Chunking","Evaluation","LangChain"],"resources":[{"id":"genai-hf","title":"Hugging Face NLP course","type":"course","provider":"Hugging Face","level":"intermediate","url":"https://huggingface.co/learn/nlp-course","cost":"free","estimated_hours":25,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a document Q&A application with citations and a retrieval evaluation set."],"milestone":"Measure groundedness and improve retrieval using a repeatable test set."},
+      {"id":"genai-production","title":"Production, safety, and cost","estimated_weeks":5,"skills":["LLM Evaluation","Guardrails","Observability","Cloud","Security"],"resources":[{"id":"genai-azure","title":"Microsoft generative AI learning paths","type":"course","provider":"Microsoft Learn","level":"advanced","url":"https://learn.microsoft.com/training/browse/?terms=generative%20AI","cost":"free","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Deploy a monitored RAG service with access controls, fallback behavior, and cost limits."],"milestone":"Demonstrate production readiness with evaluation, monitoring, and safety documentation."}
+    ]
+  },
+  {
+    "title": "Data Scientist",
+    "group": "AI and Data",
+    "description": "Use statistics, programming, and machine learning to derive useful and defensible insights from data.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"datasci-foundations","title":"Statistics and data preparation","estimated_weeks":5,"skills":["Python","SQL","Statistics","Data Cleaning","Visualization"],"resources":[{"id":"datasci-google-ml","title":"Machine Learning Crash Course","type":"course","provider":"Google","level":"beginner","url":"https://developers.google.com/machine-learning/crash-course","cost":"free","estimated_hours":20,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Analyze a public dataset and communicate limitations, trends, and data quality."],"milestone":"Deliver a reproducible exploratory analysis with clear visualizations."},
+      {"id":"datasci-models","title":"Experiments and predictive modeling","estimated_weeks":6,"skills":["Machine Learning","Feature Engineering","Model Evaluation","Experimentation","Pandas"],"resources":[{"id":"datasci-dlai","title":"Machine Learning Specialization","type":"course","provider":"DeepLearning.AI","level":"intermediate","url":"https://www.deeplearning.ai/courses/machine-learning-specialization/","cost":"varies","estimated_hours":80,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a predictive model with a baseline, validation strategy, and error analysis."],"milestone":"Compare models and justify the final model using appropriate metrics."},
+      {"id":"datasci-delivery","title":"Decision support and delivery","estimated_weeks":4,"skills":["Communication","Dashboarding","A/B Testing","Deployment","Data Ethics"],"resources":[{"id":"datasci-databricks","title":"Databricks Academy","type":"course","provider":"Databricks","level":"advanced","url":"https://www.databricks.com/learn/training/home","cost":"varies","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Present a decision-focused analysis and deploy a small inference or dashboard service."],"milestone":"Explain the analysis to a non-technical audience and recommend a measurable action."}
+    ]
+  },
+  {
+    "title": "Data Engineer",
+    "group": "AI and Data",
+    "description": "Build dependable batch and streaming pipelines that deliver trusted data for analytics and machine learning.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"dataeng-foundations","title":"SQL and Python data foundations","estimated_weeks":4,"skills":["Python","SQL","Data Modeling","Git","Linux"],"resources":[{"id":"dataeng-google-cloud","title":"Google Cloud data engineering training","type":"course","provider":"Google Cloud","level":"beginner","url":"https://cloud.google.com/learn/training/data-engineering","cost":"varies","estimated_hours":10,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Design a relational schema and load a versioned public dataset."],"milestone":"Write tested SQL transformations and explain the data model."},
+      {"id":"dataeng-pipelines","title":"Pipelines and orchestration","estimated_weeks":6,"skills":["ETL","Apache Airflow","Spark","Data Quality","Docker"],"resources":[{"id":"dataeng-databricks","title":"Databricks Academy","type":"course","provider":"Databricks","level":"intermediate","url":"https://www.databricks.com/learn/training/home","cost":"varies","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Create an idempotent scheduled pipeline with validation and failure recovery."],"milestone":"Run an observable pipeline that handles retries and late-arriving data."},
+      {"id":"dataeng-platform","title":"Cloud warehouse and governance","estimated_weeks":5,"skills":["Cloud","Data Warehouse","Streaming","Security","Monitoring"],"resources":[{"id":"dataeng-aws","title":"AWS data analytics training","type":"course","provider":"AWS","level":"advanced","url":"https://aws.amazon.com/training/learn-about/data-analytics/","cost":"varies","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Publish a governed analytics dataset and document lineage, access, and freshness."],"milestone":"Demonstrate a secure, monitored cloud data workflow."}
+    ]
+  },
+  {
+    "title": "Data Analyst",
+    "group": "AI and Data",
+    "description": "Query, clean, and interpret data with SQL, spreadsheets, and dashboards to support business decisions.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"dataanalyst-foundations","title":"Data and spreadsheet foundations","estimated_weeks":3,"skills":["Excel","SQL","Data Cleaning","Statistics"],"resources":[      {"id":"dataanalyst-google-cert","title":"Google Data Analytics Professional Certificate","type":"certification","provider":"Google","level":"beginner","url":"https://grow.google/certificates/data-analytics/","cost":"paid","estimated_hours":180,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Clean a public dataset and answer five clearly stated questions."],"milestone":"Produce a documented analysis with validated calculations."},
+      {"id":"dataanalyst-insights","title":"Dashboards and communication","estimated_weeks":4,"skills":["Power BI","Tableau","Data Visualization","Communication","KPI Design"],"resources":[{"id":"dataanalyst-powerbi","title":"Microsoft Learn: Power BI","type":"course","provider":"Microsoft Learn","level":"intermediate","url":"https://learn.microsoft.com/training/powerplatform/power-bi/","cost":"free","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build an interactive dashboard with a concise executive summary."],"milestone":"Present a dashboard that answers a stakeholder question and explains caveats."}
+    ]
+  },
+  {
+    "title": "Backend Developer",
+    "group": "Software Development",
+    "description": "Design and deliver secure server-side applications, APIs, databases, and integrations.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"backend-foundations","title":"Programming and web fundamentals","estimated_weeks":4,"skills":["Python","Java","HTTP","Git","SQL"],"resources":[{"id":"backend-python","title":"Python tutorial","type":"course","provider":"Python Software Foundation","level":"beginner","url":"https://docs.python.org/3/tutorial/","cost":"free","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a small command-line application with tests and persistent data."],"milestone":"Use version control, tests, and clear interfaces in a working program."},
+      {"id":"backend-apis","title":"APIs and persistence","estimated_weeks":5,"skills":["FastAPI","REST APIs","Authentication","Databases","Testing"],"resources":[{"id":"backend-fastapi","title":"FastAPI tutorial","type":"course","provider":"FastAPI","level":"intermediate","url":"https://fastapi.tiangolo.com/tutorial/","cost":"free","estimated_hours":16,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build an authenticated REST API with validation, migrations, and integration tests."],"milestone":"Deliver documented API endpoints with robust error handling."},
+      {"id":"backend-production","title":"Deployment and reliability","estimated_weeks":4,"skills":["Docker","Cloud","CI/CD","Security","Observability"],"resources":[{"id":"backend-aws","title":"AWS developer learning plan","type":"course","provider":"AWS","level":"advanced","url":"https://aws.amazon.com/training/learn-about/developer/","cost":"varies","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Containerize and deploy an API with health checks, logging, and least-privilege access."],"milestone":"Explain deployment, monitoring, and security choices for your service."}
+    ]
+  },
+  {
+    "title": "Full-Stack Developer",
+    "group": "Software Development",
+    "description": "Build complete web applications across responsive interfaces, APIs, databases, and deployment.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"fullstack-web","title":"Frontend foundations","estimated_weeks":4,"skills":["HTML","CSS","JavaScript","React","Accessibility"],"resources":[{"id":"fullstack-react","title":"React Learn","type":"course","provider":"React","level":"beginner","url":"https://react.dev/learn","cost":"free","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Create an accessible responsive interface with reusable components."],"milestone":"Build and test a multi-page React interface."},
+      {"id":"fullstack-backend","title":"Backend and data integration","estimated_weeks":5,"skills":["APIs","Node.js","Python","SQL","Authentication"],"resources":[{"id":"fullstack-node","title":"Node.js Learn","type":"course","provider":"OpenJS Foundation","level":"intermediate","url":"https://nodejs.org/en/learn","cost":"free","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Connect a frontend to a validated API and a relational database."],"milestone":"Ship an end-to-end feature with authentication and integration tests."},
+      {"id":"fullstack-delivery","title":"Quality and deployment","estimated_weeks":4,"skills":["Testing","Docker","Cloud","CI/CD","Security"],"resources":[{"id":"fullstack-azure","title":"Azure developer learning paths","type":"course","provider":"Microsoft Learn","level":"advanced","url":"https://learn.microsoft.com/training/browse/?terms=azure%20developer","cost":"free","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Deploy a complete web app with automated tests and operational documentation."],"milestone":"Present a deployed application with a reliable delivery workflow."}
+    ]
+  },
+  {
+    "title": "SDET / QA Automation Engineer",
+    "group": "Software Development",
+    "description": "Improve software quality through test strategy, automation, and reliable release validation.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"sdet-testing","title":"Testing fundamentals","estimated_weeks":3,"skills":["Test Design","Python","JavaScript","Git","Defect Reporting"],"resources":[{"id":"sdet-playwright","title":"Playwright documentation","type":"course","provider":"Microsoft","level":"beginner","url":"https://playwright.dev/docs/intro","cost":"free","estimated_hours":10,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Write a risk-based test plan and automate core user journeys."],"milestone":"Create clear test cases and reproducible defect reports."},
+      {"id":"sdet-automation","title":"UI and API automation","estimated_weeks":5,"skills":["Playwright","Selenium","API Testing","CI/CD","Test Fixtures"],"resources":[{"id":"sdet-selenium","title":"Selenium documentation","type":"course","provider":"Selenium","level":"intermediate","url":"https://www.selenium.dev/documentation/","cost":"free","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build stable UI and API test suites with reusable fixtures."],"milestone":"Run automated tests in continuous integration with useful failure reports."},
+      {"id":"sdet-quality","title":"Quality engineering at scale","estimated_weeks":4,"skills":["Performance Testing","Accessibility Testing","Docker","Observability","Security Testing"],"resources":[{"id":"sdet-istqb","title":"ISTQB certification overview","type":"certification","provider":"ISTQB","level":"advanced","url":"https://www.istqb.org/certifications/","cost":"varies","estimated_hours":20,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Add a quality gate that measures reliability and prevents a known regression."],"milestone":"Explain a quality strategy spanning risk, automation, and release confidence."}
+    ]
+  },
+  {
+    "title": "Cloud Engineer",
+    "group": "Cloud and Infrastructure",
+    "description": "Provision and operate secure, scalable cloud infrastructure and application environments.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"cloud-foundations","title":"Cloud and networking foundations","estimated_weeks":4,"skills":["Linux","Networking","IAM","Cloud Concepts","Git"],"resources":[{"id":"cloud-aws-foundation","title":"AWS Cloud Practitioner certification","type":"certification","provider":"AWS","level":"beginner","url":"https://aws.amazon.com/certification/certified-cloud-practitioner/","cost":"paid","estimated_hours":25,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Document and diagram a least-privilege cloud network design."],"milestone":"Explain core cloud services, network boundaries, and identity controls."},
+      {"id":"cloud-provision","title":"Infrastructure and automation","estimated_weeks":5,"skills":["Terraform","Docker","AWS","Azure","Google Cloud"],"resources":[{"id":"cloud-terraform","title":"Terraform tutorials","type":"course","provider":"HashiCorp","level":"intermediate","url":"https://developer.hashicorp.com/terraform/tutorials","cost":"free","estimated_hours":14,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Provision a repeatable environment from version-controlled infrastructure code."],"milestone":"Deploy a containerized service through reproducible infrastructure."},
+      {"id":"cloud-operations","title":"Operations and reliability","estimated_weeks":4,"skills":["Monitoring","Security","Backup","Cost Management","Incident Response"],"resources":[{"id":"cloud-azure-fundamentals","title":"Azure Fundamentals certification","type":"certification","provider":"Microsoft","level":"advanced","url":"https://learn.microsoft.com/credentials/certifications/azure-fundamentals/","cost":"paid","estimated_hours":20,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Add alerts, backups, and a recovery runbook to a sample cloud deployment."],"milestone":"Demonstrate secure operations and recovery for a deployed workload."}
+    ]
+  },
+  {
+    "title": "DevOps Engineer",
+    "group": "Cloud and Infrastructure",
+    "description": "Automate software delivery and infrastructure while improving deployment reliability and feedback.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"devops-foundations","title":"Linux, scripting, and version control","estimated_weeks":4,"skills":["Linux","Bash","Python","Git","Networking"],"resources":[{"id":"devops-linux","title":"Linux documentation","type":"course","provider":"Linux Foundation","level":"beginner","url":"https://training.linuxfoundation.org/resources/","cost":"free","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Automate a repeatable local environment setup with documented checks."],"milestone":"Troubleshoot a service using logs, processes, and network tools."},
+      {"id":"devops-delivery","title":"Containers and delivery pipelines","estimated_weeks":5,"skills":["Docker","Kubernetes","CI/CD","Testing","Infrastructure as Code"],"resources":[{"id":"devops-kubernetes","title":"Kubernetes tutorials","type":"course","provider":"Kubernetes","level":"intermediate","url":"https://kubernetes.io/docs/tutorials/","cost":"free","estimated_hours":18,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Create a CI pipeline that tests and deploys a containerized application."],"milestone":"Deploy an application using an automated, repeatable pipeline."},
+      {"id":"devops-reliability","title":"Cloud operations and reliability","estimated_weeks":5,"skills":["AWS","Monitoring","Observability","Security","Incident Response"],"resources":[{"id":"devops-cncf","title":"CNCF training and certification","type":"certification","provider":"CNCF","level":"advanced","url":"https://www.cncf.io/training/","cost":"varies","estimated_hours":30,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Instrument a service and write an incident runbook with recovery steps."],"milestone":"Demonstrate safe deployment, alerting, and incident response."}
+    ]
+  },
+  {
+    "title": "Cybersecurity Analyst",
+    "group": "Security",
+    "description": "Monitor security signals, investigate incidents, and help protect systems and information.",
+    "priority": true,
+    "status": "detailed",
+    "stages": [
+      {"id":"cyber-foundations","title":"Security and networking fundamentals","estimated_weeks":4,"skills":["Networking","Linux","Security Principles","Windows","Risk"],"resources":[{"id":"cyber-comptia","title":"CompTIA Security+ certification","type":"certification","provider":"CompTIA","level":"beginner","url":"https://www.comptia.org/certifications/security","cost":"paid","estimated_hours":40,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Create a home-lab security inventory and document threat scenarios."],"milestone":"Explain common attack surfaces and foundational defensive controls."},
+      {"id":"cyber-detection","title":"Monitoring and incident analysis","estimated_weeks":5,"skills":["SIEM","Log Analysis","Incident Response","Python","Threat Intelligence"],"resources":[{"id":"cyber-mitre","title":"MITRE ATT&CK knowledge base","type":"course","provider":"MITRE","level":"intermediate","url":"https://attack.mitre.org/resources/","cost":"free","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Analyze a public benign security dataset and write an evidence-based incident timeline."],"milestone":"Triage an alert and document evidence, impact, and containment steps."},
+      {"id":"cyber-operations","title":"Vulnerability and cloud defense","estimated_weeks":4,"skills":["Vulnerability Management","Cloud Security","Security Monitoring","Access Control","Communication"],"resources":[{"id":"cyber-aws-security","title":"AWS security learning resources","type":"course","provider":"AWS","level":"advanced","url":"https://aws.amazon.com/training/learn-about/security/","cost":"varies","estimated_hours":12,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a prioritized remediation report using an authorized lab environment."],"milestone":"Present a prioritized defensive recommendation with supporting evidence."}
+    ]
+  },
+  {
+    "title": "NLP Engineer",
+    "group": "AI and Data",
+    "description": "Build software that processes, searches, and generates human language.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"nlp-basics","title":"Language processing foundations","estimated_weeks":6,"skills":["Python","NLP","Machine Learning","Transformers"],"resources":[{"id":"nlp-hf-course","title":"Hugging Face NLP course","type":"course","provider":"Hugging Face","level":"intermediate","url":"https://huggingface.co/learn/nlp-course","cost":"free","estimated_hours":25,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a text classification or semantic search prototype."],"milestone":"Evaluate a language task on a documented dataset."}]
+  },
+  {
+    "title": "Computer Vision Engineer",
+    "group": "AI and Data",
+    "description": "Develop systems that interpret images and video using computer-vision models.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"vision-basics","title":"Image modeling foundations","estimated_weeks":6,"skills":["Python","Computer Vision","PyTorch","Image Processing"],"resources":[{"id":"vision-pytorch","title":"PyTorch tutorials","type":"course","provider":"PyTorch","level":"intermediate","url":"https://pytorch.org/tutorials/","cost":"free","estimated_hours":16,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Train an image classifier and document its evaluation and failure cases."],"milestone":"Demonstrate a reproducible computer-vision model."}]
+  },
+  {
+    "title": "MLOps / LLMOps Engineer",
+    "group": "AI and Data",
+    "description": "Operate reliable machine-learning and language-model systems across training, deployment, and monitoring.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"mlops-basics","title":"Model operations foundations","estimated_weeks":7,"skills":["Python","Docker","Machine Learning","CI/CD","Monitoring"],"resources":[{"id":"mlops-databricks","title":"Databricks Academy","type":"course","provider":"Databricks","level":"intermediate","url":"https://www.databricks.com/learn/training/home","cost":"varies","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Automate a model deployment and add basic monitoring."],"milestone":"Track a model from experiment to monitored service."}]
+  },
+  {
+    "title": "Business Intelligence (BI) Analyst",
+    "group": "AI and Data",
+    "description": "Turn business data into trusted metrics, dashboards, and actionable reports.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"bi-analytics","title":"BI reporting foundations","estimated_weeks":5,"skills":["SQL","Power BI","Data Modeling","Excel","Communication"],"resources":[{"id":"bi-powerbi","title":"Microsoft Learn: Power BI","type":"course","provider":"Microsoft Learn","level":"beginner","url":"https://learn.microsoft.com/training/powerplatform/power-bi/","cost":"free","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Create a dashboard with documented metric definitions."],"milestone":"Present a reliable dashboard tied to a business question."}]
+  },
+  {
+    "title": "AI Product Manager",
+    "group": "AI and Data",
+    "description": "Guide AI products from customer need through evaluation, launch, and responsible iteration.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"ai-pm-foundations","title":"AI product foundations","estimated_weeks":5,"skills":["Product Management","AI Fundamentals","Communication","Experimentation"],"resources":[{"id":"ai-pm-google-ml","title":"Google Machine Learning Crash Course","type":"course","provider":"Google","level":"beginner","url":"https://developers.google.com/machine-learning/crash-course","cost":"free","estimated_hours":20,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Write a product brief that defines user value and measurable evaluation criteria."],"milestone":"Present an AI product proposal with risks and success measures."}]
+  },
+  {
+    "title": "Prompt / AI Application Engineer",
+    "group": "AI and Data",
+    "description": "Build useful applications around foundation models with structured prompts, evaluation, and APIs.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"prompt-apps","title":"Prompt and application foundations","estimated_weeks":5,"skills":["Python","Prompt Engineering","LLMs","APIs","Evaluation"],"resources":[{"id":"prompt-anthropic","title":"Anthropic Academy","type":"course","provider":"Anthropic","level":"beginner","url":"https://academy.claude.com/","cost":"free","estimated_hours":8,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a prompt evaluation set and a structured-output application."],"milestone":"Show measurable prompt quality improvements on a test set."}]
+  },
+  {
+    "title": "Frontend Developer",
+    "group": "Software Development",
+    "description": "Create accessible, responsive web interfaces using modern JavaScript frameworks.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"frontend-basics","title":"Responsive interface foundations","estimated_weeks":5,"skills":["HTML","CSS","JavaScript","React","Accessibility"],"resources":[{"id":"frontend-react","title":"React Learn","type":"course","provider":"React","level":"beginner","url":"https://react.dev/learn","cost":"free","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build an accessible responsive dashboard with reusable components."],"milestone":"Deliver a responsive interface with keyboard navigation."}]
+  },
+  {
+    "title": "Mobile App Developer",
+    "group": "Software Development",
+    "description": "Design and build mobile applications for Android, iOS, or cross-platform frameworks.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"mobile-basics","title":"Mobile application foundations","estimated_weeks":6,"skills":["Mobile Development","Kotlin","Swift","Flutter","APIs"],"resources":[{"id":"mobile-android","title":"Android developer training","type":"course","provider":"Google","level":"beginner","url":"https://developer.android.com/courses","cost":"free","estimated_hours":20,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a mobile app that consumes an API and handles offline or error states."],"milestone":"Demonstrate a tested mobile app on an emulator or device."}]
+  },
+  {
+    "title": "Embedded / IoT Engineer",
+    "group": "Software Development",
+    "description": "Develop software and connected-device systems for embedded hardware and IoT applications.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"embedded-basics","title":"Embedded systems foundations","estimated_weeks":7,"skills":["C","C++","Embedded Systems","IoT","Electronics"],"resources":[{"id":"embedded-zephyr","title":"Zephyr Project documentation","type":"course","provider":"Linux Foundation","level":"intermediate","url":"https://docs.zephyrproject.org/latest/","cost":"free","estimated_hours":18,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a sensor prototype with documented firmware and test behavior."],"milestone":"Demonstrate a connected device prototype and its operating constraints."}]
+  },
+  {
+    "title": "Cloud Solutions Architect",
+    "group": "Cloud and Infrastructure",
+    "description": "Design secure, resilient, and cost-aware cloud architectures aligned with business requirements.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"cloud-architect","title":"Cloud architecture foundations","estimated_weeks":7,"skills":["Cloud Architecture","Networking","Security","AWS","Cost Management"],"resources":[    {"id":"cloud-architect-aws","title":"AWS architecture training","type":"course","provider":"AWS","level":"advanced","url":"https://aws.amazon.com/training/","cost":"varies","estimated_hours":16,"last_verified":"2026-10-31","needs_verification":true}],"projects":["Create a cloud architecture diagram with security and recovery decisions."],"milestone":"Review an architecture against reliability, security, and cost goals."}]
+  },
+  {
+    "title": "Site Reliability Engineer (SRE)",
+    "group": "Cloud and Infrastructure",
+    "description": "Improve service reliability through observability, automation, incident response, and engineering practices.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"sre-foundations","title":"Reliability engineering foundations","estimated_weeks":6,"skills":["Linux","Monitoring","SLOs","Incident Response","Automation"],"resources":[{"id":"sre-google-book","title":"Site Reliability Engineering books","type":"course","provider":"Google","level":"intermediate","url":"https://sre.google/books/","cost":"free","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Define service indicators and an incident response runbook for a sample service."],"milestone":"Use service-level objectives to prioritize reliability work."}]
+  },
+  {
+    "title": "Platform Engineer",
+    "group": "Cloud and Infrastructure",
+    "description": "Build internal platforms that help development teams deliver software safely and efficiently.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"platform-foundations","title":"Platform engineering foundations","estimated_weeks":6,"skills":["Kubernetes","APIs","Infrastructure as Code","Developer Experience","CI/CD"],"resources":[{"id":"platform-cncf","title":"CNCF training and certification","type":"course","provider":"CNCF","level":"intermediate","url":"https://www.cncf.io/training/","cost":"varies","estimated_hours":20,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Create a self-service deployment template with sensible guardrails."],"milestone":"Demonstrate a reusable developer platform capability."}]
+  },
+  {
+    "title": "Kubernetes / Container Engineer",
+    "group": "Cloud and Infrastructure",
+    "description": "Package, deploy, and operate containerized applications and Kubernetes platforms.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"kubernetes-foundations","title":"Containers and orchestration","estimated_weeks":6,"skills":["Docker","Kubernetes","Linux","Networking","Helm"],"resources":[{"id":"kubernetes-tutorials","title":"Kubernetes tutorials","type":"course","provider":"Kubernetes","level":"intermediate","url":"https://kubernetes.io/docs/tutorials/","cost":"free","estimated_hours":18,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Deploy a multi-service application to a local Kubernetes cluster."],"milestone":"Explain deployment, service discovery, and health checks."}]
+  },
+  {
+    "title": "Cloud Security Engineer",
+    "group": "Security",
+    "description": "Protect cloud environments through identity, network controls, threat detection, and secure design.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"cloud-security-foundations","title":"Cloud security foundations","estimated_weeks":6,"skills":["Cloud Security","IAM","Networking","Security Monitoring","Threat Modeling"],"resources":[{"id":"cloudsec-aws","title":"AWS security learning resources","type":"course","provider":"AWS","level":"intermediate","url":"https://aws.amazon.com/training/learn-about/security/","cost":"varies","estimated_hours":15,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Review a sample cloud configuration and prioritize defensive improvements."],"milestone":"Present a cloud security review with actionable remediations."}]
+  },
+  {
+    "title": "Ethical Hacker / Penetration Tester",
+    "group": "Security",
+    "description": "Assess systems for security weaknesses within explicit authorization and responsible testing scope.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"pentest-foundations","title":"Authorized security testing foundations","estimated_weeks":7,"skills":["Networking","Linux","Web Security","Scripting","Reporting"],"resources":[{"id":"pentest-comptia","title":"CompTIA PenTest+ certification","type":"certification","provider":"CompTIA","level":"advanced","url":"https://www.comptia.org/certifications/pentest","cost":"paid","estimated_hours":40,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Practice only in a local or intentionally vulnerable lab and write a remediation report."],"milestone":"Demonstrate responsible testing and clear remediation guidance in an authorized lab."}]
+  },
+  {
+    "title": "SOC Analyst",
+    "group": "Security",
+    "description": "Monitor security operations, triage alerts, and coordinate evidence-based incident response.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"soc-foundations","title":"SOC monitoring foundations","estimated_weeks":5,"skills":["SIEM","Networking","Log Analysis","Incident Response","Communication"],"resources":[{"id":"soc-comptia","title":"CompTIA Security+ certification","type":"certification","provider":"CompTIA","level":"beginner","url":"https://www.comptia.org/certifications/security","cost":"paid","estimated_hours":40,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Triage sample security events and document a defensible escalation decision."],"milestone":"Produce a concise alert triage report with evidence and next steps."}]
+  },
+  {
+    "title": "Blockchain / Web3 Developer",
+    "group": "Other Growing Roles",
+    "description": "Build decentralized applications and smart contracts with a focus on correctness and security.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"web3-foundations","title":"Smart contract foundations","estimated_weeks":6,"skills":["Solidity","JavaScript","Smart Contracts","Testing","Security"],"resources":[{"id":"web3-ethereum","title":"Ethereum developer documentation","type":"course","provider":"Ethereum Foundation","level":"intermediate","url":"https://ethereum.org/developers/docs/","cost":"free","estimated_hours":18,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build and test a simple contract on a local development network."],"milestone":"Explain contract behavior and security assumptions."}]
+  },
+  {
+    "title": "Game Developer",
+    "group": "Other Growing Roles",
+    "description": "Create interactive games using programming, game engines, and iterative design.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"game-foundations","title":"Game development foundations","estimated_weeks":6,"skills":["C#","Unity","Game Design","3D Mathematics","Git"],"resources":[{"id":"game-unity","title":"Unity Learn","type":"course","provider":"Unity","level":"beginner","url":"https://learn.unity.com/","cost":"free","estimated_hours":20,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Build a small playable game loop with input, scoring, and a restart flow."],"milestone":"Share a playable prototype and describe its design choices."}]
+  },
+  {
+    "title": "UI/UX Designer",
+    "group": "Other Growing Roles",
+    "description": "Research user needs and design usable, accessible digital experiences.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"uiux-foundations","title":"User-centered design foundations","estimated_weeks":5,"skills":["Figma","User Research","Wireframing","Accessibility","Prototyping"],"resources":[{"id":"uiux-google-ux","title":"Google UX Design Professional Certificate","type":"certification","provider":"Google","level":"beginner","url":"https://grow.google/certificates/ux-design/","cost":"paid","estimated_hours":200,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Prototype a user flow and validate it with a small usability study."],"milestone":"Present research findings and an accessible interactive prototype."}]
+  },
+  {
+    "title": "Technical Product Manager",
+    "group": "Other Growing Roles",
+    "description": "Lead technical product direction by aligning customer needs, engineering constraints, and measurable outcomes.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"technical-pm-foundations","title":"Technical product foundations","estimated_weeks":5,"skills":["Product Management","APIs","SQL","Roadmapping","Communication"],"resources":[{"id":"technical-pm-microsoft","title":"Microsoft Learn training","type":"course","provider":"Microsoft Learn","level":"beginner","url":"https://learn.microsoft.com/training/","cost":"free","estimated_hours":10,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Write a product requirements brief for an API-based feature with measurable outcomes."],"milestone":"Present a prioritized roadmap that explains technical tradeoffs."}]
+  },
+  {
+    "title": "Database Administrator (DBA)",
+    "group": "Other Growing Roles",
+    "description": "Maintain database reliability, performance, security, backup, and recovery.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"dba-foundations","title":"Database operations foundations","estimated_weeks":6,"skills":["SQL","Database Administration","Performance Tuning","Backup","Security"],"resources":[{"id":"dba-postgres","title":"PostgreSQL documentation","type":"course","provider":"PostgreSQL","level":"intermediate","url":"https://www.postgresql.org/docs/","cost":"free","estimated_hours":16,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Set up a database with backup, restore validation, and performance notes."],"milestone":"Demonstrate tested recovery and explain query performance choices."}]
+  },
+  {
+    "title": "Business Analyst",
+    "group": "Other Growing Roles",
+    "description": "Translate business needs into clear requirements, process improvements, and measurable outcomes.",
+    "priority": false,
+    "status": "basic",
+    "stages": [{"id":"business-analyst-foundations","title":"Requirements and analysis foundations","estimated_weeks":5,"skills":["Requirements Analysis","Communication","SQL","Process Modeling","Stakeholder Management"],"resources":[{"id":"ba-iiba","title":"IIBA certification overview","type":"certification","provider":"IIBA","level":"beginner","url":"https://www.iiba.org/business-analysis-certifications/","cost":"varies","estimated_hours":20,"last_verified":"2026-10-31","needs_verification":false}],"projects":["Document a process, stakeholder needs, and prioritized acceptance criteria."],"milestone":"Present a validated requirements brief and process improvement proposal."}]
+  }
+]

@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #f6f7fb; font-synthesis: none; text-rendering: optimizeLegibility; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button,input,textarea,select { font: inherit; }
+button { cursor: pointer; }
+.chart-tooltip { border: 1px solid #e8e9f1; border-radius: 12px; background: white; padding: 10px 12px; box-shadow: 0 8px 25px rgba(20,25,48,.1); font-size: 12px; }
+.mobile-overlay { background: rgba(15,23,42,.48); backdrop-filter: blur(2px); }
+.dark-theme { color: #e5e7eb !important; background: #0b1120 !important; }
+.dark-theme .text-ink { color: #e5e7eb !important; }
+.dark-theme header { border-color: #2b3850 !important; background-color: rgba(21,29,46,.96) !important; }
+.dark-theme .bg-white { background-color: #151d2e !important; }
+.dark-theme .bg-\[\#f6f7fb\] { background-color: #0b1120 !important; }
+.dark-theme .bg-slate-50,.dark-theme .bg-slate-100 { background-color: #1d273b !important; }
+.dark-theme .text-slate-900,.dark-theme .text-slate-800,.dark-theme .text-slate-700 { color: #eef2f8 !important; }
+.dark-theme .text-slate-600,.dark-theme .text-slate-500 { color: #bac4d6 !important; }
+.dark-theme .text-slate-400 { color: #91a0b7 !important; }
+.dark-theme .border-slate-100,.dark-theme .border-slate-200 { border-color: #2b3850 !important; }
+.dark-theme input,.dark-theme textarea,.dark-theme select { border-color: #34425d !important; color: #eef2f8 !important; background: #151d2e !important; }
+.dark-theme details { border-color: #2b3850 !important; }
+.dark-theme .chart-tooltip { border-color: #34425d; color: #eef2f8; background: #151d2e; }
+.dark-theme .bg-gradient-to-r { background-image: linear-gradient(to right,#1b2540,#1b2240) !important; }
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }

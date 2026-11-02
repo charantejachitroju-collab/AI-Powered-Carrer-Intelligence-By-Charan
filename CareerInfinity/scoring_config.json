@@ -1,0 +1,10 @@
+{
+  "weights": {
+    "semantic_similarity": 0.3,
+    "skill_match": 0.55,
+    "experience_fit": 0.15
+  },
+  "required_skill_weight": 0.85,
+  "nice_to_have_skill_weight": 0.15,
+  "cache_size": 128
+}

@@ -1,0 +1,22 @@
+[
+  {"expected_role":"AI/ML Engineer","resume":"Machine learning engineer with 4 years experience. Python, TensorFlow, PyTorch, SQL, Docker. Trained and deployed classification models, ran feature engineering experiments, and monitored model inference."},
+  {"expected_role":"Data Scientist","resume":"Data scientist with 3 years of experience using Python, SQL, machine learning, statistics, and data analysis. Built predictive models, designed experiments, and communicated research findings."},
+  {"expected_role":"Data Analyst","resume":"Entry-level data analyst with SQL, Excel, Power BI, Python, and data analysis. Created KPI dashboards, cleaned business data, and presented reporting insights."},
+  {"expected_role":"Backend Developer","resume":"Backend developer with 4 years experience building Python and Java services, SQL databases, REST APIs, authentication, and version control workflows with Git."},
+  {"expected_role":"Frontend Developer","resume":"Frontend developer with 2 years experience building accessible responsive interfaces with HTML, CSS, JavaScript, React, TypeScript, and Git."},
+  {"expected_role":"Full-Stack Developer","resume":"Full-stack developer with 4 years experience. JavaScript, React, HTML, CSS, APIs, SQL, Git, Python, Docker. Built and deployed end-to-end web applications."},
+  {"expected_role":"DevOps Engineer","resume":"DevOps engineer with 4 years experience automating CI/CD and infrastructure operations. Docker, AWS, Git, Python, testing, Kubernetes, monitoring, and deployments."},
+  {"expected_role":"Cloud Engineer","resume":"Cloud engineer with 4 years experience provisioning cloud infrastructure with AWS, Azure, Google Cloud, Docker, and Git. Improved scalability and deployment reliability."},
+  {"expected_role":"Data Engineer","resume":"Data engineer with 4 years experience writing SQL and Python data pipelines, ETL, data quality checks, warehouses, AWS, and Google Cloud."},
+  {"expected_role":"MLOps Engineer","resume":"MLOps engineer with 5 years experience automating machine learning training and deployment. Python, Docker, AWS, Git, PyTorch, TensorFlow, model monitoring."},
+  {"expected_role":"NLP Engineer","resume":"NLP engineer with 4 years experience building language processing systems. Python, machine learning, LLMs, PyTorch, APIs, embeddings, text classification, and language model evaluation."},
+  {"expected_role":"QA Engineer","resume":"QA engineer with 2 years experience writing test cases, regression suites, and test automation. Testing, Selenium, Playwright, Python, Java, Git, APIs, defect tracking."},
+  {"expected_role":"Cybersecurity Analyst","resume":"Junior cybersecurity analyst with 2 years experience in security monitoring and incident response. Linux, networking, Python, SQL, information security, threat detection, AWS."},
+  {"expected_role":"Product Manager","resume":"Product manager with 4 years experience leading product discovery and roadmap prioritization. Communication, leadership, data analysis, SQL, Excel, stakeholders, product strategy."},
+  {"expected_role":"Business Intelligence Analyst","resume":"Business intelligence analyst with 3 years experience building Power BI dashboards and SQL reports. Excel, data analysis, communication, KPI reporting, business metrics."},
+  {"expected_role":"Automation Engineer","resume":"Automation engineer with 2 years experience streamlining workflows using Python, APIs, workflow automation, Playwright, testing, Selenium, and Git."},
+  {"expected_role":"Agentic AI Engineer","resume":"Agentic AI engineer with 3 years experience building AI agents and RAG apps. Python, LLMs, retrieval augmented generation, APIs, LangChain, workflow automation, Docker."},
+  {"expected_role":"Mobile Application Developer","resume":"Mobile developer with 2 years experience creating Android and iOS mobile applications with Java, JavaScript, React, APIs, testing, SQL, and Git."},
+  {"expected_role":"Database Administrator","resume":"Database administrator with 4 years experience maintaining SQL databases on Linux, AWS, and Azure. Python scripting, backups, recovery, security, database performance."},
+  {"expected_role":"UX Designer","resume":"UX designer with 2 years experience conducting user research, interaction design, prototyping, usability testing, communication, design, HTML, CSS, accessibility."}
+]

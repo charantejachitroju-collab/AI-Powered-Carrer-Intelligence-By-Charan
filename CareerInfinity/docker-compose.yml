@@ -1,0 +1,30 @@
+services:
+  career-infinity:
+    build: .
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 5000
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID:-carrerinfinity-28ab1}
+      ROLE_EMBEDDING_MODEL: ${ROLE_EMBEDDING_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_API_URL: ${LLM_API_URL:-https://api.openai.com/v1/chat/completions}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+      DRIVE_ADMIN_TOKEN: ${DRIVE_ADMIN_TOKEN:-}
+      CAREERINFINITY_DB_PATH: /app/instance/career-infinity.sqlite3
+    volumes:
+      - career_data:/app/instance
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/api/health', timeout=3)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+
+volumes:
+  career_data:

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="700" viewBox="0 0 1100 700" role="img" aria-labelledby="title description">
+  <title id="title">Illustrative CareerInfinity best-fit roles dashboard</title>
+  <desc id="description">Example dashboard with a Data Analyst best-fit score, ranked job roles, a resume skills radar chart, matched skills, gaps, and learning roadmap.</desc>
+  <rect width="1100" height="700" fill="#f5f6fb"/>
+  <rect width="190" height="700" fill="#111a2e"/>
+  <text x="26" y="46" fill="#fff" font-family="Arial,sans-serif" font-size="18" font-weight="700">CareerInfinity</text>
+  <text x="27" y="102" fill="#abb5cc" font-family="Arial,sans-serif" font-size="12">WORKSPACE</text>
+  <rect x="14" y="121" width="162" height="42" rx="9" fill="#34385e"/>
+  <text x="37" y="147" fill="#fff" font-family="Arial,sans-serif" font-size="14">Home</text>
+  <text x="37" y="196" fill="#c6ccdc" font-family="Arial,sans-serif" font-size="14">Resume</text>
+  <text x="37" y="239" fill="#c6ccdc" font-family="Arial,sans-serif" font-size="14">Skills &amp; Gaps</text>
+  <text x="37" y="282" fill="#c6ccdc" font-family="Arial,sans-serif" font-size="14">Roadmap</text>
+  <text x="37" y="325" fill="#c6ccdc" font-family="Arial,sans-serif" font-size="14">Interview Prep</text>
+  <text x="37" y="368" fill="#c6ccdc" font-family="Arial,sans-serif" font-size="14">Jobs &amp; Drives</text>
+  <text x="226" y="50" fill="#18233b" font-family="Arial,sans-serif" font-size="25" font-weight="700">Best-fit job roles</text>
+  <text x="226" y="76" fill="#69748c" font-family="Arial,sans-serif" font-size="13">Your resume highlights SQL, Excel, Python, Power BI and data analysis.</text>
+  <rect x="222" y="101" width="850" height="130" rx="16" fill="#fff" stroke="#e0e3ed"/>
+  <text x="247" y="133" fill="#7a64d6" font-family="Arial,sans-serif" font-size="11" font-weight="700">BEST FIT</text>
+  <text x="247" y="166" fill="#18233b" font-family="Arial,sans-serif" font-size="24" font-weight="700">Data Analyst</text>
+  <text x="247" y="192" fill="#59647b" font-family="Arial,sans-serif" font-size="13">Your resume mentions 4 of 5 weighted core skills, including SQL, Excel and Power BI.</text>
+  <text x="247" y="213" fill="#7a8497" font-family="Arial,sans-serif" font-size="12">Expected level: Entry-level</text>
+  <circle cx="1000" cy="166" r="44" fill="none" stroke="#ececf5" stroke-width="9"/>
+  <circle cx="1000" cy="166" r="44" fill="none" stroke="#715bd3" stroke-width="9" stroke-linecap="round" stroke-dasharray="229 277" transform="rotate(-90 1000 166)"/>
+  <text x="1000" y="173" text-anchor="middle" fill="#18233b" font-family="Arial,sans-serif" font-size="23" font-weight="700">83%</text>
+  <rect x="222" y="250" width="415" height="218" rx="14" fill="#fff" stroke="#e0e3ed"/>
+  <text x="244" y="280" fill="#18233b" font-family="Arial,sans-serif" font-size="15" font-weight="700">Top role matches</text>
+  <text x="244" y="321" fill="#59647b" font-family="Arial,sans-serif" font-size="12">Data Analyst</text>
+  <rect x="374" y="306" width="190" height="18" rx="6" fill="#eeeef5"/><rect x="374" y="306" width="158" height="18" rx="6" fill="#715bd3"/><text x="575" y="320" fill="#59647b" font-family="Arial,sans-serif" font-size="12">83%</text>
+  <text x="244" y="359" fill="#59647b" font-family="Arial,sans-serif" font-size="12">BI Analyst</text>
+  <rect x="374" y="344" width="190" height="18" rx="6" fill="#eeeef5"/><rect x="374" y="344" width="149" height="18" rx="6" fill="#8d7ddd"/><text x="575" y="358" fill="#59647b" font-family="Arial,sans-serif" font-size="12">78%</text>
+  <text x="244" y="397" fill="#59647b" font-family="Arial,sans-serif" font-size="12">Data Scientist</text>
+  <rect x="374" y="382" width="190" height="18" rx="6" fill="#eeeef5"/><rect x="374" y="382" width="137" height="18" rx="6" fill="#a296e2"/><text x="575" y="396" fill="#59647b" font-family="Arial,sans-serif" font-size="12">72%</text>
+  <text x="244" y="435" fill="#59647b" font-family="Arial,sans-serif" font-size="12">Data Engineer</text>
+  <rect x="374" y="420" width="190" height="18" rx="6" fill="#eeeef5"/><rect x="374" y="420" width="126" height="18" rx="6" fill="#b5abe7"/><text x="575" y="434" fill="#59647b" font-family="Arial,sans-serif" font-size="12">66%</text>
+  <rect x="654" y="250" width="418" height="218" rx="14" fill="#fff" stroke="#e0e3ed"/>
+  <text x="676" y="280" fill="#18233b" font-family="Arial,sans-serif" font-size="15" font-weight="700">Resume skills vs role priorities</text>
+  <polygon points="856,314 907,349 888,410 824,410 805,349" fill="none" stroke="#dfe2eb"/>
+  <line x1="856" y1="369" x2="856" y2="314" stroke="#e2e4ec"/><line x1="856" y1="369" x2="907" y2="349" stroke="#e2e4ec"/><line x1="856" y1="369" x2="888" y2="410" stroke="#e2e4ec"/><line x1="856" y1="369" x2="824" y2="410" stroke="#e2e4ec"/><line x1="856" y1="369" x2="805" y2="349" stroke="#e2e4ec"/>
+  <polygon points="856,326 890,356 879,397 836,395 815,353" fill="#715bd326" stroke="#715bd3" stroke-width="2"/>
+  <polygon points="856,322 898,352 885,404 831,401 812,352" fill="#239d7826" stroke="#239d78" stroke-width="2"/>
+  <text x="856" y="305" text-anchor="middle" fill="#69748c" font-family="Arial,sans-serif" font-size="10">SQL</text>
+  <text x="918" y="350" fill="#69748c" font-family="Arial,sans-serif" font-size="10">Excel</text>
+  <text x="895" y="425" fill="#69748c" font-family="Arial,sans-serif" font-size="10">Power BI</text>
+  <text x="804" y="425" fill="#69748c" font-family="Arial,sans-serif" font-size="10">Python</text>
+  <text x="769" y="350" fill="#69748c" font-family="Arial,sans-serif" font-size="10">Analysis</text>
+  <circle cx="682" cy="447" r="5" fill="#239d78"/><text x="692" y="451" fill="#69748c" font-family="Arial,sans-serif" font-size="10">Resume signals</text>
+  <circle cx="806" cy="447" r="5" fill="#715bd3"/><text x="816" y="451" fill="#69748c" font-family="Arial,sans-serif" font-size="10">Role priorities</text>
+  <rect x="222" y="487" width="415" height="185" rx="14" fill="#fff" stroke="#e0e3ed"/>
+  <text x="244" y="518" fill="#18233b" font-family="Arial,sans-serif" font-size="15" font-weight="700">Matched skills</text>
+  <rect x="244" y="535" width="64" height="25" rx="12" fill="#e4f6ef"/><text x="276" y="552" text-anchor="middle" fill="#08775f" font-family="Arial,sans-serif" font-size="11">SQL</text>
+  <rect x="316" y="535" width="68" height="25" rx="12" fill="#e4f6ef"/><text x="350" y="552" text-anchor="middle" fill="#08775f" font-family="Arial,sans-serif" font-size="11">Excel</text>
+  <rect x="392" y="535" width="76" height="25" rx="12" fill="#e4f6ef"/><text x="430" y="552" text-anchor="middle" fill="#08775f" font-family="Arial,sans-serif" font-size="11">Power BI</text>
+  <text x="244" y="592" fill="#18233b" font-family="Arial,sans-serif" font-size="14" font-weight="700">Skills to develop</text>
+  <rect x="244" y="608" width="88" height="25" rx="12" fill="#fcebed"/><text x="288" y="625" text-anchor="middle" fill="#a83242" font-family="Arial,sans-serif" font-size="11">Data Analysis</text>
+  <rect x="340" y="608" width="72" height="25" rx="12" fill="#fcebed"/><text x="376" y="625" text-anchor="middle" fill="#a83242" font-family="Arial,sans-serif" font-size="11">Python</text>
+  <rect x="654" y="487" width="418" height="185" rx="14" fill="#fff" stroke="#e0e3ed"/>
+  <text x="676" y="518" fill="#18233b" font-family="Arial,sans-serif" font-size="15" font-weight="700">Learning roadmap</text>
+  <circle cx="685" cy="551" r="10" fill="#eeecfb"/><text x="685" y="555" text-anchor="middle" fill="#715bd3" font-family="Arial,sans-serif" font-size="10" font-weight="700">1</text>
+  <text x="706" y="555" fill="#18233b" font-family="Arial,sans-serif" font-size="13" font-weight="700">Data Analysis</text>
+  <text x="706" y="575" fill="#69748c" font-family="Arial,sans-serif" font-size="11">Study the fundamentals, then practice in a small project.</text>
+  <circle cx="685" cy="611" r="10" fill="#eeecfb"/><text x="685" y="615" text-anchor="middle" fill="#715bd3" font-family="Arial,sans-serif" font-size="10" font-weight="700">2</text>
+  <text x="706" y="615" fill="#18233b" font-family="Arial,sans-serif" font-size="13" font-weight="700">Python</text>
+  <text x="706" y="635" fill="#69748c" font-family="Arial,sans-serif" font-size="11">Add the skill to your roadmap and build practical experience.</text>
+</svg>

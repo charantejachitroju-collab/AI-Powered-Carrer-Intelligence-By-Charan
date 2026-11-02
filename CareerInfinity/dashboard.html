@@ -1089,6 +1089,29 @@ h2 { font-size:22px; }
 .score-breakdown > div { display:grid; grid-template-columns:1fr auto; align-items:center; gap:7px 12px; }
 .score-breakdown .progress { grid-column:1/-1; }
 .score-explanation { grid-column:1/-1; color:var(--muted); font-size:14px; }
+.role-match-section { margin-top:22px; padding-top:20px; border-top:1px solid var(--line); }
+.role-match-hero { display:grid; grid-template-columns:minmax(0,1fr) 120px; align-items:center; gap:18px; padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--panel2); }
+.role-match-hero h3 { margin:4px 0; font-size:20px; }
+.role-match-hero p { margin:5px 0; }
+.role-match-gauge { width:112px; height:112px; }
+.role-match-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:16px; }
+.role-match-chart { min-width:0; padding:14px; border:1px solid var(--line); border-radius:12px; }
+.role-match-chart h4,.role-match-detail h4 { margin:0 0 10px; }
+.role-match-chart svg { display:block; width:100%; overflow:visible; }
+.role-match-chart text { fill:var(--muted); font-family:inherit; font-size:11px; }
+.role-match-list { display:grid; gap:7px; margin-top:14px; }
+.role-match-option { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:3px 12px; width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:10px; color:var(--text); background:var(--panel); text-align:left; cursor:pointer; }
+.role-match-option[aria-pressed="true"] { border-color:#7777e8; box-shadow:0 0 0 2px rgba(91,92,226,.1); }
+.role-match-option small { grid-column:1/-1; color:var(--muted); }
+.role-match-detail { margin-top:14px; padding:16px; border:1px solid var(--line); border-radius:12px; }
+.role-match-skills { display:flex; flex-wrap:wrap; gap:7px; margin:9px 0 15px; }
+.role-match-chip { display:inline-flex; padding:5px 9px; border-radius:999px; font-size:12px; }
+.role-match-chip.matched { color:#08775f; background:#e4f6ef; }
+.role-match-chip.missing { color:#a83242; background:#fcebed; }
+.role-match-learning { display:grid; gap:8px; padding-left:22px; }
+.role-match-learning li { padding-left:2px; }
+.role-match-learning .text-button { display:block; }
+.role-match-error { padding:12px; border:1px solid #e8bec3; border-radius:10px; color:#a83242; background:#fff5f5; }
 .empty-state { padding:16px; border:1px dashed var(--line); border-radius:12px; }
 .empty-state p { margin:4px 0 12px; color:var(--muted); }
 .weekly-plan,.interview-intro,.interview-question { margin:0 0 18px; padding:18px; }
@@ -1143,6 +1166,10 @@ h2 { font-size:22px; }
   main { padding:18px 16px calc(88px + env(safe-area-inset-bottom)); }
   .dashboard-stat-grid { grid-template-columns:1fr; gap:10px; }
   .dashboard-bottom-grid,.onboarding-steps { grid-template-columns:1fr; }
+  .role-match-grid { grid-template-columns:1fr; }
+  .role-match-hero { grid-template-columns:minmax(0,1fr) 92px; gap:10px; padding:12px; }
+  .role-match-gauge { width:88px; height:88px; }
+  .role-match-hero h3 { font-size:17px; }
   .onboarding-card { padding:18px; }
   .profile-menu { right:0; }
 }
@@ -1484,6 +1511,7 @@ let auth;
 let currentUser = null;
 let selectedResume = null;
 let isUploading = false;
+let roleMatchState = null;
 let dashboardSnapshot = null;
 let dashboardActivities = [];
 let profileData = {
@@ -2764,7 +2792,37 @@ async function uploadResume(statusId, buttonId) {
     }
 
     renderAnalysis(data, { filename: selectedResume.name });
-    status(statusId, "Resume analyzed successfully.", "success");
+    roleMatchState = { status:"loading" };
+    renderRoleMatchPanel();
+    status(statusId, "Resume analyzed. Ranking best-fit roles...");
+
+    const roleForm = new FormData();
+    roleForm.append("resume", selectedResume);
+    const roleResponse = await fetch("/match-roles", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token },
+      body: roleForm,
+      signal: controller.signal
+    });
+    const roleContentType = roleResponse.headers.get("content-type") || "";
+    let roleData = { error:"Role matching returned an unexpected response." };
+    if (roleContentType.includes("application/json")) {
+      try {
+        roleData = await roleResponse.json();
+      } catch {
+        throw new Error("Role matching returned an invalid response. Please try again.");
+      }
+    }
+    if (!roleResponse.ok) {
+      if (roleResponse.status === 401) {
+        await signOut(auth);
+        throw new Error("Your session expired. Please sign in again.");
+      }
+      throw new Error(roleData.error || "Best-fit role matching failed.");
+    }
+    roleMatchState = { status:"ready", data:roleData, selectedIndex:0 };
+    renderRoleMatchPanel();
+    status(statusId, "Resume analyzed and best-fit roles ranked.", "success");
     $("welcome").textContent = "Your resume insights are ready.";
   } catch (error) {
     const message = error.name === "AbortError"
@@ -2772,6 +2830,10 @@ async function uploadResume(statusId, buttonId) {
       : error instanceof TypeError
         ? "Could not reach the server. Check your connection and try again."
         : error.message || "Resume analysis failed. Please try again.";
+    if (roleMatchState?.status === "loading") {
+      roleMatchState = { status:"error", message };
+      renderRoleMatchPanel();
+    }
     status(statusId, message, "error");
   } finally {
     clearTimeout(timeoutId);
@@ -2785,6 +2847,140 @@ async function uploadResume(statusId, buttonId) {
 
 $("uploadBtn").addEventListener("click", () => uploadResume("uploadStatus","uploadBtn"));
 $("uploadBtn2").addEventListener("click", () => uploadResume("uploadStatus2","uploadBtn2"));
+
+function renderRoleRadar(skillProfile) {
+  const skills = (skillProfile || []).slice(0, 6);
+  if (!skills.length) return '<p class="small muted">No role skill profile is available.</p>';
+  const center = 112;
+  const radius = 72;
+  const coordinates = skills.map((skill, index) => {
+    const angle = -Math.PI / 2 + index * 2 * Math.PI / skills.length;
+    return {
+      angle,
+      x: center + radius * Math.cos(angle),
+      y: center + radius * Math.sin(angle),
+      skill
+    };
+  });
+  const polygon = key => coordinates.map(point => {
+    const value = Math.max(0, Math.min(100, Number(point.skill[key]) || 0)) / 100;
+    return `${center + (point.x - center) * value},${center + (point.y - center) * value}`;
+  }).join(" ");
+  const axes = coordinates.map(point => `
+    <line x1="${center}" y1="${center}" x2="${point.x}" y2="${point.y}" stroke="var(--line)" />
+    <text x="${center + (point.x - center) * 1.28}" y="${center + (point.y - center) * 1.28}" text-anchor="middle" dominant-baseline="middle">${escapeHTML(point.skill.name)}</text>
+  `).join("");
+  return `<svg viewBox="0 0 224 224" role="img" aria-label="Radar chart comparing resume skill signals with role priorities">
+    <polygon points="${coordinates.map(point => `${point.x},${point.y}`).join(" ")}" fill="none" stroke="var(--line)" />
+    ${axes}
+    <polygon points="${polygon("role_priority")}" fill="rgba(113,91,211,.13)" stroke="#715bd3" stroke-width="2" />
+    <polygon points="${polygon("resume_score")}" fill="rgba(35,157,120,.16)" stroke="#239d78" stroke-width="2" />
+  </svg>
+  <p class="small muted"><span class="role-match-chip matched">Resume signals</span> <span class="tag">Role priorities</span></p>`;
+}
+
+function renderRoleBars(roles) {
+  const rows = roles.slice(0, 5);
+  const height = Math.max(96, rows.length * 38);
+  return `<svg viewBox="0 0 380 ${height}" role="img" aria-label="Ranked role match scores">
+    ${rows.map((role, index) => {
+      const y = index * 38 + 5;
+      const value = Math.max(0, Math.min(100, Number(role.match_score) || 0));
+      return `<text x="0" y="${y + 15}">${escapeHTML(role.role)}</text>
+        <rect x="174" y="${y}" width="158" height="20" rx="6" fill="var(--panel2)" />
+        <rect x="174" y="${y}" width="${158 * value / 100}" height="20" rx="6" fill="#715bd3" />
+        <text x="340" y="${y + 15}">${value}%</text>`;
+    }).join("")}
+  </svg>`;
+}
+
+function renderRoleDetail(role) {
+  const matched = (role.matched_skills || []).map(skill =>
+    `<span class="role-match-chip matched">${escapeHTML(skill)}</span>`
+  ).join("");
+  const missing = (role.missing_skills || []).map(skill =>
+    `<span class="role-match-chip missing">${escapeHTML(skill)}</span>`
+  ).join("");
+  const learning = (role.skills_to_learn || []).map((skill, index) => `
+    <li><strong>${index + 1}. ${escapeHTML(skill)}</strong>
+      <span class="small muted">Study the fundamentals, then practice this skill in a small project related to ${escapeHTML(role.role)}.</span>
+      <button class="text-button" type="button" data-add-skill="${escapeHTML(skill)}">Add to my roadmap</button>
+    </li>
+  `).join("");
+  const breakdown = role.score_breakdown || {};
+  return `<article class="role-match-detail">
+    <h4>${escapeHTML(role.role)} · ${Math.max(0, Math.min(100, Number(role.match_score) || 0))}% match</h4>
+    <p class="small muted">${escapeHTML(role.why_this_role_fits || "")} Expected level: ${escapeHTML(role.expected_experience_level || "Not specified")}.</p>
+    <p><strong>Matched skills</strong></p><div class="role-match-skills">${matched || '<span class="small muted">No matching skills detected yet.</span>'}</div>
+    <p><strong>Skills to develop</strong></p><div class="role-match-skills">${missing || '<span class="role-match-chip matched">All required skills detected</span>'}</div>
+    <h4>Learning roadmap</h4>
+    ${learning ? `<ol class="role-match-learning">${learning}</ol>` : '<p class="small muted">Keep applying these skills in projects and practical exercises.</p>'}
+    <p class="small muted">Score components: semantic ${Number(breakdown.semantic_similarity) || 0}%, skills ${Number(breakdown.skill_match) || 0}%, experience ${Number(breakdown.experience_fit) || 0}%.
+      ${breakdown.semantic_model_available ? "" : "The embedding model was unavailable; semantic similarity uses a lexical fallback."}</p>
+  </article>`;
+}
+
+function renderRoleMatchPanel() {
+  const panel = $("roleMatchPanel");
+  if (!panel) return;
+  if (!roleMatchState || roleMatchState.status === "loading") {
+    panel.innerHTML = '<p class="small muted" role="status">Ranking roles against your resume...</p>';
+    return;
+  }
+  if (roleMatchState.status === "error") {
+    panel.innerHTML = `<p class="role-match-error" role="alert">Resume analysis completed, but best-fit roles could not be loaded: ${escapeHTML(roleMatchState.message)}</p>`;
+    return;
+  }
+  const data = roleMatchState.data;
+  const roles = data.roles || [];
+  if (!roles.length) {
+    panel.innerHTML = '<p class="role-match-error" role="status">No roles were returned. Check that the role catalog contains matching profiles.</p>';
+    return;
+  }
+  const index = Math.min(roleMatchState.selectedIndex || 0, roles.length - 1);
+  roleMatchState.selectedIndex = index;
+  const best = roles[0];
+  const selected = roles[index];
+  const gaugeScore = Math.max(0, Math.min(100, Number(best.match_score) || 0));
+  const circumference = 2 * Math.PI * 46;
+  const dashOffset = circumference * (1 - gaugeScore / 100);
+  panel.innerHTML = `
+    <section class="role-match-section" aria-labelledby="bestFitHeading">
+      <h3 id="bestFitHeading">Best-fit job roles</h3>
+      <p class="small muted">${escapeHTML(data.candidate_summary || "")}
+        ${data.years_of_experience == null ? " No explicit years-of-experience figure was found." : ` Estimated experience: ${escapeHTML(data.years_of_experience)} years.`}</p>
+      <article class="role-match-hero">
+        <div><span class="eyebrow">BEST FIT</span><h3>${escapeHTML(best.role)}</h3>
+          <p>${escapeHTML(best.why_this_role_fits || "")}</p>
+          <span class="small muted">Expected level: ${escapeHTML(best.expected_experience_level || "Not specified")}</span>
+        </div>
+        <svg class="role-match-gauge" viewBox="0 0 112 112" role="img" aria-label="${gaugeScore}% match for ${escapeHTML(best.role)}">
+          <circle cx="56" cy="56" r="46" fill="none" stroke="var(--line)" stroke-width="9" />
+          <circle cx="56" cy="56" r="46" fill="none" stroke="#715bd3" stroke-width="9" stroke-linecap="round" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}" transform="rotate(-90 56 56)" />
+          <text x="56" y="61" text-anchor="middle" fill="var(--text)" font-size="24" font-weight="700">${gaugeScore}%</text>
+        </svg>
+      </article>
+      <div class="role-match-grid">
+        <section class="role-match-chart"><h4>Top role matches</h4>${renderRoleBars(roles)}</section>
+        <section class="role-match-chart"><h4>Resume skills vs role priorities</h4>${renderRoleRadar(selected.skill_profile)}</section>
+      </div>
+      <div class="role-match-list" aria-label="Select a role to see its skill gaps">
+        ${roles.map((role, roleIndex) => `<button class="role-match-option" type="button" data-role-index="${roleIndex}" aria-pressed="${roleIndex === index}">
+          <strong>${escapeHTML(roleIndex + 1)}. ${escapeHTML(role.role)}</strong><strong>${Math.max(0, Math.min(100, Number(role.match_score) || 0))}%</strong>
+          <small>${escapeHTML(role.why_this_role_fits || "")}</small>
+        </button>`).join("")}
+      </div>
+      ${renderRoleDetail(selected)}
+      <p class="small muted">Role matches are estimates based on resume text, not a hiring decision. Scanned/image-only PDFs need OCR, which is not included.</p>
+    </section>`;
+}
+
+document.addEventListener("click", event => {
+  const button = event.target.closest("[data-role-index]");
+  if (!button || roleMatchState?.status !== "ready") return;
+  roleMatchState.selectedIndex = Number(button.dataset.roleIndex);
+  renderRoleMatchPanel();
+});
 
 const ROLE_ROADMAPS = {
   "Python Developer": [
@@ -2892,6 +3088,7 @@ function renderDashboardRoles(careers = []) {
 }
 
 function renderAnalysis(data, options = {}) {
+  roleMatchState = options.roleMatch || null;
   const skills = data.skills || [];
   const careers = data.career_matches || [];
   const score = value => Math.max(0, Math.min(100, Number(value) || 0));
@@ -2911,7 +3108,9 @@ function renderAnalysis(data, options = {}) {
     <h3>Try these improvements</h3>
     <ul>${(data.suggestions || []).map(s => `<li>${escapeHTML(s)}</li>`).join("")}</ul>
     <p class="small">${escapeHTML(data.disclaimer || "")}</p>
+    <div id="roleMatchPanel" aria-live="polite"></div>
   `;
+  renderRoleMatchPanel();
 
   $("skillResults").innerHTML = skills.length ? skills.map(s => `
     <div class="rowitem">

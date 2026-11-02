@@ -1,0 +1,8 @@
+[
+  {"title": "Google Data Analytics Professional Certificate", "provider": "Google", "level": "Beginner", "skill": "Data Analysis", "type": "Certificate", "url": "https://www.coursera.org/professional-certificates/google-data-analytics"},
+  {"title": "AWS Certified Cloud Practitioner", "provider": "Amazon Web Services", "level": "Beginner", "skill": "AWS", "type": "Certification", "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/"},
+  {"title": "Microsoft Azure Fundamentals", "provider": "Microsoft", "level": "Beginner", "skill": "Azure", "type": "Certification", "url": "https://learn.microsoft.com/credentials/certifications/azure-fundamentals/"},
+  {"title": "Machine Learning Specialization", "provider": "DeepLearning.AI", "level": "Intermediate", "skill": "Machine Learning", "type": "Course", "url": "https://www.coursera.org/specializations/machine-learning-introduction"},
+  {"title": "Python for Everybody", "provider": "University of Michigan", "level": "Beginner", "skill": "Python", "type": "Course", "url": "https://www.coursera.org/specializations/python"},
+  {"title": "Meta Front-End Developer Professional Certificate", "provider": "Meta", "level": "Beginner", "skill": "React", "type": "Certificate", "url": "https://www.coursera.org/professional-certificates/meta-front-end-developer"}
+]
