@@ -24,6 +24,7 @@ truststore.inject_into_ssl()
 import httpx
 from docx import Document
 from docx.opc.exceptions import PackageNotFoundError
+from dotenv import load_dotenv
 from fastapi import FastAPI, File, Header, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, Response
@@ -44,6 +45,9 @@ from models import Base
 
 from role_matching import RoleMatcher, detect_skill_counts
 
+APP_DIR = Path(__file__).resolve().parent
+load_dotenv(APP_DIR / ".env", override=False)
+
 logger = logging.getLogger(__name__)
 
 MAX_RESUME_SIZE = 5 * 1024 * 1024
@@ -63,7 +67,6 @@ DATABASE_PATH = os.environ.get(
     os.path.join("instance", "career-infinity.sqlite3"),
 )
 _SCHEMA_PATHS = set()
-APP_DIR = Path(__file__).resolve().parent
 MARKET_DATA_PATH = APP_DIR / "market_data.json"
 CERTIFICATIONS_PATH = APP_DIR / "certifications.json"
 ROADMAPS_PATH = APP_DIR / "roadmaps.json"
@@ -910,14 +913,41 @@ def build_interview_report(answers, role, difficulty):
     }
 
 
-async def optional_llm_json(system_prompt, user_payload):
-    api_key = os.environ.get("LLM_API_KEY", "").strip()
+class OptionalLLMRequestError(Exception):
+    def __init__(self, message, status_code=None):
+        super().__init__(message)
+        self.status_code = status_code
+
+
+def _parse_llm_json_content(content):
+    if not isinstance(content, str):
+        return None
+    cleaned = re.sub(r"^\s*```(?:json)?\s*", "", content.strip(), flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s*```\s*$", "", cleaned).strip()
+    decoder = json.JSONDecoder()
+    starts = [0] + [match.start() for match in re.finditer(r"[\[{]", cleaned)]
+    for start in dict.fromkeys(starts):
+        try:
+            parsed, _end = decoder.raw_decode(cleaned, start)
+        except (json.JSONDecodeError, ValueError):
+            continue
+        if isinstance(parsed, dict):
+            return parsed
+        if isinstance(parsed, list):
+            return {"questions": parsed}
+    return None
+
+
+async def optional_llm_json(
+    system_prompt, user_payload, *, raise_on_error=False, log_raw_response=False
+):
+    api_key = (os.environ.get("LLM_API_KEY") or os.environ.get("OPENAI_API_KEY") or "").strip()
     if not api_key:
         return None
     api_url = os.environ.get("LLM_API_URL", "https://api.openai.com/v1/chat/completions")
     model = os.environ.get("LLM_MODEL", "gpt-4o-mini")
     try:
-        async with httpx.AsyncClient(timeout=18) as client:
+        async with httpx.AsyncClient(timeout=45) as client:
             response = await client.post(
                 api_url,
                 headers={"Authorization": f"Bearer {api_key}"},
@@ -932,11 +962,50 @@ async def optional_llm_json(system_prompt, user_payload):
                 },
             )
             response.raise_for_status()
-        result = json.loads(response.json()["choices"][0]["message"]["content"])
-        return result if isinstance(result, dict) else None
-    except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError) as error:
-        logger.warning("Optional LLM request failed: %s", error)
+    except httpx.HTTPStatusError as error:
+        status_code = error.response.status_code
+        response_body = error.response.text.replace(api_key, "[REDACTED]")
+        logger.error(
+            "Optional LLM request returned HTTP %s; response body: %s",
+            status_code,
+            response_body,
+        )
+        if raise_on_error:
+            raise OptionalLLMRequestError(
+                f"AI provider returned HTTP {status_code}.", status_code
+            ) from error
         return None
+    except httpx.HTTPError as error:
+        message = str(error).replace(api_key, "[REDACTED]")
+        logger.error("Optional LLM transport error (%s): %s", type(error).__name__, message)
+        if raise_on_error:
+            raise OptionalLLMRequestError("AI provider request failed.") from error
+        return None
+    try:
+        content = response.json()["choices"][0]["message"]["content"]
+    except (json.JSONDecodeError, KeyError, IndexError, TypeError, ValueError):
+        raw_response = response.text.replace(api_key, "[REDACTED]")
+        if log_raw_response:
+            logger.warning("Optional LLM response had an invalid shape; raw response: %s", raw_response)
+        else:
+            logger.warning("Optional LLM response had an invalid shape.")
+        return None
+    if not isinstance(content, str):
+        raw_response = response.text.replace(api_key, "[REDACTED]")
+        if log_raw_response:
+            logger.warning("Optional LLM response content was not text; raw response: %s", raw_response)
+        else:
+            logger.warning("Optional LLM response content was not text.")
+        return None
+    safe_content = content.replace(api_key, "[REDACTED]")
+    result = _parse_llm_json_content(content)
+    if log_raw_response and result is None:
+        logger.warning("Optional LLM response contained invalid JSON; raw response: %s", safe_content)
+    elif log_raw_response:
+        logger.info("Optional LLM raw response: %s", safe_content)
+    elif result is None:
+        logger.warning("Optional LLM response contained invalid JSON.")
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -1802,12 +1871,22 @@ def interview_question_prompt(role, category, skills, experience, difficulty, ro
 
 def validate_interview_questions(value, role, round_name, difficulty, count, prior_questions=None):
     questions = value.get("questions") if isinstance(value, dict) else None
-    if not isinstance(questions, list) or len(questions) != count:
+    if (
+        isinstance(count, bool)
+        or not isinstance(count, int)
+        or not isinstance(questions, list)
+        or len(questions) != count
+    ):
         return None
     result, seen = [], set()
-    prior_tokens = [set(re.findall(r"[a-z0-9]+", text.casefold())) for text in (prior_questions or [])]
+    prior_tokens = [
+        set(re.findall(r"[a-z0-9]+", text.casefold()))
+        for text in (prior_questions or [])
+        if isinstance(text, str)
+    ]
     for item in questions:
-        if not isinstance(item, dict): return None
+        if not isinstance(item, dict):
+            return None
         text = item.get("text")
         if not isinstance(text, str) or not 15 <= len(text.strip()) <= 1000: return None
         normalized = re.sub(r"\W+", " ", text.casefold()).strip()
@@ -1819,20 +1898,106 @@ def validate_interview_questions(value, role, round_name, difficulty, count, pri
         prior_tokens.append(tokens)
         concepts = item.get("expected_answer_concepts", [])
         criteria = item.get("evaluation_criteria", [])
-        if not isinstance(concepts, list) or not isinstance(criteria, list): return None
+        if (
+            not isinstance(concepts, list)
+            or not concepts
+            or not all(isinstance(value, str) and value.strip() for value in concepts)
+            or not isinstance(criteria, list)
+            or not criteria
+            or not all(isinstance(value, str) and value.strip() for value in criteria)
+        ):
+            return None
+        category = item.get("category")
+        time_limit = item.get("time_limit_seconds")
+        question_type = item.get("question_type")
+        if not isinstance(category, str) or not category.strip() or len(category) > 100:
+            return None
+        if isinstance(time_limit, bool) or not isinstance(time_limit, int) or not 60 <= time_limit <= 1800:
+            return None
+        if not isinstance(question_type, str) or question_type not in {"text", "code", "case_study"}:
+            return None
         result.append({"id": str(uuid.uuid4()), "text": text.strip(), "job_role": role,
-            "round": round_name, "category": str(item.get("category", "Role knowledge"))[:100],
-            "difficulty": difficulty, "expected_answer_concepts": [str(x)[:160] for x in concepts[:12]],
-            "evaluation_criteria": [str(x)[:160] for x in criteria[:12]],
-            "time_limit_seconds": max(60, min(1800, int(item.get("time_limit_seconds", 300)))),
-            "question_type": item.get("question_type") if item.get("question_type") in {"text", "code", "case_study"} else "text"})
+            "round": round_name, "category": category.strip(),
+            "difficulty": difficulty,
+            "expected_answer_concepts": [value.strip()[:160] for value in concepts[:12]],
+            "evaluation_criteria": [value.strip()[:160] for value in criteria[:12]],
+            "time_limit_seconds": time_limit,
+            "question_type": question_type})
     return result
+
+
+def sample_interview_questions(role, round_name, difficulty, count):
+    samples = {
+        INTERVIEW_ROUNDS[0]: [
+            ("What interests you about this role, and which of your skills would help you contribute first?",
+             "Role motivation", ["role understanding", "relevant skills"], ["Connect skills to the role"]),
+            ("How do you approach a task when the requirements are new or unclear?",
+             "Problem solving", ["clarifying questions", "structured approach"], ["Explain a practical sequence"]),
+            ("Tell me about a skill you recently learned and how you applied it.",
+             "Learning agility", ["learning process", "practical application"], ["Give a specific example"]),
+            ("How would you decide which part of a new assignment to work on first?",
+             "Prioritization", ["impact", "urgency", "dependencies"], ["Explain the trade-offs"]),
+            ("What would you do to check that your work is accurate before sharing it?",
+             "Quality", ["verification", "review", "clear communication"], ["Describe concrete checks"]),
+        ],
+        INTERVIEW_ROUNDS[1]: [
+            ("Describe the core skills and tools you would use to do this role effectively.",
+             "Role knowledge", ["relevant skills", "tool selection"], ["Tie choices to role needs"]),
+            ("How would you investigate an unfamiliar problem related to this role?",
+             "Problem solving", ["gather evidence", "test assumptions"], ["Use a clear, repeatable method"]),
+            ("How do you choose between two possible approaches to a work task?",
+             "Decision making", ["requirements", "trade-offs", "constraints"], ["Compare options with evidence"]),
+            ("How would you explain a technical or complex idea to a non-specialist?",
+             "Communication", ["audience awareness", "plain language"], ["Give a concise explanation strategy"]),
+            ("What checks would you use to make sure a role-related task is complete and reliable?",
+             "Quality", ["validation", "edge cases", "documentation"], ["Describe measurable checks"]),
+        ],
+        INTERVIEW_ROUNDS[2]: [
+            ("A stakeholder gives you an unfamiliar task for this role. How would you clarify, plan, and verify your work?",
+             "Practical case", ["clarify outcome", "break down work", "verify results"], ["Present a feasible end-to-end plan"]),
+            ("You have limited time and several important tasks. How would you set priorities and communicate progress?",
+             "Practical case", ["impact", "deadlines", "communication"], ["Make priorities and trade-offs explicit"]),
+            ("You discover that the information for a task is incomplete. What would you do next?",
+             "Practical case", ["identify gaps", "ask focused questions", "state assumptions"], ["Avoid unsupported assumptions"]),
+            ("A first attempt at a work task does not meet expectations. How would you diagnose and improve it?",
+             "Practical case", ["review evidence", "identify cause", "iterate"], ["Show a constructive improvement cycle"]),
+            ("How would you hand off a completed task so another teammate can continue the work?",
+             "Practical case", ["document decisions", "share status", "next steps"], ["Make the handoff actionable"]),
+        ],
+        INTERVIEW_ROUNDS[3]: [
+            ("Tell me about a time you worked with others to complete a challenging project.",
+             "Behavioral", ["your contribution", "collaboration", "outcome"], ["Use a specific example"]),
+            ("Describe a time you received feedback and changed your approach.",
+             "Behavioral", ["feedback", "response", "result"], ["Show reflection and follow-through"]),
+            ("Tell me about a time you had to manage competing deadlines.",
+             "Behavioral", ["prioritization", "communication", "outcome"], ["Explain how you managed trade-offs"]),
+            ("Describe a mistake or setback and what you learned from it.",
+             "Behavioral", ["ownership", "corrective action", "learning"], ["Focus on constructive learning"]),
+            ("What kind of team environment helps you do your best work, and how do you support it?",
+             "Behavioral", ["self-awareness", "communication", "team contribution"], ["Give a practical, respectful answer"]),
+        ],
+    }[round_name]
+    questions = [
+        {
+            "text": text.replace("this role", role),
+            "category": category,
+            "expected_answer_concepts": concepts,
+            "evaluation_criteria": criteria,
+            "time_limit_seconds": 300,
+            "question_type": "case_study" if round_name == INTERVIEW_ROUNDS[2] else "text",
+        }
+        for text, category, concepts, criteria in samples[:min(count, len(samples))]
+    ]
+    return validate_interview_questions(
+        {"questions": questions}, role, round_name, difficulty, len(questions)
+    ) or []
 
 
 @app.get("/mock-interviews/roles")
 def mock_interview_roles(authorization: str | None = Header(default=None)):
     authenticated_uid(authorization)
-    return {"roles": interview_role_catalog(), "categories": list(INTERVIEW_ROLE_GROUPS)}
+    ai_configured = bool((os.environ.get("LLM_API_KEY") or os.environ.get("OPENAI_API_KEY") or "").strip())
+    return {"roles": interview_role_catalog(), "categories": list(INTERVIEW_ROLE_GROUPS), "ai_configured": ai_configured}
 
 
 @app.post("/mock-interviews/start")
@@ -1851,7 +2016,7 @@ async def mock_interview_start(request: Request, authorization: str | None = Hea
     if experience not in {"Fresher", "Beginner", "Intermediate", "Experienced"}: raise HTTPException(400, "Invalid experience level.")
     if difficulty not in {"Easy", "Medium", "Hard", "Adaptive"}: raise HTTPException(400, "Invalid difficulty.")
     if mode not in {"Camera + Microphone", "Voice Only", "Text Based"}: raise HTTPException(400, "Invalid interview mode.")
-    if not isinstance(count, int) or not 1 <= count <= 20: raise HTTPException(400, "Questions per round must be between 1 and 20.")
+    if isinstance(count, bool) or not isinstance(count, int) or not 1 <= count <= 20: raise HTTPException(400, "Questions per round must be between 1 and 20.")
     category = role_data["category"] if role_data else "Custom role"
     skills = role_data["skills"] if role_data else ["role fundamentals", "problem solving", "communication"]
     sid, now = str(uuid.uuid4()), datetime.now(timezone.utc).isoformat()
@@ -1884,22 +2049,85 @@ async def mock_interview_round(session_id: str, round_number: int, authorization
         if not row: raise HTTPException(404,"Interview session not found.")
         payload=json.loads(row["questions_json"]); answers=json.loads(row["answers_json"]); rounds=payload["rounds"]
         key=str(round_number)
-        if key in rounds: return {"questions":rounds[key]["questions"],"status":rounds[key]["status"],"provider":"AI" if rounds[key].get("ai_generated") else "Demo"}
+        if key in rounds:
+            cached_round = rounds[key]
+            return {
+                "questions": cached_round["questions"],
+                "status": cached_round["status"],
+                "provider": cached_round.get(
+                    "provider",
+                    "AI" if cached_round.get("ai_generated") else "Sample questions (AI offline)",
+                ),
+            }
         if round_number > 1 and str(round_number-1) not in rounds: raise HTTPException(409,"Complete the previous round first.")
         cfg=payload["config"]; name=INTERVIEW_ROUNDS[round_number-1]
         previous=cfg.get("history_questions",[])+[q["text"] for r in rounds.values() for q in r["questions"]]
-        gen=await optional_llm_json(interview_question_prompt(row["role"],cfg["category"],cfg["skills"],cfg["experience"],row["difficulty"],name,cfg["count"],previous),{"role":row["role"],"category":cfg["category"],"skills":cfg["skills"],"experience":cfg["experience"],"difficulty":row["difficulty"],"round":name,"count":cfg["count"],"previous_questions":previous})
-        questions=validate_interview_questions(gen,row["role"],name,row["difficulty"],cfg["count"],previous)
+        questions = None
+        ai_configured = bool((os.environ.get("LLM_API_KEY") or os.environ.get("OPENAI_API_KEY") or "").strip())
+        if ai_configured:
+            prompt = interview_question_prompt(
+                row["role"], cfg["category"], cfg["skills"], cfg["experience"],
+                row["difficulty"], name, cfg["count"], previous,
+            )
+            request_payload = {
+                "role": row["role"], "category": cfg["category"], "skills": cfg["skills"],
+                "experience": cfg["experience"], "difficulty": row["difficulty"],
+                "round": name, "count": cfg["count"], "previous_questions": previous,
+            }
+            request_failed = False
+            try:
+                generated = await optional_llm_json(
+                    prompt, request_payload, raise_on_error=True, log_raw_response=True
+                )
+                questions = validate_interview_questions(
+                    generated, row["role"], name, row["difficulty"], cfg["count"], previous
+                )
+            except OptionalLLMRequestError as error:
+                logger.warning(
+                    "Interview question generation is using offline samples after provider failure (HTTP %s).",
+                    error.status_code if error.status_code is not None else "transport error",
+                )
+                request_failed = True
+
+            if not questions and not request_failed:
+                logger.warning("AI interview questions were invalid; retrying generation once.")
+                retry_previous = previous + [
+                    "First generation was invalid or contained a near duplicate; create entirely different questions."
+                ]
+                retry_prompt = interview_question_prompt(
+                    row["role"], cfg["category"], cfg["skills"], cfg["experience"],
+                    row["difficulty"], name, cfg["count"], retry_previous,
+                )
+                retry_payload = {**request_payload, "previous_questions": retry_previous}
+                try:
+                    retry = await optional_llm_json(
+                        retry_prompt, retry_payload, raise_on_error=True, log_raw_response=True
+                    )
+                    questions = validate_interview_questions(
+                        retry, row["role"], name, row["difficulty"], cfg["count"], previous
+                    )
+                except OptionalLLMRequestError as error:
+                    logger.warning(
+                        "Interview question retry failed; using offline samples (HTTP %s).",
+                        error.status_code if error.status_code is not None else "transport error",
+                    )
+        else:
+            logger.info("No LLM API key is configured; using offline interview samples.")
+
+        ai_generated = bool(questions)
+        provider = "AI"
         if not questions:
-            retry_prompt=interview_question_prompt(row["role"],cfg["category"],cfg["skills"],cfg["experience"],row["difficulty"],name,cfg["count"],previous+["First generation was invalid or contained a near duplicate; create entirely different questions."])
-            retry=await optional_llm_json(retry_prompt,{"role":row["role"],"category":cfg["category"],"skills":cfg["skills"],"experience":cfg["experience"],"difficulty":row["difficulty"],"round":name,"count":cfg["count"],"previous_questions":previous})
-            questions=validate_interview_questions(retry,row["role"],name,row["difficulty"],cfg["count"],previous)
-        ai_generated=bool(questions)
-        if not questions:
-            raise HTTPException(503,"AI question generation is unavailable or returned invalid questions. No demo questions were substituted. Please retry.")
-        rounds[key]={"title":name,"questions":questions,"status":"in_progress","ai_generated":ai_generated}
+            questions = sample_interview_questions(
+                row["role"], name, row["difficulty"], cfg["count"]
+            )
+            ai_generated = False
+            provider = "Sample questions (AI offline)"
+            if not questions:
+                logger.error("No valid interview questions were available for round %s.", round_number)
+                raise HTTPException(503, "No interview questions are available. Please retry.")
+        rounds[key]={"title":name,"questions":questions,"status":"in_progress","ai_generated":ai_generated,"provider":provider}
         with connection: connection.execute("UPDATE interview_sessions SET questions_json=? WHERE id=? AND uid=?",(json.dumps(payload),session_id,uid))
-        return {"questions":questions,"status":"in_progress","provider":"AI" if ai_generated else "Demo"}
+        return {"questions":questions,"status":"in_progress","provider":provider}
     finally: connection.close()
 
 

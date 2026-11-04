@@ -10,3 +10,4 @@ httpx
 pytest
 sqlalchemy
 truststore
+python-dotenv

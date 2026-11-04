@@ -45,10 +45,13 @@ FastAPI.
 The Firebase web settings in the existing sign-in page are public client
 configuration, not server credentials. Restrict its API key and authorized
 domains in Firebase/Google Cloud. `FIREBASE_PROJECT_ID` must match that
-Firebase app. Set `LLM_API_KEY`, `LLM_API_URL`, and `LLM_MODEL` only when you
-want optional LLM-based career suggestions, interview questions, and answer
-feedback. Without an LLM configuration, the app uses deterministic fallback
-questions and explains that evaluation is not AI-reviewed.
+Firebase app. The API loads settings from a local `.env` file as well as the
+process environment. Copy `.env.example` to `.env`, then set `OPENAI_API_KEY`
+or `LLM_API_KEY`, `LLM_API_URL`, and `LLM_MODEL` to enable AI interview
+questions and answer feedback. Keep the key on the server and out of source
+control. Without a key, the interview page explains the required setup and
+question generation returns a clear configuration error; it does not silently
+substitute demo questions.
 
 ## Dashboard modules
 
@@ -155,12 +158,11 @@ Default component weights are 30% semantic similarity, 55% skill overlap, and
 version. If the embedding package/model is unavailable, the server logs the
 fallback and uses lexical cosine similarity instead.
 
-If `LLM_API_KEY` is configured, an OpenAI-compatible provider may review up to
-three role explanations, generate interview prompts, and score mock-interview
-answers. Resume text and interview responses are sent to that provider only
-when configured. LLM failures fall back to deterministic results. Never use
-untrusted resume text as instructions; the role-matching prompt treats it as
-data.
+If `OPENAI_API_KEY` or `LLM_API_KEY` is configured, an OpenAI-compatible
+provider may review up to three role explanations, generate interview prompts,
+and score mock-interview answers. Resume text and interview responses are sent
+to that provider only when configured. Never use untrusted resume text as
+instructions; the role-matching prompt treats it as data.
 
 ## Architecture
 

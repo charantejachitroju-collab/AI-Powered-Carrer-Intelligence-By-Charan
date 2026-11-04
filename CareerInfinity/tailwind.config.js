@@ -4,13 +4,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: "#172033",
-        lavender: "#f5f3ff",
-        violet: "#6d5bd0",
-        navy: "#111827",
+        ink: "var(--ink)",
+        lavender: "var(--soft)",
+        violet: {
+          50: "var(--soft)",
+          100: "var(--soft)",
+          200: "var(--line)",
+          300: "#c4b5fd",
+          400: "#a78bfa",
+          500: "#8b5cf6",
+          600: "var(--brand)",
+          700: "var(--brand)",
+          800: "#4c3d9a",
+          900: "#382b75",
+        },
+        navy: "var(--ink)",
       },
       boxShadow: {
-        soft: "0 12px 35px rgba(37, 40, 77, 0.06)",
+        soft: "var(--shadow)",
       },
     },
   },

@@ -7,6 +7,9 @@
 <title>CareerInfinity | Dashboard</title>
 <meta name="description" content="Your personalized career intelligence dashboard.">
 <link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -1176,6 +1179,139 @@ h2 { font-size:22px; }
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
 }
+:root {
+  color-scheme:light;
+  --bg:#e4f1ed; --panel:rgba(255,255,255,.5); --ink:#0f1f1c; --mute:#4b5f5a;
+  --line:rgba(15,31,28,.1); --edge:rgba(255,255,255,.75);
+  --shadow:0 8px 32px rgba(20,70,60,.12);
+  --g1:#7fe0c4; --g2:#8fb4ff; --g3:#ffd48a;
+  --brand:#0b7a66; --brand-ink:#fff; --soft:rgba(11,122,102,.14);
+  --warm:#f6b93b; --side:rgba(255,255,255,.4); --panel-solid:rgba(255,255,255,.94);
+  --text:var(--ink); --muted:var(--mute); --blue:var(--brand); --green:var(--brand);
+  --panel2:var(--soft); --nav:var(--side); --shadow-hover:var(--shadow);
+  font-family:"Instrument Sans",ui-sans-serif,system-ui,sans-serif;
+}
+html[data-theme="dark"] {
+  color-scheme:dark;
+  --bg:#08110f; --panel:rgba(255,255,255,.06); --ink:#e8f1ee; --mute:#9bb0aa;
+  --line:rgba(255,255,255,.1); --edge:rgba(255,255,255,.14);
+  --shadow:0 8px 32px rgba(0,0,0,.4);
+  --g1:#0f6b59; --g2:#23407a; --g3:#6b4a12;
+  --brand:#3ccfae; --brand-ink:#05201a; --soft:rgba(60,207,174,.16);
+  --warm:#f6b93b; --side:rgba(255,255,255,.04); --panel-solid:rgba(12,25,22,.96);
+  --text:var(--ink); --muted:var(--mute); --blue:var(--brand); --green:var(--brand);
+  --panel2:var(--soft); --nav:var(--side); --shadow-hover:var(--shadow);
+}
+@media(prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme:dark;
+    --bg:#08110f; --panel:rgba(255,255,255,.06); --ink:#e8f1ee; --mute:#9bb0aa;
+    --line:rgba(255,255,255,.1); --edge:rgba(255,255,255,.14);
+    --shadow:0 8px 32px rgba(0,0,0,.4);
+    --g1:#0f6b59; --g2:#23407a; --g3:#6b4a12;
+    --brand:#3ccfae; --brand-ink:#05201a; --soft:rgba(60,207,174,.16);
+    --warm:#f6b93b; --side:rgba(255,255,255,.04); --panel-solid:rgba(12,25,22,.96);
+    --text:var(--ink); --muted:var(--mute); --blue:var(--brand); --green:var(--brand);
+    --panel2:var(--soft); --nav:var(--side); --shadow-hover:var(--shadow);
+  }
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  :root { --panel:rgba(255,255,255,.92); }
+  html[data-theme="dark"] { --panel:rgba(17,34,30,.96); }
+  @media(prefers-color-scheme:dark) { :root:not([data-theme="light"]) { --panel:rgba(17,34,30,.96); } }
+}
+body {
+  min-width:320px;
+  color:var(--ink);
+  font-family:"Instrument Sans",ui-sans-serif,system-ui,sans-serif;
+  background:
+    radial-gradient(ellipse at 0% 0%,var(--g1),transparent 42%),
+    radial-gradient(ellipse at 100% 0%,var(--g2),transparent 43%),
+    radial-gradient(ellipse at 50% 100%,var(--g3),transparent 44%),
+    var(--bg);
+  background-attachment:fixed;
+}
+h1,h2,h3,h4,.brand { font-family:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif; }
+.sidebar {
+  border-right:1px solid var(--edge);
+  background:var(--side);
+  color:var(--ink);
+  -webkit-backdrop-filter:blur(20px) saturate(1.6);
+  backdrop-filter:blur(20px) saturate(1.6);
+}
+.nav button { color:var(--mute); }
+.nav button:hover,.nav button.active { color:var(--brand); background:var(--soft); }
+.card,.feature,.job-fit-item,.dashboard-role-card,.roadmap-career-card,
+.roadmap-stage,.roadmap-resource-card,.roadmap-stat,.role-match-detail,
+.role-match-chart,.job-fit-empty,.empty-state,.weekly-plan,.interview-intro,
+.interview-question,.roadmap-added-skills {
+  border:1px solid var(--edge);
+  border-radius:24px;
+  background:var(--panel);
+  box-shadow:var(--shadow),inset 0 1px 0 var(--edge);
+  -webkit-backdrop-filter:blur(20px) saturate(1.6);
+  backdrop-filter:blur(20px) saturate(1.6);
+}
+.btn,.category-chip,.theme-toggle,.profile-menu {
+  border-color:var(--edge);
+  border-radius:12px;
+  box-shadow:var(--shadow),inset 0 1px 0 var(--edge);
+  -webkit-backdrop-filter:blur(20px) saturate(1.6);
+  backdrop-filter:blur(20px) saturate(1.6);
+}
+.btn:not(.secondary),.category-chip.active { color:var(--brand-ink); background:var(--brand); }
+.btn.secondary,.category-chip { color:var(--ink); background:var(--panel); }
+.field,.dropzone {
+  border-color:var(--line);
+  border-radius:12px;
+  color:var(--ink);
+  background:var(--panel-solid);
+}
+.field::placeholder { color:var(--mute); }
+.feature { color:var(--ink); }
+.feature>span:last-child,.muted,.small { color:var(--mute); }
+.roadmap-intro,.roadmap-next {
+  border:1px solid var(--edge);
+  border-radius:24px;
+  color:var(--ink);
+  background:var(--panel);
+  box-shadow:var(--shadow),inset 0 1px 0 var(--edge);
+}
+.roadmap-intro h2,.roadmap-intro p { color:var(--ink); }
+.roadmap-next { background:linear-gradient(110deg,rgba(11,122,102,.88),rgba(24,70,120,.85)); }
+.roadmap-next p,.roadmap-next strong { color:#fff; }
+.progress { background:var(--line); }
+.progress span { background:var(--brand); }
+a,.text-button { color:var(--brand); }
+a:hover,.text-button:hover { color:var(--ink); }
+:focus-visible { outline:3px solid var(--brand); outline-offset:3px; }
+@media(max-width:859px) {
+  .app,.app.sidebar-collapsed { display:block; }
+  .sidebar,.sidebar-collapsed .sidebar {
+    position:fixed; z-index:30; inset:78px 0 auto; display:block; width:100%;
+    height:62px; padding:6px 9px; overflow:hidden; border-right:0;
+    border-bottom:1px solid var(--edge); box-shadow:var(--shadow);
+  }
+  .sidebar-heading,.sidebar-profile,.desktop-sidebar-toggle,.sidebar-backdrop,.mobile-menu-toggle { display:none !important; }
+  .sidebar .nav,.sidebar-collapsed .nav {
+    display:flex; width:100%; align-items:center; gap:7px; padding:0;
+    overflow-x:auto; overflow-y:hidden; scrollbar-width:thin;
+  }
+  .sidebar .nav button,.sidebar-collapsed .nav button {
+    display:flex; flex:0 0 auto; flex-direction:row; justify-content:center;
+    min-width:unset; min-height:46px; margin:0; padding:7px 12px;
+    border:1px solid var(--edge); border-radius:12px; color:var(--mute);
+    font-size:12px; white-space:nowrap;
+  }
+  .sidebar .nav button.active { border-color:var(--brand); color:var(--brand); background:var(--soft); }
+  main { padding:18px 16px 32px; padding-top:98px; }
+  .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:480px) {
+  .stats,.two,.dashboard-role-list,.roadmap-career-grid,.roadmap-timeline,.role-match-grid { grid-template-columns:1fr; }
+  main { padding-right:14px; padding-left:14px; }
+  .card { padding:18px; }
+}
 </style>
 </head>
 
@@ -1481,9 +1617,9 @@ h2 { font-size:22px; }
 
 <script type="module">
 import { initializeApp } from
-  "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from
-  "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+  "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
 
 /* Firebase web-app config (public client settings). */
 const firebaseConfig = {
@@ -2661,7 +2797,8 @@ function initializeRoadmap() {
 
 try {
   const savedTheme = localStorage.getItem("careerInfinity:theme");
-  document.documentElement.dataset.theme = savedTheme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = savedTheme
+    || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
   $("themeToggle").setAttribute("aria-label", `Switch to ${savedTheme === "dark" ? "light" : "dark"} theme`);
   $("themeToggle").title = `Switch to ${savedTheme === "dark" ? "light" : "dark"} theme`;
 } catch (error) {

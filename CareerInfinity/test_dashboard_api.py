@@ -1,8 +1,12 @@
+import asyncio
 import io
+import json
 from datetime import date, timedelta
+from unittest.mock import AsyncMock
 
 from docx import Document
 from fastapi.testclient import TestClient
+import pytest
 
 import app
 
@@ -265,6 +269,155 @@ def test_interview_session_persists_answers_and_report(monkeypatch, tmp_path):
     assert report.status_code == 200
     assert report.json()["complete"] is True
     assert len(report.json()["answers"]) == 3
+
+
+def _valid_mock_interview_questions():
+    texts = [
+        "How would you turn a vague role-related request into a clear plan and measurable result?",
+        "Describe how you would compare two tools or methods before choosing one for a project task.",
+        "What steps would you take to investigate an unexpected result and find its cause?",
+        "How would you check a completed analysis or deliverable for accuracy before sharing it?",
+        "Explain how you would communicate a complex finding to a teammate or stakeholder.",
+    ]
+    return {
+        "questions": [
+            {
+                "text": text,
+                "category": "Role knowledge",
+                "expected_answer_concepts": ["clear approach", "verification"],
+                "evaluation_criteria": ["Explain the steps", "Describe the checks"],
+                "time_limit_seconds": 300,
+                "question_type": "text",
+            }
+            for text in texts
+        ]
+    }
+
+
+def _start_mock_interview(client):
+    started = client.post(
+        "/mock-interviews/start",
+        json={"role": "Data Analyst", "experience": "Fresher", "difficulty": "Medium"},
+    )
+    assert started.status_code == 200, started.text
+    return started.json()["id"]
+
+
+def test_mock_interview_uses_labeled_samples_when_ai_is_unavailable(monkeypatch, tmp_path):
+    monkeypatch.delenv("LLM_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    client = setup_client(monkeypatch, tmp_path)
+    session_id = _start_mock_interview(client)
+
+    response = client.post(f"/mock-interviews/{session_id}/round/1")
+    cached = client.post(f"/mock-interviews/{session_id}/round/1")
+
+    assert response.status_code == 200, response.text
+    assert response.json()["provider"] == "Sample questions (AI offline)"
+    assert 1 <= len(response.json()["questions"]) <= 5
+    assert cached.json()["provider"] == "Sample questions (AI offline)"
+
+    connection = app.get_database()
+    try:
+        saved = connection.execute(
+            "SELECT questions_json FROM interview_sessions WHERE id=?",
+            (session_id,),
+        ).fetchone()
+    finally:
+        connection.close()
+    stored_round = json.loads(saved["questions_json"])["rounds"]["1"]
+    assert stored_round["ai_generated"] is False
+
+
+def test_mock_interview_retries_invalid_ai_output_once(monkeypatch, tmp_path):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.delenv("LLM_API_KEY", raising=False)
+    client = setup_client(monkeypatch, tmp_path)
+    session_id = _start_mock_interview(client)
+    generate = AsyncMock(side_effect=[None, _valid_mock_interview_questions()])
+    monkeypatch.setattr(app, "optional_llm_json", generate)
+
+    response = client.post(f"/mock-interviews/{session_id}/round/1")
+
+    assert response.status_code == 200, response.text
+    assert response.json()["provider"] == "AI"
+    assert len(response.json()["questions"]) == 5
+    assert generate.await_count == 2
+    assert all(call.kwargs["raise_on_error"] for call in generate.await_args_list)
+
+
+def test_mock_interview_does_not_retry_provider_http_errors(monkeypatch, tmp_path):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.delenv("LLM_API_KEY", raising=False)
+    client = setup_client(monkeypatch, tmp_path)
+    session_id = _start_mock_interview(client)
+    generate = AsyncMock(
+        side_effect=app.OptionalLLMRequestError("AI provider returned HTTP 429.", 429)
+    )
+    monkeypatch.setattr(app, "optional_llm_json", generate)
+
+    response = client.post(f"/mock-interviews/{session_id}/round/1")
+
+    assert response.status_code == 200, response.text
+    assert response.json()["provider"] == "Sample questions (AI offline)"
+    assert generate.await_count == 1
+
+
+def test_interview_question_parser_accepts_fenced_json_and_embedded_arrays():
+    fenced = app._parse_llm_json_content(
+        '```json\n{"questions":[{"text":"How would you approach this task?"}]}\n```'
+    )
+    embedded = app._parse_llm_json_content(
+        'Questions generated:\n[{"text":"How would you approach this task?"}]'
+    )
+
+    assert fenced == {"questions": [{"text": "How would you approach this task?"}]}
+    assert embedded == fenced
+    assert app.validate_interview_questions(
+        {"questions": [{
+            "text": "How would you approach this task in a clear and reliable way?",
+            "category": "Role knowledge",
+            "expected_answer_concepts": ["planning"],
+            "evaluation_criteria": ["clear steps"],
+            "time_limit_seconds": "invalid",
+            "question_type": "text",
+        }]},
+        "Data Analyst", app.INTERVIEW_ROUNDS[0], "Medium", 1,
+    ) is None
+
+
+def test_optional_llm_logs_http_status_and_provider_error_body(monkeypatch, caplog):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    request = app.httpx.Request(
+        "POST", "https://api.openai.com/v1/chat/completions"
+    )
+    provider_response = app.httpx.Response(
+        429,
+        request=request,
+        json={"error": {"message": "request quota exceeded"}},
+    )
+
+    class FakeAsyncClient:
+        def __init__(self, timeout):
+            self.timeout = timeout
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_args):
+            return False
+
+        async def post(self, *_args, **_kwargs):
+            return provider_response
+
+    monkeypatch.setattr(app.httpx, "AsyncClient", FakeAsyncClient)
+
+    with pytest.raises(app.OptionalLLMRequestError) as error:
+        asyncio.run(app.optional_llm_json("Return JSON only.", {}, raise_on_error=True))
+
+    assert error.value.status_code == 429
+    assert "HTTP 429" in caplog.text
+    assert "request quota exceeded" in caplog.text
 
 
 def test_drives_filters_applications_and_admin_crud(monkeypatch, tmp_path):

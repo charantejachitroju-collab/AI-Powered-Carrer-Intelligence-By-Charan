@@ -7,88 +7,132 @@
   <title>CareerInfinity | Login</title>
   <meta name="description" content="Sign in or create your CareerInfinity account.">
   <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root {
       color-scheme:light;
-      --ink:#191a2b; --muted:#62677a; --blue:#6555d9;
-      --line:#e7e7ef; --surface:#fff; --bg:#f8f8fb;
+      --bg:#e4f1ed; --panel:rgba(255,255,255,.5); --ink:#0f1f1c; --mute:#4b5f5a;
+      --line:rgba(15,31,28,.1); --edge:rgba(255,255,255,.75);
+      --shadow:0 8px 32px rgba(20,70,60,.12);
+      --g1:#7fe0c4; --g2:#8fb4ff; --g3:#ffd48a;
+      --brand:#0b7a66; --brand-ink:#fff; --soft:rgba(11,122,102,.14);
+      --warm:#f6b93b; --side:rgba(255,255,255,.4);
+      --panel-solid:rgba(255,255,255,.94);
+      --font-heading:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+      --font-body:"Instrument Sans",ui-sans-serif,system-ui,sans-serif;
     }
-    html[data-theme="dark"] {
-      color-scheme:dark; --ink:#f2f1f8; --muted:#b1b2c2; --blue:#a496ff;
-      --line:#30313e; --surface:#191a24; --bg:#11121a;
+    html[data-theme="dark"],html[data-theme="dark"] body {
+      color-scheme:dark;
+      --bg:#08110f; --panel:rgba(255,255,255,.06); --ink:#e8f1ee; --mute:#9bb0aa;
+      --line:rgba(255,255,255,.1); --edge:rgba(255,255,255,.14);
+      --shadow:0 8px 32px rgba(0,0,0,.4);
+      --g1:#0f6b59; --g2:#23407a; --g3:#6b4a12;
+      --brand:#3ccfae; --brand-ink:#05201a; --soft:rgba(60,207,174,.16);
+      --warm:#f6b93b; --side:rgba(255,255,255,.04);
+      --panel-solid:rgba(12,25,22,.96);
+    }
+    @media(prefers-color-scheme:dark) {
+      html:not([data-theme="light"]) {
+        color-scheme:dark;
+        --bg:#08110f; --panel:rgba(255,255,255,.06); --ink:#e8f1ee; --mute:#9bb0aa;
+        --line:rgba(255,255,255,.1); --edge:rgba(255,255,255,.14);
+        --shadow:0 8px 32px rgba(0,0,0,.4);
+        --g1:#0f6b59; --g2:#23407a; --g3:#6b4a12;
+        --brand:#3ccfae; --brand-ink:#05201a; --soft:rgba(60,207,174,.16);
+        --warm:#f6b93b; --side:rgba(255,255,255,.04);
+        --panel-solid:rgba(12,25,22,.96);
+      }
     }
     * { box-sizing:border-box; }
     body {
       min-height:100vh; margin:0; padding:24px;
       display:grid; place-items:center;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+      font-family:var(--font-body);
       color:var(--ink);
-      background:var(--bg);
+      background:
+        radial-gradient(ellipse at 0% 0%,var(--g1),transparent 42%),
+        radial-gradient(ellipse at 100% 0%,var(--g2),transparent 43%),
+        radial-gradient(ellipse at 50% 100%,var(--g3),transparent 44%),
+        var(--bg);
+      background-attachment:fixed;
     }
     .login-card {
       width:100%; max-width:440px; padding:36px;
-      background:var(--surface); border:1px solid var(--line); border-radius:14px;
+      background:var(--panel); border:1px solid var(--edge); border-radius:24px;
+      box-shadow:var(--shadow),inset 0 1px 0 var(--edge);
+      -webkit-backdrop-filter:blur(20px) saturate(1.6);
+      backdrop-filter:blur(20px) saturate(1.6);
     }
     .logo { text-align:center; font-size:34px; margin-bottom:8px; }
     .brand {
-      text-align:center; font-size:29px; font-weight:780; letter-spacing:-.04em;
+      text-align:center; font-family:var(--font-heading); font-size:29px; font-weight:700; letter-spacing:-.04em;
       color:var(--ink); margin:0;
     }
-    .brand span { color:var(--blue); }
+    .brand span { color:var(--brand); }
     .subtitle {
-      text-align:center; color:var(--muted); margin:9px 0 28px;
+      text-align:center; color:var(--mute); margin:9px 0 28px;
     }
     .form-label { display:block; color:var(--ink); font-size:14px; font-weight:650; margin-bottom:7px; }
     .mb-3 { margin-bottom:18px; }
     .form-control {
       display:block; width:100%; padding:12px 13px;
-      color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:9px;
+      color:var(--ink); background:var(--panel-solid); border:1px solid var(--line); border-radius:12px;
     }
     .form-control:focus {
-      border-color:var(--blue); outline:3px solid rgba(53,91,214,.14);
+      border-color:var(--brand); outline:3px solid var(--soft);
     }
     .password-box { position: relative; }
     .password-box input { padding-right:72px; }
     .show-btn {
       position:absolute; right:8px; top:50%; transform:translateY(-50%);
-      border:0; border-radius:6px; padding:6px 9px;
-      background:transparent; color:#294bb8; font-weight:650;
+      border:0; border-radius:8px; padding:6px 9px;
+      background:transparent; color:var(--brand); font-weight:650;
     }
     .login-btn {
-      width:100%; padding:13px; margin-top:8px; border:0; border-radius:9px;
-      background:var(--blue); color:white; font-size:15px; font-weight:700;
+      width:100%; padding:13px; margin-top:8px; border:1px solid transparent; border-radius:12px;
+      background:var(--brand); color:var(--brand-ink); font-size:15px; font-weight:700;
+      box-shadow:var(--shadow),inset 0 1px 0 var(--edge);
       transition:background .16s ease,transform .16s ease;
     }
-    .login-btn:hover:not(:disabled) { background:#294bb8; transform:translateY(-1px); }
+    .login-btn:hover:not(:disabled) { filter:brightness(1.06); transform:translateY(-1px); }
     .login-btn:disabled { opacity:.65; cursor:wait; }
-    .switch-text { margin-top:22px; text-align:center; color:var(--muted); }
+    .switch-text { margin-top:22px; text-align:center; color:var(--mute); }
     .switch-btn {
-      border:0; background:none; color:#294bb8; font-weight:700;
+      border:0; background:none; color:var(--brand); font-weight:700;
     }
     .theme-toggle {
       position:fixed; top:16px; right:16px; display:grid; place-items:center;
       width:44px; height:44px; padding:9px;
-      border:1px solid var(--line); border-radius:10px; color:var(--ink);
-      background:var(--surface); cursor:pointer;
+      border:1px solid var(--edge); border-radius:12px; color:var(--ink);
+      background:var(--panel); box-shadow:var(--shadow),inset 0 1px 0 var(--edge);
+      -webkit-backdrop-filter:blur(20px) saturate(1.6);
+      backdrop-filter:blur(20px) saturate(1.6); cursor:pointer;
     }
     .theme-toggle svg { display:block; width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
     .theme-icon-sun { display:none !important; }
     html[data-theme="dark"] .theme-icon-sun { display:block !important; }
     html[data-theme="dark"] .theme-icon-moon { display:none !important; }
-    html[data-theme="dark"] .switch-btn,html[data-theme="dark"] .show-btn { color:var(--blue); }
     #message { overflow-wrap:anywhere; font-size:14px; min-height:1.5em; }
-    #message.error { color:#a32d35; }
-    #message.success { color:#137c65; }
+    #message.error { color:#9c2635; }
+    #message.success { color:var(--brand); }
     [hidden] { display: none !important; }
-    :focus-visible { outline:3px solid #82a2ff; outline-offset:3px; }
-    @media(max-width:480px) { .login-card { padding:28px 22px; } }
-    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition-duration:.01ms !important; } }
+    :focus-visible { outline:3px solid var(--brand); outline-offset:3px; }
+    @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+      :root { --panel:rgba(255,255,255,.92); }
+      html[data-theme="dark"] { --panel:rgba(17,34,30,.96); }
+      @media(prefers-color-scheme:dark) { html:not([data-theme="light"]) { --panel:rgba(17,34,30,.96); } }
+    }
+    @media(max-width:480px) { body { padding:16px; } .login-card { padding:28px 22px; } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition-duration:.01ms !important; animation-duration:.01ms !important; } }
   </style>
   <script>
     try {
-      document.documentElement.dataset.theme =
-        localStorage.getItem("careerInfinity:theme") === "dark" ? "dark" : "light";
+      const savedTheme = localStorage.getItem("careerInfinity:theme");
+      document.documentElement.dataset.theme = savedTheme
+        || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     } catch (error) {
       console.error("Unable to load theme preference.", error);
     }
@@ -159,16 +203,18 @@
 
   <script type="module">
     import { initializeApp } from
-      "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+      "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
 
     import {
       getAuth,
+      browserLocalPersistence,
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword,
+      setPersistence,
       updateProfile,
       signOut
     } from
-      "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+      "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
 
     // Firebase configuration
     const firebaseConfig = {
@@ -268,6 +314,7 @@
       const pass = password.value;
 
       try {
+        await setPersistence(auth, browserLocalPersistence);
         if (registerMode) {
           const name = nameInput.value.trim();
 
@@ -311,10 +358,11 @@
 
         } else {
           // Authenticate the user with Firebase
-          await signInWithEmailAndPassword(auth, email, pass);
+          const credential = await signInWithEmailAndPassword(auth, email, pass);
+          await credential.user.getIdToken();
 
           // Open dashboard only after successful login
-          window.location.href = "/dashboard";
+          window.location.replace("/dashboard");
         }
 
       } catch (error) {

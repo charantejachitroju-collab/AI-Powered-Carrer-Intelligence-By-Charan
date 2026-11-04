@@ -20,7 +20,14 @@ export async function api(path, options = {}) {
     headers.set("Content-Type", "application/json");
   }
   const baseUrl = import.meta.env.VITE_API_BASE_URL || "";
-  const response = await fetch(`${baseUrl}${path}`, { ...options, headers });
+  let response = await fetch(`${baseUrl}${path}`, { ...options, headers });
+  if (response.status === 401) {
+    const refreshedToken = await tokenProvider(true);
+    if (refreshedToken && refreshedToken !== token) {
+      headers.set("Authorization", `Bearer ${refreshedToken}`);
+      response = await fetch(`${baseUrl}${path}`, { ...options, headers });
+    }
+  }
   if (options.raw && response.ok) return response;
   const type = response.headers.get("content-type") || "";
   const data = type.includes("application/json") ? await response.json() : null;
