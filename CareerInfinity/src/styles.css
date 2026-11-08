@@ -160,6 +160,13 @@ input, textarea, select { color-scheme: light; }
 .app-shell h4 { font-family: var(--font-heading); }
 .page-title { margin-bottom: 1.5rem; }
 .page-title p { color: var(--mute); }
+.interview-offline-notice {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 
 .app-shell .glass-card {
   border: 1px solid var(--edge) !important;
@@ -305,21 +312,48 @@ input, textarea, select { color-scheme: light; }
 .ui-button,
 .app-shell .button-primary,
 .app-shell .button-secondary {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 10px 22px;
   min-height: 42px;
   border: 1px solid var(--edge) !important;
-  border-radius: 12px !important;
-  box-shadow: var(--shadow), inset 0 1px 0 var(--edge);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6);
-  backdrop-filter: blur(20px) saturate(1.6);
+  border-radius: 999px !important;
+  font-weight: 600;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+.ui-button::before,
+.app-shell .button-primary::before,
+.app-shell .button-secondary::before {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 46%;
+  background: linear-gradient(rgba(255,255,255,.4), transparent);
+  content: "";
+  pointer-events: none;
+}
+.ui-button > *,
+.app-shell .button-primary > *,
+.app-shell .button-secondary > * {
+  position: relative;
+  z-index: 1;
 }
 .app-shell button.ui-button:not(.bg-rose-50),
 .app-shell .button-primary {
   border-color: transparent !important;
   background: var(--brand) !important;
   color: var(--brand-ink) !important;
+  box-shadow: 0 0 26px color-mix(in srgb,var(--brand) 45%,transparent);
 }
 .app-shell button.ui-button:not(.bg-rose-50):hover,
-.app-shell .button-primary:hover { filter: brightness(1.06); }
+.app-shell .button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 34px color-mix(in srgb,var(--brand) 60%,transparent);
+  filter: brightness(1.06);
+}
 .app-shell button.ui-button.bg-rose-50 {
   border-color: var(--line) !important;
   background: rgba(190,45,65,.1) !important;
@@ -328,8 +362,47 @@ input, textarea, select { color-scheme: light; }
 .app-shell .button-secondary,
 .app-shell button.ui-button.border {
   border-color: var(--edge) !important;
-  background: var(--panel) !important;
+  background: linear-gradient(
+    color-mix(in srgb,var(--ink) 9%,transparent),
+    color-mix(in srgb,var(--ink) 2%,transparent)
+  ), var(--panel) !important;
   color: var(--ink) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5),
+    0 0 18px color-mix(in srgb,var(--ink) 14%,transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5);
+  backdrop-filter: blur(14px) saturate(1.5);
+}
+.app-shell .button-secondary:hover,
+.app-shell button.ui-button.border:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.6),
+    0 0 24px color-mix(in srgb,var(--ink) 22%,transparent);
+}
+.app-shell .ui-button:active,
+.app-shell .button-primary:active,
+.app-shell .button-secondary:active {
+  transform: scale(.96);
+}
+.app-shell .ui-button:focus-visible,
+.app-shell .button-primary:focus-visible,
+.app-shell .button-secondary:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .ui-button,
+  .app-shell .button-primary,
+  .app-shell .button-secondary {
+    transition: none;
+  }
+  .app-shell .ui-button:hover,
+  .app-shell .button-primary:hover,
+  .app-shell .button-secondary:hover,
+  .app-shell .ui-button:active,
+  .app-shell .button-primary:active,
+  .app-shell .button-secondary:active {
+    transform: none;
+  }
 }
 .app-shell input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
 .app-shell textarea,
