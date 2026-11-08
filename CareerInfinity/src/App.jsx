@@ -1,5 +1,5 @@
 import {
-  createContext, useCallback, useContext, useEffect, useRef, useState,
+  createContext, useCallback, useContext, useEffect, useMemo, useRef, useState,
 } from "react";
 import {
   Activity, ArrowDownToLine, ArrowRight, Award, BarChart3, BriefcaseBusiness, Camera, Mic,
@@ -62,6 +62,14 @@ const navigationSections = [
 const navigation = navigationSections.flatMap(section => section.items);
 
 const AppContext = createContext(null);
+const CAREER_INTELLIGENCE_CACHE_TTL_MS = 30_000;
+const careerIntelligenceCache = new Map();
+
+function invalidateCareerIntelligenceCache(userId) {
+  for (const key of careerIntelligenceCache.keys()) {
+    if (key.startsWith(`${userId}:`)) careerIntelligenceCache.delete(key);
+  }
+}
 
 function useApp() {
   return useContext(AppContext);
@@ -102,6 +110,7 @@ function App() {
   const refreshSummary = useCallback(async () => {
     try {
       const value = await api("/dashboard/summary");
+      if (user?.uid) invalidateCareerIntelligenceCache(user.uid);
       setSummary(value);
       setSummaryError("");
       return value;
@@ -109,7 +118,7 @@ function App() {
       setSummaryError(error.message);
       throw error;
     }
-  }, []);
+  }, [user?.uid]);
 
   useEffect(() => onAuthStateChanged(auth, current => {
     setUser(current);
@@ -189,7 +198,7 @@ function AppLayout() {
     }
   };
   return (
-    <div className="app-shell min-h-screen text-ink">
+    <div className={`app-shell min-h-screen text-ink ${location.pathname.startsWith("/career") ? "career-intelligence-shell" : ""}`}>
       {mobileOpen && <button className="mobile-overlay fixed inset-0 z-30 md:hidden" aria-label="Close menu" onClick={() => setMobileOpen(false)}/>}
       <aside className={`app-sidebar fixed inset-y-0 left-0 z-40 flex w-[270px] flex-col px-4 py-5 text-slate-100 shadow-xl transition-all md:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"} ${collapsed ? "md:w-[86px]" : "md:w-[270px]"}`}>
         <div className="sidebar-brand mb-7 flex items-center justify-between px-2">
@@ -390,34 +399,88 @@ function DashboardPage() {
 
 function useRoleMatches() {
   const [state, setState] = useState({ loading: true, error: "", data: null });
-  const { summary } = useApp();
+  const { user } = useApp();
+  const cacheKey = `${user.uid}:career-intelligence`;
   const reload = useCallback(async () => {
+    const cached = careerIntelligenceCache.get(cacheKey);
+    if (cached?.data && Date.now() - cached.cachedAt < CAREER_INTELLIGENCE_CACHE_TTL_MS) {
+      careerIntelligenceCache.delete(cacheKey);
+      careerIntelligenceCache.set(cacheKey, cached);
+      setState({ loading: false, error: "", data: cached.data });
+      return;
+    }
     setState({ loading: true, error: "", data: null });
+    if (cached?.promise) {
+      try {
+        const data = await cached.promise;
+        setState({ loading: false, error: "", data });
+      } catch (error) {
+        setState({ loading: false, error: error.message, data: null });
+      }
+      return;
+    }
+    if (cached) careerIntelligenceCache.delete(cacheKey);
     try {
-      const data = await api("/career/intelligence");
+      const request = api("/career/intelligence").then(data => {
+        careerIntelligenceCache.set(cacheKey, { cachedAt: Date.now(), data });
+        return data;
+      }).catch(error => {
+        if (careerIntelligenceCache.get(cacheKey)?.promise === request) {
+          careerIntelligenceCache.delete(cacheKey);
+        }
+        throw error;
+      });
+      careerIntelligenceCache.set(cacheKey, { promise: request });
+      const data = await request;
+      if (careerIntelligenceCache.size > 16) {
+        careerIntelligenceCache.delete(careerIntelligenceCache.keys().next().value);
+      }
       setState({ loading: false, error: "", data });
     } catch (error) {
       setState({ loading: false, error: error.message, data: null });
     }
-  }, []);
-  useEffect(() => { reload(); }, [reload, summary?.updated_at]);
+  }, [cacheKey]);
+  useEffect(() => { reload(); }, [reload]);
   return { ...state, reload };
+}
+
+function CareerIntelligenceSkeleton() {
+  return <div className="space-y-5" role="status" aria-label="Loading career insights">
+    <div className="grid gap-5 xl:grid-cols-[1.2fr_.8fr]">
+      <div className="career-skeleton h-64 rounded-2xl"/>
+      <div className="career-skeleton h-64 rounded-2xl"/>
+    </div>
+    <div className="grid gap-4 md:grid-cols-3">
+      {[0, 1, 2].map(item => <div key={item} className="career-skeleton h-36 rounded-2xl"/>)}
+    </div>
+    <div className="career-skeleton h-28 rounded-2xl"/>
+  </div>;
 }
 
 function CareerIntelligencePage() {
   const { data, loading, error, reload } = useRoleMatches();
   const { notify } = useApp();
   const [role, setRole] = useState("");
-  const selected = data?.market?.roles?.find(item => item.title === (role || data?.roles?.[0]?.role)) || data?.market?.roles?.[0];
-  const chartData = selected?.demand || [];
+  const marketRoles = useMemo(() => data?.market?.roles || [], [data?.market?.roles]);
+  const roleOptions = useMemo(
+    () => marketRoles.map(item => ({ value: item.title, label: item.title })),
+    [marketRoles],
+  );
+  const selected = useMemo(
+    () => marketRoles.find(item => item.title === (role || data?.roles?.[0]?.role)) || marketRoles[0],
+    [marketRoles, role, data?.roles],
+  );
+  const chartData = useMemo(() => selected?.demand || [], [selected]);
+  const visibleMatches = useMemo(() => data?.roles?.slice(0, 5) || [], [data?.roles]);
   const suggestion = data?.ai_suggestion || "Analyse your resume to get tailored career guidance.";
   return <>
-    <PageTitle title="Career intelligence" subtitle="Explore career matches, market context, and practical next steps." action={<SelectInput label="Market role" value={role || data?.roles?.[0]?.role || ""} onChange={event => setRole(event.target.value)} options={(data?.market?.roles || []).map(item => ({ value: item.title, label: item.title }))}/>}/>
-    {loading && <Loading label="Loading career insights..."/>}{error && <ErrorState message={error} onRetry={reload}/>}
-    {data && !loading && <div className="space-y-5">
+    <div className="career-intelligence-page">
+    <PageTitle title="Career intelligence" subtitle="Explore career matches, market context, and practical next steps." action={<SelectInput label="Market role" value={role || data?.roles?.[0]?.role || ""} onChange={event => setRole(event.target.value)} options={roleOptions}/>}/>
+    {loading && !data && <CareerIntelligenceSkeleton/>}{error && <ErrorState message={error} onRetry={reload}/>}
+    {data && <div className="space-y-5">
       <div className="grid gap-5 xl:grid-cols-[1.2fr_.8fr]">
         <Card><div className="mb-5 flex items-center justify-between"><div><h3 className="font-bold">Career compatibility</h3><p className="mt-1 text-xs text-slate-400">{data.role_match_source === "saved_analysis_skill_signals" ? "Estimated from skills in your existing resume analysis" : "Role matches from your latest resume"}</p></div><BarChart3 size={19} className="text-violet-500"/></div>
-          {data.roles?.length ? data.roles.slice(0, 5).map((item, index) => <Link key={item.role} to={`/roadmap?role=${encodeURIComponent(item.role)}`} className="match-row block rounded-lg px-2 pt-2 transition"><ProgressBar label={`${index + 1}. ${item.role}`} score={item.match_score} detail={item.why_this_role_fits} estimated/></Link>) : <EmptyState icon={FileText} title="Analyse a resume first" description="Your top role compatibility estimates will show here." action={<Link className="text-xs font-semibold text-violet-700" to="/resume">Go to resume analyser</Link>}/> }
+          {visibleMatches.length ? visibleMatches.map((item, index) => <Link key={item.role} to={`/roadmap?role=${encodeURIComponent(item.role)}`} className="match-row block rounded-lg px-2 pt-2 transition"><ProgressBar label={`${index + 1}. ${item.role}`} score={item.match_score} detail={item.why_this_role_fits} estimated/></Link>) : <EmptyState icon={FileText} title="Analyse a resume first" description="Your top role compatibility estimates will show here." action={<Link className="text-xs font-semibold text-violet-700" to="/resume">Go to resume analyser</Link>}/> }
         </Card>
         <Card><div className="mb-4 flex items-center justify-between"><div><h3 className="font-bold">Industry demand</h3><p className="mt-1 text-xs text-slate-400">{selected?.title || "Selected role"} · projected openings index</p></div><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">{selected?.growth_badge || "Sample data"}</span></div>
           <div className="h-56"><ResponsiveContainer width="100%" height="100%"><BarChart data={chartData}><CartesianGrid vertical={false} stroke="var(--line)"/><XAxis dataKey="year" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "var(--mute)" }}/><YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10, fill: "var(--mute)" }}/><Tooltip contentStyle={{ background: "var(--panel-solid)", borderColor: "var(--edge)", borderRadius: 12, color: "var(--ink)" }}/><Bar dataKey="index" name="Demand index" fill="var(--brand)" radius={[6,6,0,0]} /></BarChart></ResponsiveContainer></div>
@@ -430,6 +493,7 @@ function CareerIntelligencePage() {
       </div>
       <div className="flex flex-col gap-4 rounded-2xl border border-violet-100 bg-gradient-to-r from-violet-50 to-indigo-50 p-5 md:flex-row md:items-center md:justify-between"><div className="flex gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white text-violet-600 shadow-sm"><Lightbulb size={21}/></span><div><h3 className="text-sm font-bold">AI suggestion</h3><p className="mt-1 text-sm leading-6 text-slate-600">{suggestion}</p><p className="mt-1 text-[10px] text-slate-400">Suggestion: {data.ai_suggestion_source || "skill-gap based"} · market source: {data.market?.source} · last updated {data.market?.last_updated} · illustrative sample values.</p></div></div><Link to="/roadmap" className="button-primary inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-xs font-bold text-white">Explore learning path <ArrowRight size={15}/></Link></div>
     </div>}
+    </div>
   </>;
 }
 
@@ -681,7 +745,7 @@ function MockInterviewPage() {
     <PageTitle title="Mock interview" subtitle="Practise with role-based questions, review answer feedback, and track your private session history." action={session&&!report?<Button variant="secondary" onClick={startFresh}>Save & leave</Button>:null}/>
     {!session&&<div className="grid gap-5 xl:grid-cols-[1.1fr_.9fr]"><Card><div className="mb-4 flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-xl bg-violet-50 text-violet-600"><MessageSquareText size={20}/></span><div><h3 className="font-bold">Choose your target role</h3><p className="text-xs text-slate-500">{catalog.length} roles across six career categories</p></div></div><input className="mb-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Search roles, skills, or categories" value={search} onChange={e=>setSearch(e.target.value)}/><div className="max-h-72 space-y-2 overflow-auto">{filtered.map(item=><button key={item.title} type="button" aria-pressed={role===item.title} onClick={()=>setRole(item.title)} className={`w-full rounded-xl border p-3 text-left ${role===item.title?"border-violet-500 bg-violet-50":"border-slate-100 hover:border-violet-200"}`}><span className="flex items-center justify-between text-sm font-bold">{item.title}<span className="text-[10px] font-medium text-slate-400">{item.category}</span></span><span className="mt-1 block text-xs text-slate-500">{item.description}</span><span className="mt-2 flex flex-wrap gap-1">{item.skills.slice(0,5).map(skill=><span key={skill} className="rounded-full bg-slate-100 px-2 py-1 text-[10px] text-slate-600">{skill}</span>)}</span></button>)}</div><div className="mt-4 border-t border-slate-100 pt-4"><label className="text-xs font-semibold">Custom job title</label><input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" placeholder="Enter another role" value={catalog.some(x=>x.title===role)?"":role} onChange={e=>setRole(e.target.value)}/></div></Card>
       <Card><h3 className="font-bold">Interview configuration</h3><p className="mb-5 mt-1 text-xs text-slate-500">Questions are generated one round at a time using this context.</p>{!aiConfigured&&<div role="status" className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900"><strong>OpenAI setup needed.</strong> Add <code>OPENAI_API_KEY</code> to the project’s local <code>.env</code> file and restart the server to enable AI questions and answer feedback. Keep the key out of the browser and chat.</div>}<div className="space-y-4"><SelectInput label="Experience level" value={experience} onChange={e=>setExperience(e.target.value)} options={["Fresher","Beginner","Intermediate","Experienced"].map(value=>({value,label:value}))}/><SelectInput label="Difficulty" value={difficulty} onChange={e=>setDifficulty(e.target.value)} options={["Easy","Medium","Hard","Adaptive"].map(value=>({value,label:value}))}/><SelectInput label="Interview mode" value={mode} onChange={e=>setMode(e.target.value)} options={["Camera + Microphone","Voice Only","Text Based"].map(value=>({value,label:value}))}/><label className="block text-xs font-semibold">Questions per round<select className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-3 text-sm" value={count} onChange={e=>setCount(e.target.value)}>{[5,10].map(v=><option key={v} value={String(v)}>{v}</option>)}<option value="custom">Custom</option></select></label>{count==="custom"&&<label className="block text-xs font-semibold">Custom count (1–20)<input aria-label="Custom questions per round" type="number" min="1" max="20" value={customCount} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-3 text-sm" onChange={e=>setCustomCount(Math.max(1,Math.min(20,Number(e.target.value)||1)))}/></label>}<div className="rounded-xl bg-slate-50 p-3 text-xs text-slate-600"><strong>Selected:</strong> {role||"Choose a role"} · {experience} · {difficulty} · {count==="custom"?customCount:count} questions each across four rounds</div>{error&&<ErrorState message={error}/>}<Button onClick={start} disabled={loading||!role.trim()}>{loading&&<LoaderCircle size={15} className="animate-spin"/>}Start interview</Button></div></Card></div>}
-    {session&&!report&&<><div className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{rounds.map((name,i)=><div key={name} className={`rounded-2xl border p-4 ${round===i+1?"border-violet-400 bg-violet-50":"border-slate-200 bg-white"}`}><span className="text-[10px] font-bold uppercase text-violet-600">Round {i+1}</span><h3 className="mt-1 text-sm font-bold">{name}</h3><p className="mt-2 text-[11px] text-slate-500">{i+1<round?"Completed":i+1===round?`Question ${Math.min(index+1,questions.length)} of ${questions.length}`:"Not started"}</p></div>)}</div><div className="grid gap-5 xl:grid-cols-[1.2fr_.8fr]"><Card>{questionProvider==="Sample questions (AI offline)"&&<div role="status" className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900"><strong>Sample questions (AI offline).</strong> These examples are not AI-generated. Check the OpenAI API key, quota, and billing, then retry for role-specific questions.</div>}{loading&&!questions.length?<Loading label="Generating this round's questions with AI..."/>:error&&!questions.length?<ErrorState message={error} onRetry={()=>loadRound(session.id,round)}/>:questions[index]&&<><div className="mb-4 flex items-center justify-between"><span className="rounded-full bg-violet-50 px-3 py-1 text-[11px] font-bold text-violet-700">{rounds[round-1]} · {index+1}/{questions.length}</span><span className="text-xs text-slate-400">{questions[index].difficulty} · {questions[index].time_limit_seconds/60} min</span></div><div className="rounded-2xl bg-slate-50 p-5"><p className="text-[10px] font-bold uppercase tracking-wider text-violet-600">{questions[index].category}</p><p className="mt-2 text-base font-semibold leading-7 text-slate-800">{questions[index].text}</p></div><form onSubmit={submit} className="mt-4 space-y-3">{questions[index].question_type==="code"&&<SelectInput label="Language" options={["Python","JavaScript","Java","C++","SQL"].map(v=>({value:v,label:v}))}/>}<TextArea label={questions[index].question_type==="code"?"Your solution":"Your answer"} rows={questions[index].question_type==="code"?9:6} maxLength={12000} required value={answer} onChange={e=>setAnswer(e.target.value)} placeholder="Explain your thinking and include relevant details..."/>{error&&<ErrorState message={error}/>} {!evaluation?<Button disabled={loading||!answer.trim()}>{loading&&<LoaderCircle size={15} className="animate-spin"/>}Submit answer</Button>:<Button type="button" onClick={advance}>{index+1<questions.length?"Next question":round<4?"Continue to next round":"View final report"}<ArrowRight size={15}/></Button>}</form>{evaluation&&<div className="mt-4 rounded-xl bg-emerald-50 p-4 text-emerald-900"><strong className="text-sm">AI feedback · {evaluation.score}/100</strong><p className="mt-2 text-xs">{evaluation.feedback}</p><p className="mt-3 text-xs"><b>Covered:</b> {evaluation.correct_points.join(" · ")||"Review the feedback above."}</p><p className="mt-2 text-xs"><b>Explore further:</b> {evaluation.missing_concepts.join(" · ")||"Keep building on this answer."}</p><p className="mt-2 text-xs"><b>Improve:</b> {evaluation.improvement}</p><details className="mt-2 text-xs"><summary className="cursor-pointer font-semibold">Suggested answer approach</summary><p className="mt-2">{evaluation.suggested_answer}</p></details></div>}</>}</Card>
+    {session&&!report&&<><div className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{rounds.map((name,i)=><div key={name} className={`rounded-2xl border p-4 ${round===i+1?"border-violet-400 bg-violet-50":"border-slate-200 bg-white"}`}><span className="text-[10px] font-bold uppercase text-violet-600">Round {i+1}</span><h3 className="mt-1 text-sm font-bold">{name}</h3><p className="mt-2 text-[11px] text-slate-500">{i+1<round?"Completed":i+1===round?`Question ${Math.min(index+1,questions.length)} of ${questions.length}`:"Not started"}</p></div>)}</div><div className="grid gap-5 xl:grid-cols-[1.2fr_.8fr]"><Card>{questionProvider==="Sample questions (AI offline)"&&<div role="status" className="interview-offline-notice mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900"><strong>Sample questions (AI offline).</strong>{" "}<span>These are examples, not AI-generated. Check your API key and quota, then retry for role-specific questions.</span></div>}{loading&&!questions.length?<Loading label="Generating this round's questions with AI..."/>:error&&!questions.length?<ErrorState message={error} onRetry={()=>loadRound(session.id,round)}/>:questions[index]&&<><div className="mb-4 flex items-center justify-between"><span className="rounded-full bg-violet-50 px-3 py-1 text-[11px] font-bold text-violet-700">{rounds[round-1]} · {index+1}/{questions.length}</span><span className="text-xs text-slate-400">{questions[index].difficulty} · {questions[index].time_limit_seconds/60} min</span></div><div className="rounded-2xl bg-slate-50 p-5"><p className="text-[10px] font-bold uppercase tracking-wider text-violet-600">{questions[index].category}</p><p className="mt-2 text-base font-semibold leading-7 text-slate-800">{questions[index].text}</p></div><form onSubmit={submit} className="mt-4 space-y-3">{questions[index].question_type==="code"&&<SelectInput label="Language" options={["Python","JavaScript","Java","C++","SQL"].map(v=>({value:v,label:v}))}/>}<TextArea label={questions[index].question_type==="code"?"Your solution":"Your answer"} rows={questions[index].question_type==="code"?9:6} maxLength={12000} required value={answer} onChange={e=>setAnswer(e.target.value)} placeholder="Explain your thinking and include relevant details..."/>{error&&<ErrorState message={error}/>} {!evaluation?<Button disabled={loading||!answer.trim()}>{loading&&<LoaderCircle size={15} className="animate-spin"/>}Submit answer</Button>:<Button type="button" onClick={advance}>{index+1<questions.length?"Next question":round<4?"Continue to next round":"View final report"}<ArrowRight size={15}/></Button>}</form>{evaluation&&<div className="mt-4 rounded-xl bg-emerald-50 p-4 text-emerald-900"><strong className="text-sm">AI feedback · {evaluation.score}/100</strong><p className="mt-2 text-xs">{evaluation.feedback}</p><p className="mt-3 text-xs"><b>Covered:</b> {evaluation.correct_points.join(" · ")||"Review the feedback above."}</p><p className="mt-2 text-xs"><b>Explore further:</b> {evaluation.missing_concepts.join(" · ")||"Keep building on this answer."}</p><p className="mt-2 text-xs"><b>Improve:</b> {evaluation.improvement}</p><details className="mt-2 text-xs"><summary className="cursor-pointer font-semibold">Suggested answer approach</summary><p className="mt-2">{evaluation.suggested_answer}</p></details></div>}</>}</Card>
       <div className="space-y-5"><Card><div className="flex items-center justify-between"><h3 className="font-bold">Practice setup</h3>{stream&&<button type="button" className="text-xs text-rose-600" onClick={releaseMedia}>Stop devices</button>}</div>{mode!=="Text Based"&&<div className="mt-3">{mode==="Camera + Microphone"&&<label className="mb-3 flex items-center gap-2 text-xs"><input type="checkbox" checked={cameraConsent} onChange={e=>setCameraConsent(e.target.checked)}/>I consent to using my camera and microphone for this practice session. Video is not saved.</label>}<div className="overflow-hidden rounded-xl bg-slate-900">{mode==="Camera + Microphone"?<video ref={videoRef} autoPlay muted playsInline className="aspect-video w-full object-cover"/>:<div className="grid aspect-video place-items-center text-white"><Mic size={28}/><span className="text-xs">Voice-only mode</span></div>}</div><div className="mt-3 flex gap-2"><Button variant="secondary" onClick={enableMedia}><Camera size={15}/>{stream?"Reconnect devices":"Enable devices"}</Button>{stream&&<Button variant="secondary" onClick={record}><Mic size={15}/>{recording?"Stop recording":"Record answer"}</Button>}</div><p className="mt-2 text-[10px] text-slate-500">Speech recognition runs in your browser when supported. Audio and video recordings are not saved.</p></div>}<p className="mt-4 text-xs text-slate-500">{session.role} · {session.experience} · {session.difficulty} · {session.mode}</p></Card><Card><h3 className="font-bold">Question progress</h3><div className="mt-4 space-y-3">{rounds.map((x,i)=><div key={x}><div className="mb-1 flex justify-between text-[11px]"><span>{x}</span><span>{i+1<round?"Complete":i+1===round?`${index}/${questions.length}`:"—"}</span></div><div className="h-2 rounded-full bg-slate-100"><div className="h-2 rounded-full bg-violet-500" style={{width:`${i+1<round?100:i+1===round?Math.round(index/questions.length*100):0}%`}}/></div></div>)}</div></Card></div></div></>}
     {report&&<div className="grid gap-5 xl:grid-cols-[.9fr_1.1fr]"><Card><h3 className="text-lg font-bold">Interview performance report</h3><p className="mt-1 text-sm text-slate-500">{report.role} · four rounds completed</p><div className="mt-5 rounded-2xl bg-violet-50 p-5"><strong className="text-4xl font-extrabold text-violet-700">{report.overall_score}<small className="text-base">/100</small></strong><p className="mt-2 text-xs text-slate-600">{report.total_questions} answers · {report.correct_answers} scored 70 or higher</p><p className="mt-2 text-[10px] text-slate-500">{report.weighting}</p></div><h4 className="mt-5 text-sm font-bold">Round scores</h4>{rounds.map((name,i)=><div key={name} className="mt-3"><div className="mb-1 flex justify-between text-xs"><span>{name}</span><b>{report.round_scores[String(i+1)]}/100</b></div><div className="h-2 rounded-full bg-slate-100"><div className="h-2 rounded-full bg-violet-500" style={{width:`${report.round_scores[String(i+1)]}%`}}/></div></div>)}<Button className="mt-5" onClick={startFresh}>Retry interview</Button></Card><Card><h3 className="font-bold">Your feedback</h3><h4 className="mt-4 text-xs font-bold text-emerald-700">Strengths</h4><ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-slate-600">{report.strengths.length?report.strengths.map(x=><li key={x}>{x}</li>):<li>Review your question feedback to identify strengths.</li>}</ul><h4 className="mt-4 text-xs font-bold text-amber-700">Topics to improve</h4><ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-slate-600">{report.improvement_areas.length?report.improvement_areas.map(x=><li key={x}>{x}</li>):<li>Continue practicing clear, complete explanations.</li>}</ul><details className="mt-5"><summary className="cursor-pointer text-sm font-bold">Question-wise feedback</summary><div className="mt-3 max-h-96 space-y-3 overflow-auto">{report.answers.map((item,i)=><div key={item.question.id} className="rounded-xl bg-slate-50 p-3"><p className="text-xs font-semibold">{i+1}. {item.question.text}</p><p className="mt-1 text-[11px] text-violet-700">Score {item.evaluation.score}/100 · {item.evaluation.feedback}</p></div>)}</div></details></Card></div>}
     {!session&&history.length>0&&<Card className="mt-5"><h3 className="font-bold">Interview history</h3><div className="mt-3 space-y-2">{history.map(item=><div key={item.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 p-3 text-xs"><span><b>{item.role}</b> · {item.difficulty} · {new Date(item.created_at).toLocaleDateString()}</span><span>{item.completed?`Score ${item.overall_score}/100`:"In progress"}</span></div>)}</div></Card>}

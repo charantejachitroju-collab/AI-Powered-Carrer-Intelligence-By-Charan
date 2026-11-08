@@ -9,7 +9,10 @@ import logging
 import os
 import re
 import sqlite3
+import threading
+import time
 import uuid
+from collections import OrderedDict
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -72,6 +75,10 @@ CERTIFICATIONS_PATH = APP_DIR / "certifications.json"
 ROADMAPS_PATH = APP_DIR / "roadmaps.json"
 ROADMAP_PROGRESS_MIGRATION_PATH = APP_DIR / "migrations" / "001_user_progress.sql"
 MAX_PROOF_SIZE = 5 * 1024 * 1024
+CAREER_INTELLIGENCE_CACHE_TTL_SECONDS = 30
+CAREER_INTELLIGENCE_CACHE_MAX_ENTRIES = 128
+_CAREER_INTELLIGENCE_CACHE = OrderedDict()
+_CAREER_INTELLIGENCE_CACHE_LOCK = threading.Lock()
 
 
 # ---------------------------------------------------------------------------
@@ -846,6 +853,55 @@ def latest_resume(uid, connection):
     ).fetchone()
 
 
+def career_intelligence_cache_key(uid, document, saved_analysis, profile, role):
+    try:
+        market_modified = MARKET_DATA_PATH.stat().st_mtime_ns
+    except OSError:
+        market_modified = None
+    return (
+        uid,
+        document["id"] if document else None,
+        document["created_at"] if document else None,
+        saved_analysis.get("analyzed_at") if isinstance(saved_analysis, dict) else None,
+        profile.get("target_role", ""),
+        role or "",
+        market_modified,
+    )
+
+
+def get_cached_career_intelligence(key):
+    now = time.monotonic()
+    with _CAREER_INTELLIGENCE_CACHE_LOCK:
+        entry = _CAREER_INTELLIGENCE_CACHE.get(key)
+        if entry is None:
+            return None
+        expires_at, response = entry
+        if expires_at <= now:
+            del _CAREER_INTELLIGENCE_CACHE[key]
+            return None
+        _CAREER_INTELLIGENCE_CACHE.move_to_end(key)
+        return response
+
+
+def cache_career_intelligence(key, response):
+    now = time.monotonic()
+    with _CAREER_INTELLIGENCE_CACHE_LOCK:
+        expired = [
+            cache_key
+            for cache_key, (expires_at, _) in _CAREER_INTELLIGENCE_CACHE.items()
+            if expires_at <= now
+        ]
+        for cache_key in expired:
+            del _CAREER_INTELLIGENCE_CACHE[cache_key]
+        _CAREER_INTELLIGENCE_CACHE[key] = (
+            now + CAREER_INTELLIGENCE_CACHE_TTL_SECONDS,
+            response,
+        )
+        _CAREER_INTELLIGENCE_CACHE.move_to_end(key)
+        while len(_CAREER_INTELLIGENCE_CACHE) > CAREER_INTELLIGENCE_CACHE_MAX_ENTRIES:
+            _CAREER_INTELLIGENCE_CACHE.popitem(last=False)
+
+
 def role_matches_for_text(text, top_n=5, cache_key=None):
     return ROLE_MATCHER.match(
         text,
@@ -1392,6 +1448,12 @@ async def career_intelligence(
     try:
         document = latest_resume(uid, connection)
         profile, saved_analysis = load_profile(uid, connection)
+        cache_key = career_intelligence_cache_key(
+            uid, document, saved_analysis, profile, role
+        )
+        cached_response = get_cached_career_intelligence(cache_key)
+        if cached_response is not None:
+            return cached_response
         market = load_json_file(MARKET_DATA_PATH)
         role_data = document["role_matches_json"] if document else None
         matches = json.loads(role_data) if role_data else {"roles": [], "detected_skills": []}
@@ -1439,7 +1501,7 @@ async def career_intelligence(
             }
             for item in market.get("roles", [])
         ]
-        return {
+        response = {
             "role": role or profile.get("target_role", ""),
             "roles": matches.get("roles", [])[:5],
             "detected_skills": matches.get("detected_skills", []),
@@ -1448,6 +1510,8 @@ async def career_intelligence(
             "ai_suggestion_source": recommendation_source,
             "market": market,
         }
+        cache_career_intelligence(cache_key, response)
+        return response
     finally:
         connection.close()
 

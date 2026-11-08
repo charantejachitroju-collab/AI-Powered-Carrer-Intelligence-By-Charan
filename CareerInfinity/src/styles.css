@@ -152,6 +152,10 @@ input, textarea, select { color-scheme: light; }
   -webkit-backdrop-filter: blur(20px) saturate(1.6);
   backdrop-filter: blur(20px) saturate(1.6);
 }
+.career-intelligence-shell .app-content > header {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
 .app-content main { color: var(--ink); }
 .page-title h2,
 .app-shell h1,
@@ -175,6 +179,23 @@ input, textarea, select { color-scheme: light; }
   box-shadow: var(--shadow), inset 0 1px 0 var(--edge) !important;
   -webkit-backdrop-filter: blur(20px) saturate(1.6);
   backdrop-filter: blur(20px) saturate(1.6);
+}
+.career-intelligence-page .glass-card {
+  background: var(--panel) !important;
+  box-shadow: 0 4px 14px rgba(20,70,60,.06), inset 0 1px 0 var(--edge) !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.career-intelligence-page .match-row {
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+.career-skeleton {
+  border: 1px solid var(--edge);
+  background: linear-gradient(110deg, var(--panel), color-mix(in srgb,var(--panel-solid) 34%,transparent));
+  animation: career-skeleton-pulse 1.5s ease-in-out infinite;
+}
+@keyframes career-skeleton-pulse {
+  50% { opacity: .55; }
 }
 .app-shell .stat-card { min-height: 144px; }
 .app-shell .dashboard-stat {

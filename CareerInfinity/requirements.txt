@@ -4,6 +4,7 @@ uvicorn[standard]
 pypdf
 python-docx
 google-auth
+requests
 python-multipart
 sentence-transformers
 httpx

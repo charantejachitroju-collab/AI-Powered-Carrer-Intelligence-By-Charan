@@ -69,6 +69,31 @@ def test_dashboard_settings_market_and_skill_gap_endpoints(monkeypatch, tmp_path
     assert invalid_theme.status_code == 400
 
 
+def test_career_intelligence_response_is_cached_for_repeat_visits(monkeypatch, tmp_path):
+    client = setup_client(monkeypatch, tmp_path)
+    connection = app.get_database()
+    profile, _ = app.load_profile("dashboard-test-user", connection)
+    analysis = {
+        "analyzed_at": "career-intelligence-cache-test",
+        "data": {"skills": [{"name": "Python"}, {"name": "SQL"}]},
+    }
+    with connection:
+        app.save_profile("dashboard-test-user", profile, analysis, connection)
+    connection.close()
+    with app._CAREER_INTELLIGENCE_CACHE_LOCK:
+        app._CAREER_INTELLIGENCE_CACHE.clear()
+    llm = AsyncMock(return_value={"suggestion": "Practice Python and SQL."})
+    monkeypatch.setattr(app, "optional_llm_json", llm)
+
+    first = client.get("/career/intelligence")
+    second = client.get("/career/intelligence")
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert second.json() == first.json()
+    assert llm.await_count == 1
+
+
 def test_resume_upload_and_document_download_compare_delete(monkeypatch, tmp_path):
     client = setup_client(monkeypatch, tmp_path)
 

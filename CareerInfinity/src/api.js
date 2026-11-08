@@ -32,7 +32,6 @@ export async function api(path, options = {}) {
   const type = response.headers.get("content-type") || "";
   const data = type.includes("application/json") ? await response.json() : null;
   if (!response.ok) {
-    if (response.status === 401) window.location.assign("/");
     throw new ApiError(data?.error || data?.detail || `Request failed (${response.status}).`, response.status);
   }
   return data;
