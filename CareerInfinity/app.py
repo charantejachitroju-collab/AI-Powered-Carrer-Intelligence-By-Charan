@@ -179,10 +179,20 @@ class MatchRolesResponse(BaseModel):
 
 @asynccontextmanager
 async def lifespan(application: FastAPI):
-    """Prepare persistent storage and precompute the role catalog embeddings."""
+    """Prepare storage and optionally warm the role model in the background."""
     db_dir = os.path.dirname(os.path.abspath(DATABASE_PATH))
     os.makedirs(db_dir, exist_ok=True)
-    await run_in_threadpool(ROLE_MATCHER.initialize_embeddings)
+    # Loading SentenceTransformer can trigger a large Hugging Face download.
+    # Keep local startup reliable and use the built-in lexical scorer by default.
+    # Deployments that have the model available can opt into background loading.
+    if os.environ.get("ROLE_EMBEDDING_PRELOAD", "").strip().lower() in {"1", "true", "yes"}:
+        threading.Thread(
+            target=ROLE_MATCHER.initialize_embeddings,
+            name="career-role-embeddings",
+            daemon=True,
+        ).start()
+    else:
+        logger.info("Using lexical role matching; set ROLE_EMBEDDING_PRELOAD=true to warm embeddings.")
     yield
 
 
@@ -2961,4 +2971,7 @@ if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 5000))
     host = os.environ.get("HOST", "127.0.0.1")
-    uvicorn.run("app:app", host=host, port=port, reload=True)
+    # Uvicorn's reload supervisor uses a spawned child process on Windows.
+    # Running the local entry point with reload enabled can fail before the
+    # child inherits the listener socket, leaving port 5000 unreachable.
+    uvicorn.run("app:app", host=host, port=port, reload=False)

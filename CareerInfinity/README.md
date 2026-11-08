@@ -34,11 +34,12 @@ python app.py
 npm run dev
 ```
 
-Use the Vite server's `dashboard-app.html` entry during development. Set
-`VITE_API_BASE_URL=http://127.0.0.1:5000` in a local frontend `.env` if the
-development browser needs to call the API on a different origin; configure
-CORS to allow that Vite origin. Development uses hash-based client routing so
-Vite's API proxy can route API paths without intercepting page navigation.
+Use the Vite server's `dashboard-app.html` entry during development. If the
+backend is running on a non-default port, align the frontend and proxy with the
+same port by setting `VITE_API_BASE_URL=http://127.0.0.1:5001` (or start the
+backend with `PORT=5000`). Configure CORS to allow that Vite origin. Development
+uses hash-based client routing so Vite's API proxy can route API paths without
+intercepting page navigation.
 Production uses normal `/dashboard/...` URLs and serves its static assets from
 FastAPI.
 
@@ -46,8 +47,8 @@ The Firebase web settings in the existing sign-in page are public client
 configuration, not server credentials. Restrict its API key and authorized
 domains in Firebase/Google Cloud. `FIREBASE_PROJECT_ID` must match that
 Firebase app. The API loads settings from a local `.env` file as well as the
-process environment. Copy `.env.example` to `.env`, then set `OPENAI_API_KEY`
-or `LLM_API_KEY`, `LLM_API_URL`, and `LLM_MODEL` to enable AI interview
+process environment. Copy `.env.example` to `.env`, then set `LLM_API_KEY`, `LLM_API_URL`,
+and `LLM_MODEL` for your OpenAI-compatible provider to enable AI interview
 questions and answer feedback. Keep the key on the server and out of source
 control. Without a key, the interview page explains the required setup and
 question generation returns a clear configuration error; it does not silently
@@ -150,13 +151,17 @@ verified figures and a real source before presenting them as factual.
 
 ## Role matching and scoring
 
-At startup the existing scorer precomputes catalog-description embeddings
-using `sentence-transformers/all-MiniLM-L6-v2`. Resume text is embedded per
-request and cosine similarity is combined with weighted skills and experience.
+The scorer can use catalog-description embeddings from
+`sentence-transformers/all-MiniLM-L6-v2`. Resume text is embedded per request
+and cosine similarity is combined with weighted skills and experience. To
+avoid blocking local startup on a large model download, the app uses its built-in
+lexical scorer by default. Set `ROLE_EMBEDDING_PRELOAD=true` when the model is
+available locally or network downloads are acceptable to warm embeddings in
+the background.
 Default component weights are 30% semantic similarity, 55% skill overlap, and
 15% experience fit. The scorer caches results by resume hash and catalog
-version. If the embedding package/model is unavailable, the server logs the
-fallback and uses lexical cosine similarity instead.
+version. If the embedding package/model is unavailable, it uses lexical cosine
+similarity instead.
 
 If `OPENAI_API_KEY` or `LLM_API_KEY` is configured, an OpenAI-compatible
 provider may review up to three role explanations, generate interview prompts,
